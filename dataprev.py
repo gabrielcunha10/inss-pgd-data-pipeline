@@ -94,9 +94,9 @@ condicoes_status1 = [
 resultados_status1 = ["Designado", "Desligado"]
 df_total["status"] = np.select(condicoes_status1, resultados_status1, default=df_total["status"])
 
-# converter datas uma vez, fora do np.select
 dt_inicio = pd.to_datetime(df_total["dt_inicio_designacao"], format="%d/%m/%Y", errors="coerce")
 dt_fim = pd.to_datetime(df_total["dt_fim_designacao"], format="%d/%m/%Y", errors="coerce")
+
 comp_fim_mes = df_total["competencia"].dt.to_timestamp() + pd.offsets.MonthEnd(0)
 
 condicoes_status2 = [
@@ -108,5 +108,70 @@ resultados_status2 = ["Não Designado", "Designado", "Desligado"]
 
 df_total["status"] = np.select(condicoes_status2, resultados_status2, default=df_total["status"])
 # %%
+
+mapa_sigla_para_programa = (
+    df_total.dropna(subset=['sigla_programa', 'programa'])
+    [['sigla_programa', 'programa']]
+    .drop_duplicates()
+    .set_index('sigla_programa')['programa']
+    .to_dict()
+)
+
+mapa_programa_para_sigla = (
+    df_total.dropna(subset=['sigla_programa', 'programa'])
+    [['programa', 'sigla_programa']]
+    .drop_duplicates()
+    .set_index('programa')['sigla_programa']
+    .to_dict()
+)
+
+df_total['programa'] = df_total['programa'].fillna(
+    df_total['sigla_programa'].map(mapa_sigla_para_programa)
+)
+
+df_total['sigla_programa'] = df_total['sigla_programa'].fillna(
+    df_total['programa'].map(mapa_programa_para_sigla)
+)
+# %%
+df_total = df_total.replace("-", np.nan)
+#%%
+programas_nao_pgd = [
+    'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
+    'PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO',
+    'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
+]
+
+sugestao_flag_pgd = df_total['programa'].apply(
+    lambda x: 'Não' if x in programas_nao_pgd else ('Sim' if pd.notna(x) else None)
+)
+
+df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao_flag_pgd)
+#%%
+dt_filtro = df_total["dt_criacao_designacao"].isna()
+
+df_total[dt_filtro]
+
+#%%
 df_total
 # %%
+df_total.dtypes
+# %%
+df_total.isna().sum()
+# %%
+filtro_modalidade = df_total["modalidade"].isna()
+#%%
+series_filtro = df_total[filtro_modalidade].groupby(["competencia"]).size()
+#%%
+df_total[filtro_modalidade]["dt_inicio_designacao"].isna().sum()
+#%%
+df_total[filtro_modalidade]["dt_fim_designacao"].isna().sum()
+#%%
+df_total["dt_criacao_designacao"] = pd.to_datetime(df_total["dt_criacao_designacao"], format="mixed")
+#%%
+df_total["dt_alteracao_designacao"] = pd.to_datetime(df_total["dt_alteracao_designacao"], format="mixed")
+#%%
+df_total["dt_inicio_designacao"] = pd.to_datetime(df_total["dt_inicio_designacao"], format="%d/%m/%Y", errors="coerce")
+#%%
+df_total["dt_fim_designacao"] = pd.to_datetime(df_total["dt_fim_designacao"], format="%d/%m/%Y", errors="coerce")
+#%%
+df_total.isna().sum()
