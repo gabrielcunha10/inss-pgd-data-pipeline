@@ -7,7 +7,7 @@ files = os.listdir("data")
 colunas = set()
 #%%
 for i in files:
-    df = pd.read_csv(f"data/{i}", sep=";")
+    df = pd.read_csv(f"data/{i}", sep=";", dtype="str")
     colunas.update(df.columns)
 # %%
 colunas
@@ -60,7 +60,7 @@ colunas.clear()
 dfs = []
 
 for i in files:
-    df = pd.read_csv(f"data/{i}", sep=";")
+    df = pd.read_csv(f"data/{i}", sep=";", dtype="str")
     df = df.rename(columns=rename_map)
     df = df.drop(columns=[c for c in drop_colunas if c in df.columns])
     data = i.split(sep=".")[-2]
@@ -71,6 +71,7 @@ for i in files:
     dfs.append(df)
 #%%
 df_total = pd.concat(dfs, ignore_index=True, sort=False)
+df_total = df_total.replace("-", np.nan)
 #%%
 df_total.isna().sum()
 #%%
@@ -132,8 +133,6 @@ df_total['programa'] = df_total['programa'].fillna(
 df_total['sigla_programa'] = df_total['sigla_programa'].fillna(
     df_total['programa'].map(mapa_programa_para_sigla)
 )
-# %%
-df_total = df_total.replace("-", np.nan)
 #%%
 programas_nao_pgd = [
     'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
@@ -175,3 +174,77 @@ df_total["dt_inicio_designacao"] = pd.to_datetime(df_total["dt_inicio_designacao
 df_total["dt_fim_designacao"] = pd.to_datetime(df_total["dt_fim_designacao"], format="%d/%m/%Y", errors="coerce")
 #%%
 df_total.isna().sum()
+# %%
+def preencher_por_ponte(df_total, colunas, competencia_alvo, competencia_antes, competencia_depois):
+    cols_id = ['id_matricula'] + colunas
+    antes = df_total[df_total['competencia'] == competencia_antes][cols_id]
+    depois = df_total[df_total['competencia'] == competencia_depois][cols_id]
+
+    ponte = antes.merge(depois, on='id_matricula', suffixes=('_antes', '_depois'))
+    condicao = pd.Series(True, index=ponte.index)
+    for col in colunas:
+        condicao &= (ponte[f'{col}_antes'] == ponte[f'{col}_depois'])
+    ponte_confiavel = ponte[condicao]
+
+    mask_alvo = df_total['competencia'] == competencia_alvo
+    for col in colunas:
+        mapa = ponte_confiavel.set_index('id_matricula')[f'{col}_antes'].to_dict()
+        df_total.loc[mask_alvo, col] = df_total.loc[mask_alvo, col].fillna(
+            df_total.loc[mask_alvo, 'id_matricula'].map(mapa)
+        )
+    return df_total
+
+#%%
+colunas_para_preencher = ['id_designacao', 'dt_criacao_designacao']
+df_total = preencher_por_ponte(df_total, colunas_para_preencher, '202403', '202402', '202404')
+df_total = preencher_por_ponte(df_total, colunas_para_preencher, '202405', '202404', '202406')
+# %%
+dicionario = (
+    df_total.dropna(subset=["sigla_programa", "programa"])
+    [["sigla_programa", "programa"]]
+    .drop_duplicates()
+    .set_index("sigla_programa")["programa"]
+    .to_dict()
+)
+
+dicionario_externo = {
+    "PG-DIRBEN": "PROGRAMA DE GESTÃO - DIRETORIA DE BENEFÍCIOS E RELACIONAMENTO COM O CIDADÃO",
+    "PGRP": "PROGRAMA DE GESTÃO EM REGIME DE EXECUÇÃO PARCIAL",
+    "CEAP": "CENTRAL ESPECIALIZADA DE ALTA PERFORMANCE",
+    "PGD-GABGEX": "PROGRAMA DE GESTÃO E DESEMPENHO - GABINETE DA GERÊNCIA EXECUTIVA",
+    "PG-AUDGER": "PROGRAMA DE GESTÃO - AUDITORIA-GERAL",
+    "PG-DIROFL": "PROGRAMA DE GESTÃO - DIRETORIA DE ORÇAMENTO, FINANÇAS E LOGÍSTICA",
+    "PG-DTI": "PROGRAMA DE GESTÃO - DIRETORIA DE TECNOLOGIA DA INFORMAÇÃO",
+    "PGD-DGP": "PROGRAMA DE GESTÃO E DESEMPENHO - DIRETORIA DE GESTÃO DE PESSOAS",
+    "PGD-PFE": "PROGRAMA DE GESTÃO E DESEMPENHO - PROCURADORIA FEDERAL ESPECIALIZADA",
+    "PG-CORREG": "PROGRAMA DE GESTÃO - CORREGEDORIA-GERAL",
+    "PGD-GERGEX": "PROGRAMA DE GESTÃO E DESEMPENHO - GERÊNCIA EXECUTIVA",
+    "PGD-GABSR": "PROGRAMA DE GESTÃO E DESEMPENHO - GABINETE DA SUPERINTENDÊNCIA REGIONAL",
+    "PGD-PGARP": "PROGRAMA DE GESTÃO DA REABILITAÇÃO PROFISSIONAL",
+    "PG-DIGOV": "PROGRAMA DE GESTÃO - DIRETORIA DE GOVERNANÇA, PLANEJAMENTO E INOVAÇÃO",
+    "PGD-GABPRE": "PROGRAMA DE GESTÃO E DESEMPENHO - GABINETE DA PRESIDÊNCIA",
+    "PG-ACS": "PROGRAMA DE GESTÃO - ASSESSORIA DE COMUNICAÇÃO SOCIAL",
+}
+
+dicionario.update(dicionario_externo)
+#%%
+df_total["programa"] = df_total["programa"].fillna(
+    df_total["sigla_programa"].map(dicionario)
+)
+#%%
+df_total
+#%%
+dicionario_programa_para_sigla = (
+    df_total.dropna(subset=["programa", "sigla_programa"])
+    [["programa","sigla_programa"]].drop_duplicates()
+    .set_index("programa")["sigla_programa"].to_dict()
+)
+#%%
+df_total["sigla_programa"] = df_total["sigla_programa"].fillna(
+    df_total["programa"].map(dicionario_programa_para_sigla)
+)
+
+# %%
+df_total.isna().sum()
+# %%
+
