@@ -247,4 +247,28 @@ df_total["sigla_programa"] = df_total["sigla_programa"].fillna(
 # %%
 df_total.isna().sum()
 # %%
+programas_nao_pgd_confirmados = [
+    'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
+    'PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO',
+    'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
+]
 
+programas_com_flag_pgd_conhecida = [
+    'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE', 'PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO',
+    'PROG. PRESENCIAL 6H + PONTUAÇÃO', 'PROGRAMA DA CEAB I', 'PROGRAMA DA REABILITAÇÃO PROFISSIONAL',
+    'PROGRAMA DA REABILITAÇÃO PROFISSIONAL - REMOTO', 'PROGRAMA DA REABILITAÇÃO PROFISSIONAL PT 1800',
+    'PROGRAMA DAS CENTRAIS DE SUPORTE', 'PROGRAMA DAS GERÊNCIAS EXECUTIVAS - PGD',
+    'PROGRAMA DAS SUPERINTENDÊNCIAS - PGD', 'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
+    'PROGRAMA DAS UNIDADES DE ATENDIMENTO - PT 1800', 'PROGRAMA DAS ÁREAS DA DIREÇÃO CENTRAL',
+]
+
+def inferir_flag_pgd(programa):
+    if pd.isna(programa) or programa not in programas_com_flag_pgd_conhecida:
+        return None  # inclui os 16 não-verificados -> fica NaN, sem extrapolar
+    return 'Não' if programa in programas_nao_pgd_confirmados else 'Sim'
+
+sugestao = df_total['programa'].apply(inferir_flag_pgd)
+df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
+#%%
+df_total.to_csv("pgd_designacoes_inss_2023_2026.csv", sep=";", index=False, na_rep="-")
+# %%
