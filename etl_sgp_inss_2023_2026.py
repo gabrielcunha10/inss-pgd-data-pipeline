@@ -89,8 +89,8 @@ df_total
 df_total
 #%%
 condicoes_status1 = [
-    df_total["status"] == 1,
-    df_total["status"] == 2
+    df_total["status"] == "1",
+    df_total["status"] == "2"
 ]
 resultados_status1 = ["Designado", "Desligado"]
 df_total["status"] = np.select(condicoes_status1, resultados_status1, default=df_total["status"])

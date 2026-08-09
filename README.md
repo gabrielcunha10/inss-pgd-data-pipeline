@@ -16,17 +16,21 @@ O contato com esse contexto despertou meu interesse pela Dataprev e pela aplica�
 
 Além de fortalecer meu aprendizado em Python, Pandas e análise exploratória de dados, este projeto representa uma demonstração prática do meu interesse em atuar na área de dados e, especialmente, em oportunidades como o programa de estágio da Dataprev.
 
+## Sobre os dados
+
 ## Resultado
 
-O dataset final, já limpo e consolidado, está disponível diretamente neste repositório:
+O dataset final, após as etapas de limpeza, padronização e consolidação, contém  **503.972 registros e 19 colunas padronizadas** .
 
-📄 **[`pgd_designacoes_inss_2023_2026.csv`](./pgd_designacoes_inss_2023_2026.csv)** — 503.972 linhas, 19 colunas padronizadas, pronto para uso (Excel, Power BI, Python, etc.), sem necessidade de rodar nenhum código.
+Devido ao tamanho do arquivo final, o dataset completo não é disponibilizado diretamente no repositório. Para facilitar a visualização da estrutura dos dados, uma versão de amostra está disponível:
 
-## Sobre os dados
+📄 `pgd_designacoes_inss_2023_2026_sample.csv`
+
+A amostra permite consultar o formato e as colunas do dataset sem a necessidade de armazenar o arquivo completo no repositório.
 
 Os arquivos de origem não seguem um schema único: ao longo dos 28 meses, o sistema exportador passou por pelo menos três formatos diferentes, com nomes de coluna inconsistentes (`Matricula` / `Matrícula` / `siape2`), colunas que aparecem e desaparecem entre meses, formatos de data distintos e um arquivo (out/2023) com estrutura completamente diferente dos demais.
 
-Mais detalhes sobre o dataset bruto estão descritos em [`descricao_dataset_kaggle.md`](./descricao_dataset_kaggle.md).
+Mais detalhes sobre o dataset bruto estão descritos em [Kaggle](https://kaggle.com/datasets/4894808d3f21243e3185b33f3d31f0881fc39ac74124b015dd2c2f2d017bac80).
 
 ## O que o pipeline faz
 
@@ -41,14 +45,14 @@ Mais detalhes sobre o dataset bruto estão descritos em [`descricao_dataset_kagg
 
 Cada coluna com valores ausentes foi investigada individualmente antes de qualquer decisão. Resumo das principais:
 
-| Situação encontrada                                                                                                               | Decisão                                                                                                                                                                                                               | Confiança                                                                             |
-| ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `regime` (2023) e `Modalidade` (demais anos) são o mesmo campo renomeado                                                       | Unificados, com tradução de valores (`Integral`→`Remoto`, `Parcial`→`Semipresencial`)                                                                                                                      | 97,9% (validado cruzando meses)                                                        |
-| `sigla_programa` e `programa` têm relação bijetiva quando ambos presentes                                                    | Preenchimento cruzado (`fillna` bidirecional)                                                                                                                                                                        | 100% (determinístico)                                                                 |
-| `id_designacao` ausente em 2 meses específicos por falha estrutural do arquivo                                                   | Reconstruído via "ponte" entre meses vizinhos, só quando os dois lados concordam                                                                                                                                     | ~95-97%, com limitação residual documentada (~0,3%)                                  |
-| `flag_pgd` correlaciona com `programa`, mas só para 13 dos 29 programas identificados                                          | Preenchido **apenas** para os 13 programas com correlação comprovada nos dados; os 16 restantes (confirmados por fonte externa apenas quanto ao nome, não quanto ao enquadramento no PGD) permanecem `NaN` | Decisão conservadora — sem extrapolação não verificável                          |
-| `Tipo de Entrega` não tem correlação forte o bastante com nenhuma combinação de colunas disponível para os registros vazios | Não preenchido                                                                                                                                                                                                        | Testado (~90% em geral, mas 0% de cobertura aplicável aos registros realmente vazios) |
-| `dt_alteracao_designacao`, `motivo_desligamento`, `id_lotacao`                                                                | Mantidos com`NaN` — ausência estrutural genuína, sem fonte alternativa segura                                                                                                                                     | —                                                                                     |
+| Situação encontrada                                                                                                               | Decisão                                                                                                                                                                                                             | Confiança                                                                             |
+| ----------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `regime` (2023) e `Modalidade` (demais anos) são o mesmo campo renomeado                                                       | Unificados, com tradução de valores (`Integral`→`Remoto`, `Parcial`→`Semipresencial`)                                                                                                                    | 97,9% (validado cruzando meses)                                                        |
+| `sigla_programa` e `programa` têm relação bijetiva quando ambos presentes                                                    | Preenchimento cruzado (`fillna` bidirecional)                                                                                                                                                                      | 100% (determinístico)                                                                 |
+| `id_designacao` ausente em 2 meses específicos por falha estrutural do arquivo                                                   | Reconstruído via "ponte" entre meses vizinhos, só quando os dois lados concordam                                                                                                                                   | ~95-97%, com limitação residual documentada (~0,3%)                                  |
+| `flag_pgd` correlaciona com `programa`, mas só para 13 dos 29 programas identificados                                          | Preenchido**apenas** para os 13 programas com correlação comprovada nos dados; os 16 restantes (confirmados por fonte externa apenas quanto ao nome, não quanto ao enquadramento no PGD) permanecem `NaN` | Decisão conservadora — sem extrapolação não verificável                          |
+| `Tipo de Entrega` não tem correlação forte o bastante com nenhuma combinação de colunas disponível para os registros vazios | Não preenchido                                                                                                                                                                                                      | Testado (~90% em geral, mas 0% de cobertura aplicável aos registros realmente vazios) |
+| `dt_alteracao_designacao`, `motivo_desligamento`, `id_lotacao`                                                                | Mantidos com`NaN` — ausência estrutural genuína, sem fonte alternativa segura                                                                                                                                   | —                                                                                     |
 
 A lógica geral seguida em todo o pipeline: **nenhum valor foi inferido sem antes ser testado contra uma amostra real de dados**, e nenhuma inferência foi aplicada quando a confiança medida ficou abaixo de um limiar considerado seguro (~90-95%, variando por criticidade do campo).
 
@@ -63,7 +67,6 @@ A lógica geral seguida em todo o pipeline: **nenhum valor foi inferido sem ante
 └── data/                                   # não versionado — só necessário para reproduzir o ETL
     └── *.csv
 ```
-
 
 ## Como reproduzir o pipeline (opcional)
 
@@ -104,7 +107,7 @@ O CSV final já está disponível no repositório. Os passos abaixo só são nec
    pgd_designacoes_inss_2023_2026.csv
    ```
 
-O arquivo completo tratado está disponível na pasta `processed/`do dataset no Kaggle. No GitHub, é disponibilizada apenas uma  **amostra (** `sample` **) do arquivo final** , evitando o versionamento de um arquivo grande no repositório.
+O arquivo completo tratado está disponível na pasta `processed/`do dataset no [Kaggle](https://kaggle.com/datasets/4894808d3f21243e3185b33f3d31f0881fc39ac74124b015dd2c2f2d017bac80). No GitHub, é disponibilizada apenas uma  **amostra (** `sample` **) do arquivo final** , evitando o versionamento de um arquivo grande no repositório.
 
 ## Tecnologias
 
