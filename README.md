@@ -73,7 +73,7 @@ A lógica geral seguida em todo o pipeline: **nenhum valor foi inferido sem ante
 O CSV final já está disponível no repositório. Os passos abaixo só são necessários caso você queira rodar o processo de tratamento do zero, a partir dos dados brutos.
 
 1. Baixe o dataset com os 28 arquivos CSV originais no [Kaggle](https://kaggle.com/datasets/4894808d3f21243e3185b33f3d31f0881fc39ac74124b015dd2c2f2d017bac80).
-2. Após baixar o dataset, **extraia o arquivo ZIP em um local de sua preferência**. Em seguida, **arraste ou copie os 28 arquivos `.csv` extraídos para dentro da pasta `data/` do projeto**.
+2. Após baixar o dataset,  **extraia o arquivo ZIP em um local de sua preferência** . Em seguida, crie uma pasta chamada **`data`** no diretório do projeto e  **copie ou mova os 28 arquivos `.csv` extraídos para dentro dessa pasta `data`** .
 
    **Não coloque o arquivo `.zip` dentro da pasta `data/` e não é necessário extrair o ZIP diretamente dentro dela.** O script espera encontrar os arquivos CSV diretamente nesse diretório.
 
