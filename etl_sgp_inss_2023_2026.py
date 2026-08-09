@@ -264,7 +264,7 @@ programas_com_flag_pgd_conhecida = [
 
 def inferir_flag_pgd(programa):
     if pd.isna(programa) or programa not in programas_com_flag_pgd_conhecida:
-        return None  # inclui os 16 não-verificados -> fica NaN, sem extrapolar
+        return None
     return 'Não' if programa in programas_nao_pgd_confirmados else 'Sim'
 
 sugestao = df_total['programa'].apply(inferir_flag_pgd)
@@ -272,3 +272,9 @@ df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 #%%
 df_total.to_csv("pgd_designacoes_inss_2023_2026.csv", sep=";", index=False, na_rep="-")
 # %%
+df_total.sample(5000, random_state=42).to_csv(
+    "pgd_designacoes_inss_2023_2026_sample.csv",
+    sep=";",
+    index=False,
+    na_rep="-"
+)
