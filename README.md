@@ -6,10 +6,6 @@ Projeto desenvolvido como peça de portfólio, com foco em demonstrar habilidade
 
 ## Contexto
 
-Projeto desenvolvido como parte de portfólio de análise de dados, com tema alinhado à área de atuação da Dataprev (processamento de dados de proteção social).
-
-## Contexto
-
 Este projeto foi desenvolvido como parte do meu portfólio de análise de dados, inspirado pelo processo seletivo de estágio atualmente promovido pela Dataprev. Durante minha preparação para a seleção, passei a pesquisar mais profundamente sobre a empresa, sua atuação estratégica no processamento e na gestão de dados relacionados à proteção social, previdência, benefícios e políticas públicas.
 
 O contato com esse contexto despertou meu interesse pela Dataprev e pela aplicação da análise de dados em problemas de grande impacto social. A partir disso, decidi desenvolver um projeto tematicamente alinhado às atividades da empresa, utilizando técnicas de tratamento, exploração e visualização de dados para simular um cenário compatível com o tipo de informação que organizações públicas e de tecnologia para o setor governamental lidam diariamente.
