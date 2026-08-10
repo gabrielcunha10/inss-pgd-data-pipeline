@@ -272,8 +272,3 @@ df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 #%%
 df_total.to_csv("pgd_designacoes_inss_2023_2026.csv", sep=";", index=False)
 # %%
-df_total.sample(5000, random_state=42).to_csv(
-    "pgd_designacoes_inss_2023_2026_sample.csv",
-    sep=";",
-    index=False
-)
