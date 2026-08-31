@@ -2,12 +2,17 @@
 import pandas as pd
 import os
 import numpy as np
+from pathlib import Path
 #%%
-files = os.listdir("data")
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+DATA_DIR = PROJECT_DIR / "data"
+OUTPUT_FILE = PROJECT_DIR / "pgd_designacoes_inss_2023_2026.csv"
+
+files = os.listdir(DATA_DIR)
 colunas = set()
 #%%
 for i in files:
-    df = pd.read_csv(f"data/{i}", sep=";", dtype="str")
+    df = pd.read_csv(DATA_DIR / i, sep=";", dtype="str")
     colunas.update(df.columns)
 # %%
 colunas
@@ -53,14 +58,14 @@ rename_valores_regime = {"Integral" : "Remoto",
 #%%
 ## Colunas para dropar: documento, registro_data, Motivo Desligamento
 drop_colunas = ["documento", "registro_data", "codigo_regime_2023", "flag_produto"]
-df_regime = pd.read_csv("data/D.SRF.FQS.005.ACSINSS.PGD.202310.csv", sep=";")
+df_regime = pd.read_csv(DATA_DIR / "D.SRF.FQS.005.ACSINSS.PGD.202310.csv", sep=";")
 df_regime
 colunas.clear()
 #%%
 dfs = []
 
 for i in files:
-    df = pd.read_csv(f"data/{i}", sep=";", dtype="str")
+    df = pd.read_csv(DATA_DIR / i, sep=";", dtype="str")
     df = df.rename(columns=rename_map)
     df = df.drop(columns=[c for c in drop_colunas if c in df.columns])
     data = i.split(sep=".")[-2]
@@ -270,5 +275,5 @@ def inferir_flag_pgd(programa):
 sugestao = df_total['programa'].apply(inferir_flag_pgd)
 df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 #%%
-df_total.to_csv("pgd_designacoes_inss_2023_2026.csv", sep=";", index=False)
+df_total.to_csv(OUTPUT_FILE, sep=";", index=False)
 # %%

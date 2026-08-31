@@ -20,7 +20,7 @@ O dataset final, após as etapas de limpeza, padronização e consolidação, co
 
 Devido ao tamanho do arquivo final, o dataset completo não é disponibilizado diretamente no repositório. Para facilitar a visualização da estrutura dos dados, uma versão de amostra está disponível:
 
-📄 `pgd_designacoes_inss_2023_2026_sample.csv`
+📄 `tratamento/pgd_designacoes_inss_2023_2026_sample.csv`
 
 A amostra permite consultar o formato e as colunas do dataset sem a necessidade de armazenar o arquivo completo no repositório.
 
@@ -54,22 +54,21 @@ A lógica geral seguida em todo o pipeline: **nenhum valor foi inferido sem ante
 
 ## Estrutura do repositório
 
+Os artefatos de tratamento ficam em `tratamento/`: o script de ETL e o CSV de amostra. Os dados brutos permanecem em `data/`, na raiz do projeto. O script calcula esses caminhos a partir de sua própria localização, portanto pode ser executado da raiz do repositório sem depender do diretório atual.
+
 ```
-├── pgd_designacoes_inss_2023_2026_sample.csv   # dados de amostra para análise e demonstração
-├── etl_sgp_inss_2023_2026.py                    # script de ETL completo para tratamento e preparação dos dados
-├── README.md                                    # documentação principal do projeto
-└── dashboard/
-   └── Dash_INSS_Acompanhamento_PGD.pbix         # arquivo do dashboard desenvolvido no Power BI
-   └── dashboard_README.md                        # instruções para download, configuração e execução do dashboard
-   └── insights_README.md                         # documentação dos principais insights obtidos a partir do dashboard
-   └── dashboard.png                              # imagem de visualização do dashboard
-└── data/                                         # dados brutos utilizados na reprodução do ETL (não versionados)
-    └── *.csv                                    # arquivos CSV originais utilizados no processo de ETL
+├── README.md
+├── data/                                         # dados brutos para reprodução do ETL (não versionados)
+│   └── *.csv
+├── tratamento/
+│   ├── etl_sgp_inss_2023_2026.py                # script de ETL
+│   └── pgd_designacoes_inss_2023_2026_sample.csv # amostra do resultado final
+└── dashboard/                                    # arquivos e documentação do dashboard Power BI
 ```
 
 ## Como reproduzir o pipeline (opcional)
 
-O CSV final já está disponível no repositório. Os passos abaixo só são necessários caso você queira rodar o processo de tratamento do zero, a partir dos dados brutos.
+O repositório disponibiliza apenas uma amostra do CSV final em `tratamento/pgd_designacoes_inss_2023_2026_sample.csv`. Os passos abaixo só são necessários caso você queira rodar o processo de tratamento do zero, a partir dos dados brutos.
 
 1. Baixe o dataset com os 28 arquivos CSV originais no [Kaggle](https://kaggle.com/datasets/4894808d3f21243e3185b33f3d31f0881fc39ac74124b015dd2c2f2d017bac80).
 2. Após baixar o dataset,  **extraia o arquivo ZIP em um local de sua preferência** . Em seguida, crie uma pasta chamada **`data`** no diretório do projeto e  **copie ou mova os 28 arquivos `.csv` extraídos para dentro dessa pasta `data`** .
@@ -80,12 +79,10 @@ O CSV final já está disponível no repositório. Os passos abaixo só são nec
 
    ```text
    projeto/
-   ├── etl_sgp_inss_2023_2026.py
+   ├── tratamento/
+   │   └── etl_sgp_inss_2023_2026.py
    └── data/
-       ├── D_SRF_FQS_005_ACSINSS_PGD_202310.csv
-       ├── D_SRF_FQS_005_PGD_ACSINSS_202311.csv
-       ├── ...
-       └── (demais arquivos CSV)
+       └── *.csv
    ```
 3. As dependências (`pandas`, `numpy`) já vêm incluídas na instalação padrão do [Anaconda](https://www.anaconda.com/download). Caso esteja usando outro ambiente Python, instale com:
 
@@ -97,7 +94,7 @@ O CSV final já está disponível no repositório. Os passos abaixo só são nec
    * **Diretamente pelo terminal:**
 
      ```bash
-     python etl_sgp_inss_2023_2026.py
+     python tratamento/etl_sgp_inss_2023_2026.py
      ```
    * **Célula por célula (recomendado):** o script foi desenvolvido com marcações de célula (`#%%`), compatíveis com o Spyder (incluído no Anaconda) e com a extensão Python do VS Code. Abra o arquivo em uma dessas ferramentas e execute as células individualmente para acompanhar cada etapa do tratamento.
 5. Ao final da execução, o arquivo tratado será gerado como:
