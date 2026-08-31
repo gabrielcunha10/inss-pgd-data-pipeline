@@ -55,13 +55,16 @@ A lógica geral seguida em todo o pipeline: **nenhum valor foi inferido sem ante
 ## Estrutura do repositório
 
 ```
-.
-├── pgd_designacoes_inss_2023_2026.csv   # resultado final (pronto para uso)
-├── etl_sgp_inss_2023_2026.py             # script de ETL completo
-├── descricao_dataset_kaggle.md            # descrição do dataset bruto (28 CSVs)
-├── README.md
-└── data/                                   # não versionado — só necessário para reproduzir o ETL
-    └── *.csv
+├── pgd_designacoes_inss_2023_2026_sample.csv   # dados de amostra para análise e demonstração
+├── etl_sgp_inss_2023_2026.py                    # script de ETL completo para tratamento e preparação dos dados
+├── README.md                                    # documentação principal do projeto
+└── dashboard/
+   └── Dash_INSS_Acompanhamento_PGD.pbix         # arquivo do dashboard desenvolvido no Power BI
+   └── dashboard_README.md                        # instruções para download, configuração e execução do dashboard
+   └── insights_README.md                         # documentação dos principais insights obtidos a partir do dashboard
+   └── dashboard.png                              # imagem de visualização do dashboard
+└── data/                                         # dados brutos utilizados na reprodução do ETL (não versionados)
+    └── *.csv                                    # arquivos CSV originais utilizados no processo de ETL
 ```
 
 ## Como reproduzir o pipeline (opcional)
