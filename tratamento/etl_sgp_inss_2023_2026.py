@@ -1,9 +1,14 @@
 #%%
 import pandas as pd
 import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
 import numpy as np
 import re
 from pathlib import Path
+#%%
+load_dotenv()
+db_url = os.getenv("DATABASE_URL")
 #%%
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "data"
@@ -64,7 +69,6 @@ rename_valores_regime = {"Integral" : "Remoto",
                          "Presencial": "Presencial"}
 
 #%%
-## Colunas para dropar: documento, registro_data, Motivo Desligamento
 drop_colunas = ["documento", "registro_data", "codigo_regime_2023", "flag_produto"]
 colunas.clear()
 #%%
@@ -285,9 +289,67 @@ df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 #%%
 df_sample = df_total.sample(n=5000, random_state=42)
 #%%
-# Salva a amostra em UTF-8 com separador ';'
 df_sample.to_csv(
     PROJECT_DIR / "tratamento" / "pgd_designacoes_inss_2023_2026_sample.csv", 
     index=False, 
     sep=";"
 )
+# %%
+from sqlalchemy.types import Text
+
+df_total.columns = (
+    df_total.columns.str.strip()
+    .str.lower()
+    .str.replace(' ', '_')
+    .str.replace('[^a-z0-9_]', '', regex=True)
+)
+
+colunas_data = [
+    'dt_inicio_designacao',
+    'dt_fim_designacao',
+    'dt_criacao_designacao',
+    'dt_alteracao_designacao',
+]
+
+for col in colunas_data:
+  if col in df_total.columns:
+    df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
+
+if 'competencia' in df_total.columns:
+  df_total['competencia'] = df_total['competencia'].astype(str)
+
+for col in df_total.select_dtypes(include=['object', 'string']).columns:
+  df_total[col] = df_total[col].astype(str)
+  df_total[col] = df_total[col].replace({
+      'nan': None,
+      'NaN': None,
+      'None': None,
+      'null': None,
+      'NULL': None,
+      'Null': None,
+      '': None,
+      '<NA>': None,
+  })
+#%%
+if not db_url:
+  raise ValueError(
+      "A variável DATABASE_URL não foi encontrada no arquivo .env!"
+  )
+
+# 5. Conexão e Envio para o Neon Tech
+engine = create_engine(db_url)
+
+try:
+  df_total.to_sql(
+      'tb_pgd_inss',
+      con=engine,
+      if_exists='replace',
+      index=False,
+      dtype={col: Text for col in df_total.columns},
+  )
+  print(
+      f"Sucesso: {len(df_total)} linhas enviadas para o PostgreSQL no Neon"
+      " Tech!"
+  )
+except Exception as e:
+  print(f"Erro ao enviar dados para o banco: {e}")
