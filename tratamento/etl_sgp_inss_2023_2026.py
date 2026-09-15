@@ -2,6 +2,7 @@
 import pandas as pd
 import os
 import numpy as np
+import re
 from pathlib import Path
 #%%
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -10,9 +11,16 @@ OUTPUT_FILE = PROJECT_DIR / "pgd_designacoes_inss_2023_2026.csv"
 
 files = os.listdir(DATA_DIR)
 colunas = set()
+
+def ler_csv(caminho):
+    try:
+        return pd.read_csv(caminho, sep=";", dtype="str", encoding="utf-8")
+    except UnicodeDecodeError:
+        return pd.read_csv(caminho, sep=";", dtype="str", encoding="latin1")
+
 #%%
 for i in files:
-    df = pd.read_csv(DATA_DIR / i, sep=";", dtype="str")
+    df = ler_csv(DATA_DIR / i)
     colunas.update(df.columns)
 # %%
 colunas
@@ -58,17 +66,16 @@ rename_valores_regime = {"Integral" : "Remoto",
 #%%
 ## Colunas para dropar: documento, registro_data, Motivo Desligamento
 drop_colunas = ["documento", "registro_data", "codigo_regime_2023", "flag_produto"]
-df_regime = pd.read_csv(DATA_DIR / "D.SRF.FQS.005.ACSINSS.PGD.202310.csv", sep=";")
-df_regime
 colunas.clear()
 #%%
 dfs = []
 
 for i in files:
-    df = pd.read_csv(DATA_DIR / i, sep=";", dtype="str")
+    df = ler_csv(DATA_DIR / i)
     df = df.rename(columns=rename_map)
     df = df.drop(columns=[c for c in drop_colunas if c in df.columns])
-    data = i.split(sep=".")[-2]
+    match = re.search(r'\d{6}', i)
+    data = match.group() if match else i
     df["competencia"] = data
     if "modalidade" in df.columns:
         df["modalidade"] = df["modalidade"].replace(rename_valores_regime)
@@ -82,7 +89,8 @@ df_total.isna().sum()
 #%%
 lista_datas = []
 for i in files:
-    data = i.split(sep=".")[-2]
+    match = re.search(r'\d{6}', i)
+    data = match.group() if match else i
     lista_datas.append(data)
 
 #%%
@@ -275,5 +283,11 @@ def inferir_flag_pgd(programa):
 sugestao = df_total['programa'].apply(inferir_flag_pgd)
 df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 #%%
-df_total.to_csv(OUTPUT_FILE, sep=";", index=False)
-# %%
+df_sample = df_total.sample(n=5000, random_state=42)
+#%%
+# Salva a amostra em UTF-8 com separador ';'
+df_sample.to_csv(
+    PROJECT_DIR / "tratamento" / "pgd_designacoes_inss_2023_2026_sample.csv", 
+    index=False, 
+    sep=";"
+)
