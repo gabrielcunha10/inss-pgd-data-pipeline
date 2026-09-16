@@ -28,10 +28,10 @@ jobs:
 
       - name: Executar Download dos Dados SGP
         run: |
-          python download_sgp.py
+          python tratamento/download_sgp.py
 
       - name: Executar ETL e Carga no Neon DB
         env:
           DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: |
-          python etl_sgp_inss.py
+          python tratamento/etl_sgp_inss.py
