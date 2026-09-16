@@ -3,9 +3,11 @@ import pandas as pd
 import os
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
+from sqlalchemy.types import BigInteger, Date, DateTime, Text
 import numpy as np
 import re
 from pathlib import Path
+
 #%%
 load_dotenv()
 db_url = os.getenv("DATABASE_URL")
@@ -295,14 +297,17 @@ df_sample.to_csv(
     sep=";"
 )
 # %%
-from sqlalchemy.types import Text
-
 df_total.columns = (
     df_total.columns.str.strip()
     .str.lower()
     .str.replace(' ', '_')
     .str.replace('[^a-z0-9_]', '', regex=True)
 )
+
+if 'competencia' in df_total.columns:
+  df_total['competencia'] = pd.to_datetime(
+      df_total['competencia'].astype(str) + '-01', errors='coerce'
+  )
 
 colunas_data = [
     'dt_inicio_designacao',
@@ -315,12 +320,24 @@ for col in colunas_data:
   if col in df_total.columns:
     df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
 
-if 'competencia' in df_total.columns:
-  df_total['competencia'] = df_total['competencia'].astype(str)
+colunas_id = ['id_matricula', 'id_designacao']
 
-for col in df_total.select_dtypes(include=['object', 'string']).columns:
-  df_total[col] = df_total[col].astype(str)
-  df_total[col] = df_total[col].replace({
+for col in colunas_id:
+  if col in df_total.columns:
+    df_total[col] = pd.to_numeric(df_total[col], errors='coerce').astype(
+        'Int64'
+    )
+
+colunas_texto = [
+    col
+    for col in df_total.select_dtypes(
+        include=['object', 'string']
+    ).columns.tolist()
+    if col not in ['competencia']
+]
+
+for col in colunas_texto:
+  df_total[col] = df_total[col].astype(str).replace({
       'nan': None,
       'NaN': None,
       'None': None,
@@ -329,14 +346,20 @@ for col in df_total.select_dtypes(include=['object', 'string']).columns:
       'Null': None,
       '': None,
       '<NA>': None,
+      'NaT': None,
   })
-#%%
-if not db_url:
-  raise ValueError(
-      "A variável DATABASE_URL não foi encontrada no arquivo .env!"
-  )
 
-# 5. Conexão e Envio para o Neon Tech
+dtype_mapping = {}
+for col in df_total.columns:
+  if col == 'competencia':
+    dtype_mapping[col] = Date()
+  elif col in colunas_data:
+    dtype_mapping[col] = DateTime()
+  elif col in colunas_id:
+    dtype_mapping[col] = BigInteger()
+  else:
+    dtype_mapping[col] = Text()
+
 engine = create_engine(db_url)
 
 try:
@@ -345,11 +368,10 @@ try:
       con=engine,
       if_exists='replace',
       index=False,
-      dtype={col: Text for col in df_total.columns},
+      dtype=dtype_mapping,
   )
   print(
-      f"Sucesso: {len(df_total)} linhas enviadas para o PostgreSQL no Neon"
-      " Tech!"
-  )
+    f"[SUCCESS] ETL concluído: {len(df_total)} linhas enviadas para a tabela"
+    " 'tb_pgd_inss' no Neon Tech.")
 except Exception as e:
-  print(f"Erro ao enviar dados para o banco: {e}")
+  print(f"Erro ao enviar dados: {e}")
