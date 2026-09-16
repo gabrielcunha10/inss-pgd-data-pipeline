@@ -4,9 +4,11 @@ on:
   push:
     branches: [ "main" ]
   schedule:
-    # Agendado para rodar diariamente às 03:00 UTC (00:00 Horário de Brasília)
-    - cron: "0 3 * * *"
-  workflow_dispatch: # Permite acionar manualmente no GitHub
+    - cron: "0 9 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
   build-and-run:
@@ -35,3 +37,10 @@ jobs:
           DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: |
           python tratamento/etl_sgp_inss.py
+
+      - name: Commitar e Subir Alterações no Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): atualiza amostra e artefatos [skip ci]" && git push)
