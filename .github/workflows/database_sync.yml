@@ -25,7 +25,7 @@ jobs:
 
       - name: Executar ETL e Atualizar Neon DB
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: |
           python tratamento/download_sgp.py
           python tratamento/etl_sgp_inss.py
