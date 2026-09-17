@@ -71,20 +71,65 @@ Em contraste, as unidades finalísticas como a **CEAB1** e as agências de atend
 
 ---
 
-# 👤 Insight 3 — Frequência e Distribuição por Servidor (Conformidade LGPD)
+# 👤 Insight 3 — Detalhamento por Servidor: Volume Absoluto vs. Frequência Relativa
 
-Para garantir plena conformidade com a **Lei Geral de Proteção de Dados (LGPD)**, os identificadores nominais foram anonimizados no modelo semântico através de códigos funcionais mascarados (`USR-xxxxx`).
+A tabela central do dashboard permite investigar a distribuição individual da carga de trabalho entre os servidores sob duas perspectivas complementares: **ordenação por volume absoluto (Total de Designações)** e **ordenação por intensidade (Designações/Mês)**.
 
-### 1. Ausência de Concentração Extrema
-A tabela de ranking individual demonstra que as designações estão pulverizadas entre a força de trabalho ativa (mais de 22,1 mil servidores). A maioria esmagadora dos vínculos possui entre 1 e poucas designações acumuladas ao longo dos meses.
+Ambas as análises garantem estrita conformidade com a **Lei Geral de Proteção de Dados (LGPD)** através da anonimização dos servidores por identificador numérico funcional.
 
-### 2. Recorrência Mensal e Janela Amostral
-Ao analisar a taxa de **Designações por Mês** em conjunto com os **Meses Observados**:
-- Servidores como `USR-10078` e `USR-10175` apresentam taxa média de **1,00 designação/mês**, refletindo presença contínua e estável em cada competência monitorada.
-- Servidores como `USR-10066`, `USR-10310`, `USR-10325` e `USR-10342` registram taxa de **0,10 designação/mês**, indicando atuações pontuais ou vínculos vinculados a projetos específicos.
-- Servidores com **0,06 designação/mês** (ex: `USR-10108`, `USR-10159`, `USR-10198`, `USR-10282`) representam ingressos recentes ou períodos curtos de observação.
+---
 
-Essa distribuição confirma que a carga operacional não está centralizada em poucos colaboradores, havendo distribuição ampla e compatível com a estrutura de atendimento do INSS.
+### Visão 1: Ordenação por Total de Designações (Consistência e Longo Prazo)
+
+Ao ordenar a tabela pelo **Total de Designações** de forma decrescente, identificamos os profissionais com maior volume acumulado de planos de trabalho ao longo de toda a série histórica:
+
+![Ranking por Total de Designações](imagens/tabela_total_designacoes.png)
+
+| Servidor (Código) | Total Designações | Designações / Mês | Meses Observados | Perfil de Atuação |
+| :---: | :---: | :---: | :---: | :--- |
+| **49732** | **15** | 0,45 | 33 | **Líder histórico** em volume acumulado; atuação quase ininterrupta. |
+| **10586** | **13** | 0,38 | 34 | Presença integral em 100% da série histórica (34 meses). |
+| **26237** | **13** | 0,38 | 34 | Regularidade absoluta com renovações trimestrais. |
+| **40003** | **13** | 0,38 | 34 | Padrão estável de pactuação de planos ao longo de quase 3 anos. |
+| **22603** | **12** | 0,35 | 34 | Grupo homogêneo com presença plena em todas as competências. |
+| **23589** | **12** | 0,35 | 34 | Renovação contínua a cada ~2,8 meses. |
+| **25581** | **12** | 0,36 | 33 | Elevada regularidade operacional. |
+| **30117 / 37477 / 40048 / 54624 / 59476** | **12** | 0,35 | 34 | Núcleo de alta estabilidade institucional no PGD. |
+
+#### 📌 Principais Achados desta Visão:
+1. **Teto Histórico de 15 Designações:** Em quase 3 anos de programa (34 competências mensais) e mais de 45 mil registros consolidados, o servidor com maior volume acumulado atingiu apenas **15 designações**.
+2. **Ciclo Médio de Renovação Trimestral:** Os servidores com presença plena (34 meses observados) apresentam taxas entre **0,35 e 0,38 designações/mês**. Isso demonstra que, na prática, um mesmo servidor recebe uma nova pactuação formal em média a cada **2,6 a 2,8 meses**, alinhando-se aos ciclos regulamentares de metas do INSS.
+3. **Ausência de Centralização ou Sobrecarga:** Não há concentração extrema de demandas em poucos indivíduos. A força de trabalho é amplamente pulverizada, garantindo equilíbrio operacional.
+
+---
+
+### Visão 2: Ordenação por Designações/Mês (Intensidade vs. Viés da Janela Amostral)
+
+Ao inverter a ordenação para analisar a taxa de **Designações/Mês**, revela-se um fenômeno estatístico crucial para a correta interpretação da produtividade:
+
+![Ranking por Frequência Mensal](imagens/tabela_designacoes_mes.png)
+
+| Servidor (Código) | Total Designações | Designações / Mês | Meses Observados | Diagnóstico Analítico |
+| :---: | :---: | :---: | :---: | :--- |
+| **36060** | 2 | **2,00** | **1** | Maior taxa matemática da base, gerada por janela amostral mínima de 1 mês. |
+| **26928** | 3 | **1,50** | **2** | 3 designações acumuladas em apenas 2 meses de acompanhamento. |
+| **30306** | 3 | **1,50** | **2** | Atuação pontual concentrada em curto período. |
+| **40315** | 3 | **1,50** | **2** | Mesma dinâmica de transição rápida de planos. |
+| **10078 / 10175 / 10279 / 10475** | 1 | **1,00** | **1** | Vínculos pontuais observados em um único mês de competência. |
+| **10741 / 10899 / 11051 / 11224** | 1 | **1,00** | **1** | Entradas recentes ou participações esporádicas no sistema. |
+
+#### ⚠️ O Risco do Viés da Janela Curta (Insight Metodológico):
+- **A Ilusão da Média Isolada:** Um servidor com apenas 1 mês observado e 2 designações (`36060`) registra uma taxa de **2,00 designações/mês**, que é quase **5 vezes superior** à taxa do líder histórico de longo prazo (`49732`, com 0,45).
+- **Recomendação de Gestão:** A taxa mensal isolada **não reflete necessariamente produtividade superior**. Para avaliações de desempenho ou planejamento de força de trabalho, é imprescindível cruzar a taxa com a longevidade (**Meses Observados $\ge 6$ ou $\ge 12$ meses**), separando demandas emergenciais e transitórias da dedicação contínua e perene ao PGD.
+
+---
+
+### 📊 Totais Consolidados da Tabela
+
+O rodapé do visual sintetiza a dimensão da massa de dados filtrada no painel:
+- **Total de Designações Acumuladas:** **45.395** registros;
+- **Soma das Taxas de Frequência Mensal:** **1.335,15** designações/mês;
+- **Série Temporal Coberta:** **34 meses observados** (Outubro/2023 a Julho/2026).
 
 ---
 

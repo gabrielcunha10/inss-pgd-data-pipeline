@@ -113,7 +113,9 @@ flowchart TD
 │   └── imagens/                                   # Diretório com os recursos visuais e diagramas
 │       ├── dashboard.png                          # Prévia visual atualizada do dashboard
 │       ├── arquitetura.svg                        # Diagrama vetorial da arquitetura da solução
-│       └── evolucao_status.svg                    # Gráfico vetorial da evolução temporal por status
+│       ├── evolucao_status.svg                    # Gráfico vetorial da evolução temporal por status
+│       ├── tabela_total_designacoes.png           # Visão da tabela ordenada por volume de designações
+│       └── tabela_designacoes_mes.png             # Visão da tabela ordenada por frequência mensal
 ├── data/                                          # Armazenamento local dos CSVs brutos (não versionados)
 │   └── pgd_inss_*.csv
 ├── tratamento/
@@ -249,6 +251,9 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 O modelo analítico foi desenvolvido no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
 
 ![Preview do Dashboard](dashboard/imagens/dashboard.png)
+
+> [!TIP]
+> **Formas de Acesso:** O relatório pode ser aberto e explorado diretamente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon), ou manualmente via dataset do Kaggle. A publicação online pública no Power BI Service está em fase final de homologação (previsão até **22/09/2026** devido à liberação de licença na conta estudantil Microsoft). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
 
 ### Principais Indicadores Monitorados:
 - **45,40 Mil Designações:** Volume total acumulado de registros de designação no histórico monitorado.
