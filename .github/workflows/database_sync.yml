@@ -1,21 +1,16 @@
-name: Executar Carga do Banco de Dados Neon
+name: Sincronização do Banco SGP-INSS
 
 on:
-  push:
-    branches: [ "main" ]
   schedule:
     - cron: "0 9 1 * *"
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 jobs:
-  build-and-run:
+  sync-and-commit:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar Código do Repositório
+      - name: Checkout do Repositório
         uses: actions/checkout@v4
 
       - name: Configurar Python
@@ -28,19 +23,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Executar Download dos Dados SGP
-        run: |
-          python tratamento/download_sgp.py
-
-      - name: Executar ETL e Carga no Neon DB
+      - name: Executar ETL e Atualizar Neon DB
         env:
-          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          python tratamento/etl_sgp_inss.py
+          python download_sgp.py
+          python etl_sgp_inss.py
 
       - name: Commitar e Subir Alterações no Git
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
           git add .
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(data): atualiza amostra e artefatos [skip ci]" && git push)
+          
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Alterações detectadas. Criando commit..."
+            git commit -m "chore(data): atualiza amostra e artefatos [skip ci]"
+            git push
+          else
+            echo "Nenhuma alteração nos arquivos. Pulando commit."
+          fi
+
+      - name: Disparar Atualização do Power BI via Power Automate
+        env:
+          POWER_AUTOMATE_WEBHOOK_URL: ${{ secrets.POWER_AUTOMATE_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" "$POWER_AUTOMATE_WEBHOOK_URL"
