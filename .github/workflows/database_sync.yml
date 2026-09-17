@@ -27,8 +27,8 @@ jobs:
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: |
-          python download_sgp.py
-          python etl_sgp_inss.py
+          python tratamento/download_sgp.py
+          python tratamento/etl_sgp_inss.py
 
       - name: Commitar e Subir Alterações no Git
         run: |
