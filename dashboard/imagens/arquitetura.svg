@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%" style="background:#0b0f19; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="100%" stop-color="#172554"/>
+    </linearGradient>
+    <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e7490"/>
+      <stop offset="100%" stop-color="#155e75"/>
+    </linearGradient>
+    <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#581c87"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <linearGradient id="grad-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#065f46"/>
+      <stop offset="100%" stop-color="#022c22"/>
+    </linearGradient>
+    <linearGradient id="grad-amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#854d0e"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+
+    <!-- Filters for soft shadow -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    </filter>
+
+    <!-- Arrow Marker -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24"/>
+    </marker>
+  </defs>
+
+  <!-- Background Grid Pattern -->
+  <g opacity="0.05">
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="1"/>
+    </pattern>
+    <rect width="100%" height="100%" fill="url(#grid)" />
+  </g>
+
+  <!-- Title Header -->
+  <text x="550" y="46" text-anchor="middle" font-size="22" font-weight="700" fill="url(#grad-header)" letter-spacing="1">ARQUITETURA DO PIPELINE DE DADOS — PGD INSS</text>
+  <text x="550" y="70" text-anchor="middle" font-size="13" font-weight="400" fill="#94a3b8">Fluxo Contínuo de Ingestão, Engenharia de Dados, Nuvem e Analytics</text>
+
+  <!-- ================= TOP LAYER: INGESTÃO E ETL ================= -->
+
+  <!-- Card 1: API INSS -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="110" width="210" height="150" rx="12" fill="url(#grad-card)" stroke="#38bdf8" stroke-width="1.5"/>
+    <rect x="50" y="110" width="210" height="32" rx="12" fill="#0284c7" fill-opacity="0.3"/>
+    <circle cx="72" cy="126" r="6" fill="#38bdf8"/>
+    <text x="86" y="130" font-size="12" font-weight="700" fill="#e0f2fe">1. FONTE PÚBLICA</text>
+    <text x="155" y="170" text-anchor="middle" font-size="15" font-weight="600" fill="#ffffff">Portal Dados Abertos</text>
+    <text x="155" y="190" text-anchor="middle" font-size="12" fill="#94a3b8">API CKAN (INSS / Gov.br)</text>
+    <rect x="75" y="210" width="160" height="24" rx="6" fill="#0369a1" fill-opacity="0.4"/>
+    <text x="155" y="226" text-anchor="middle" font-size="11" fill="#7dd3fc">28+ CSVs Mensais</text>
+  </g>
+
+  <!-- Card 2: Ingestor download_sgp.py -->
+  <g filter="url(#shadow)">
+    <rect x="320" y="110" width="210" height="150" rx="12" fill="url(#grad-card)" stroke="#0ea5e9" stroke-width="1.5"/>
+    <rect x="320" y="110" width="210" height="32" rx="12" fill="#0369a1" fill-opacity="0.3"/>
+    <circle cx="342" cy="126" r="6" fill="#38bdf8"/>
+    <text x="356" y="130" font-size="12" font-weight="700" fill="#e0f2fe">2. INGESTÃO AUTOMÁTICA</text>
+    <text x="425" y="170" text-anchor="middle" font-size="15" font-weight="600" fill="#38bdf8">download_sgp.py</text>
+    <text x="425" y="192" text-anchor="middle" font-size="12" fill="#cbd5e1">Verificação Incremental</text>
+    <text x="425" y="210" text-anchor="middle" font-size="11" fill="#94a3b8">Extração de Competências</text>
+    <text x="425" y="228" text-anchor="middle" font-size="11" fill="#94a3b8">Padronização pgd_inss_*.csv</text>
+  </g>
+
+  <!-- Card 3: ETL etl_sgp_inss.py -->
+  <g filter="url(#shadow)">
+    <rect x="590" y="110" width="220" height="150" rx="12" fill="url(#grad-card)" stroke="#a855f7" stroke-width="1.5"/>
+    <rect x="590" y="110" width="220" height="32" rx="12" fill="#7e22ce" fill-opacity="0.3"/>
+    <circle cx="612" cy="126" r="6" fill="#c084fc"/>
+    <text x="626" y="130" font-size="12" font-weight="700" fill="#f3e8ff">3. PIPELINE DE ETL</text>
+    <text x="700" y="168" text-anchor="middle" font-size="15" font-weight="600" fill="#c084fc">etl_sgp_inss.py</text>
+    <text x="700" y="188" text-anchor="middle" font-size="11" fill="#cbd5e1">• Unificação de 30 p/ 19 colunas</text>
+    <text x="700" y="206" text-anchor="middle" font-size="11" fill="#cbd5e1">• Ponte temporal de nulos</text>
+    <text x="700" y="224" text-anchor="middle" font-size="11" fill="#cbd5e1">• Tipagem estrita com SQLAlchemy</text>
+    <text x="700" y="242" text-anchor="middle" font-size="11" fill="#cbd5e1">• Geração de Amostra (Sample)</text>
+  </g>
+
+  <!-- Card 4: Neon DB -->
+  <g filter="url(#shadow)">
+    <rect x="870" y="110" width="180" height="150" rx="12" fill="url(#grad-card)" stroke="#10b981" stroke-width="1.5"/>
+    <rect x="870" y="110" width="180" height="32" rx="12" fill="#047857" fill-opacity="0.3"/>
+    <circle cx="892" cy="126" r="6" fill="#34d399"/>
+    <text x="906" y="130" font-size="12" font-weight="700" fill="#d1fae5">4. BANCO NUVEM</text>
+    <text x="960" y="168" text-anchor="middle" font-size="15" font-weight="600" fill="#34d399">PostgreSQL</text>
+    <text x="960" y="188" text-anchor="middle" font-size="12" fill="#a7f3d0">Neon Tech Serverless</text>
+    <rect x="888" y="206" width="144" height="26" rx="6" fill="#064e3b" stroke="#059669" stroke-width="1"/>
+    <text x="960" y="223" text-anchor="middle" font-size="12" font-weight="600" fill="#6ee7b7">tb_pgd_inss</text>
+  </g>
+
+  <!-- Flow Arrows Row 1 -->
+  <path d="M 260 185 L 314 185" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 530 185 L 584 185" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 810 185 L 864 185" stroke="#34d399" stroke-width="2.5" fill="none" marker-end="url(#arrow-green)"/>
+
+  <!-- ================= MIDDLE / BOTTOM: ORCHESTRATION & BI ================= -->
+
+  <!-- Large Container: CI/CD GitHub Actions -->
+  <g filter="url(#shadow)">
+    <rect x="50" y="320" width="480" height="310" rx="16" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+    <rect x="50" y="320" width="480" height="38" rx="16" fill="#1e293b"/>
+    <circle cx="75" cy="339" r="6" fill="#38bdf8"/>
+    <text x="90" y="344" font-size="14" font-weight="700" fill="#f8fafc">ORQUESTRAÇÃO &amp; CI/CD — GitHub Actions (database_sync.yml)</text>
+
+    <!-- Substep A: Trigger -->
+    <rect x="75" y="380" width="430" height="60" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="95" y="405" font-size="13" font-weight="600" fill="#38bdf8">⏱️ Gatilho Automatizado</text>
+    <text x="95" y="425" font-size="12" fill="#94a3b8">Cron mensal (0 9 1 * *) ou execução manual via workflow_dispatch</text>
+
+    <!-- Substep B: Ingestion + ETL execution -->
+    <rect x="75" y="455" width="430" height="60" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="95" y="480" font-size="13" font-weight="600" fill="#a855f7">⚙️ Execução do Pipeline no Runner</text>
+    <text x="95" y="500" font-size="12" fill="#94a3b8">Ambiente Python 3.12: download_sgp.py ➔ etl_sgp_inss.py ➔ Neon DB</text>
+
+    <!-- Substep C: Git commit bot & Webhook -->
+    <rect x="75" y="530" width="430" height="75" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
+    <text x="95" y="555" font-size="13" font-weight="600" fill="#34d399">🤖 Git Commit Bot + Webhook</text>
+    <text x="95" y="575" font-size="12" fill="#94a3b8">• Atualiza amostra sample.csv no repositório [skip ci]</text>
+    <text x="95" y="593" font-size="12" fill="#94a3b8">• cURL POST aciona webhook do Power Automate</text>
+  </g>
+
+  <!-- Card 5: Power Automate -->
+  <g filter="url(#shadow)">
+    <rect x="580" y="360" width="200" height="120" rx="12" fill="url(#grad-card)" stroke="#0284c7" stroke-width="1.5"/>
+    <rect x="580" y="360" width="200" height="30" rx="12" fill="#0369a1" fill-opacity="0.4"/>
+    <circle cx="600" cy="375" r="5" fill="#38bdf8"/>
+    <text x="615" y="379" font-size="11" font-weight="700" fill="#e0f2fe">AUTOMAÇÃO</text>
+    <text x="680" y="415" text-anchor="middle" font-size="15" font-weight="600" fill="#38bdf8">Power Automate</text>
+    <text x="680" y="435" text-anchor="middle" font-size="11" fill="#cbd5e1">Recebe Webhook HTTP</text>
+    <text x="680" y="455" text-anchor="middle" font-size="11" fill="#94a3b8">Dispara refresh do PBI</text>
+  </g>
+
+  <!-- Card 6: Power BI & Analytics -->
+  <g filter="url(#shadow)">
+    <rect x="840" y="340" width="210" height="270" rx="14" fill="url(#grad-card)" stroke="#eab308" stroke-width="1.5"/>
+    <rect x="840" y="340" width="210" height="34" rx="14" fill="#a16207" fill-opacity="0.4"/>
+    <circle cx="862" cy="357" r="6" fill="#facc15"/>
+    <text x="876" y="361" font-size="12" font-weight="700" fill="#fef08a">ANALYTICS &amp; BI</text>
+    <text x="945" y="405" text-anchor="middle" font-size="16" font-weight="700" fill="#facc15">Microsoft Power BI</text>
+    <text x="945" y="425" text-anchor="middle" font-size="12" fill="#fef9c3">Conexão Nativa PostgreSQL</text>
+    
+    <line x1="860" y1="445" x2="1030" y2="445" stroke="#334155" stroke-width="1"/>
+
+    <text x="860" y="470" font-size="12" font-weight="600" fill="#ffffff">Recursos &amp; Governança:</text>
+    <text x="860" y="492" font-size="11" fill="#cbd5e1">• Anonimização DAX (LGPD)</text>
+    <text x="860" y="512" font-size="11" fill="#cbd5e1">• KPIs de Força de Trabalho</text>
+    <text x="860" y="532" font-size="11" fill="#cbd5e1">• Análise de Picos e Retenção</text>
+    <text x="860" y="552" font-size="11" fill="#cbd5e1">• Sazonalidade das Linhas</text>
+    
+    <rect x="860" y="568" width="170" height="26" rx="6" fill="#854d0e" fill-opacity="0.5"/>
+    <text x="945" y="585" text-anchor="middle" font-size="11" font-weight="600" fill="#fde047">Atualização Automática</text>
+  </g>
+
+  <!-- Connectors between Bottom Row Elements -->
+  <!-- GitHub Actions to Power Automate -->
+  <path d="M 505 570 L 542 570 L 542 420 L 574 420" stroke="#38bdf8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <text x="542" y="480" font-size="10" font-weight="600" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 542 480)">Webhook POST</text>
+
+  <!-- Power Automate to Power BI -->
+  <path d="M 780 420 L 834 420" stroke="#fbbf24" stroke-width="2" fill="none" marker-end="url(#arrow-amber)"/>
+  <text x="807" y="410" font-size="10" font-weight="600" fill="#fde047" text-anchor="middle">Refresh API</text>
+
+  <!-- Neon DB to Power BI (Direct SQL Connection) -->
+  <path d="M 960 260 L 960 334" stroke="#34d399" stroke-width="2.5" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-green)"/>
+  <text x="972" y="300" font-size="10" font-weight="600" fill="#6ee7b7">Query SQL</text>
+
+  <!-- Trigger Link from Actions to Source -->
+  <path d="M 150 320 L 150 266" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow)"/>
+  <text x="160" y="295" font-size="10" font-weight="600" fill="#7dd3fc">Gatilho</text>
+</svg>

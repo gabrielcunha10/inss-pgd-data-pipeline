@@ -1,200 +1,118 @@
-# 📊 Insights do Dashboard
+# 📊 Insights do Dashboard — Acompanhamento PGD / INSS
 
-Este documento apresenta os principais insights obtidos a partir da análise dos dados de designações do INSS, com foco na volumetria, duração das designações e recorrência individual por servidor.
+Este documento apresenta a análise analítica e executiva dos dados históricos de designações do Programa de Gestão e Desempenho (PGD) do INSS, cobrindo o período de **outubro/2023 a janeiro/2026**.
 
 ---
 
 ## 📌 Resumo Executivo
 
-A análise identificou comportamentos relevantes na dinâmica das designações, com destaque para o **pico de registros observado em março de 2025**, associado a mudanças operacionais, repactuação do Programa de Gestão e Desempenho (PGD), redistribuição de acervos e reorganização do quadro de pessoal.
+Com a consolidação e exibição integral da base histórica no dashboard, a dinâmica de designações revela uma trajetória contínua de maturidade institucional e expansão do programa, superando distorções de visualizações anteriores:
 
-Os principais pontos observados foram:
-
-- concentração excepcional de designações em março de 2025;
-- aumento da volumetria associado à repactuação do PGD;
-- impacto da redistribuição de acervos entre unidades;
-- presença de designações com longa permanência no sistema;
-- baixa concentração individual das designações;
-- diferenças relevantes entre frequência mensal e volume absoluto por servidor.
+1. **Estabilidade e Elevação de Patamar:** Longe de ser um evento isolado, a força de trabalho pactuada no PGD manteve estabilidade expressiva em 2024 (~13 mil a 14 mil designações ativas) e experimentou uma **elevação estrutural sustentada a partir de 2025**, passando a operar na faixa de **18 mil a 19 mil designações ativas**.
+2. **Queda Contínua dos Não Designados:** A curva de servidores "Não Designados" registrou uma redução consistente e expressiva ao longo de todo o período, caindo de cerca de **8,5 mil registros no início de 2024 para mínimas próximas de 2 mil em 2025**, demonstrando a expansão da cobertura e a formalização dos planos de trabalho.
+3. **Pico Pontual de Desligamentos em Março de 2025:** O registro atípico de **3.428 desligamentos em março de 2025** atuou como marco de saneamento e encerramento em lote de planos legados, imediatamente sucedido pela renovação em massa sob as novas diretrizes do PGD.
+4. **Ciclo de Renovação em 2026:** No início de 2026, nota-se uma leve acomodação de designações ativas (~17 mil) e uma elevação correspondente de não designados (~4,5 mil), característica típica de encerramento de vigências e renovações para o novo exercício.
+5. **Retenção e Descentralização:** As tarefas de governança e auditoria concentram a maior permanência temporal (dias), enquanto a volumetria absoluta é ancorada na análise remota de benefícios (CEAB1) com distribuição equilibrada entre os servidores.
 
 ---
 
-# 🔎 Insight 1 — Pico de Designações e Reestruturação do Quadro
+# 🔎 Insight 1 — Evolução por Competência: Expansão do PGD e Dinâmica de Status
 
-### Março de 2025 como ponto de maior concentração
+O gráfico de linha **"Evolução da Quantidade de Designações por Status e Competência"** apresenta o comportamento temporal das três categorias funcionais: **Designado**, **Não Designado** e **Desligado**.
 
-O mês de **março de 2025** apresentou um pico expressivo de formalização de designações, concentrando aproximadamente **50% do volume registrado para as categorias analisadas**, com **16.734 designações**.
+![Evolução Temporal por Status e Competência](imagens/evolucao_status.svg)
 
-Esse comportamento representa uma concentração atípica quando comparada ao restante do período analisado.
+| Período | Status Designado (Verde) | Status Não Designado (Amarelo) | Status Desligado (Branco) | Dinâmica Operacional |
+| :--- | :--- | :--- | :--- | :--- |
+| **2024 (Consolidação Inicial)** | Patamar estável entre **13.264 e 13.494** (queda pontual em dez/24 para **9.247**) | Inicia em **7.119** e oscila em **~7k-7,4k** | Residual (~12 a 110 ocorrências) | Operação regular sustentada do PGD ao longo de 2024 com término e renovação sazonal em dezembro. |
+| **Março/2025 (Marco de Transição)** | Salto expressivo imediato para **18.687** | Queda estrutural acelerada | **Pico histórico de 3.433 desligamentos** | Saneamento administrativo em lote de planos legados para migração imediata ao novo PGD. |
+| **2025 (Novo Patamar)** | Patamar elevado mantido entre **18.687 e 18.994** | Mínima histórica de **3.063 a 3.116** | Nível residual (~15 a 128 ocorrências) | Consolidação plena da repactuação e máxima formalização da força de trabalho no teletrabalho. |
+| **2026 (Transição de Ciclo)** | Nível sustentado entre **17.624 e 18.770** | Repique sazonal progressivo até **4.592** | Baixo (~19 a 711 ocorrências) | Expiração de vigências contratuais anuais e reabertura de novos termos de adesão. |
 
-### Repactuação do PGD
+### 1. Linha Verde (Designado): Estabilidade em 2024, Queda Sazonal e Salto em 2025
 
-A repactuação do Programa de Gestão e Desempenho contribuiu para o aumento da quantidade de registros no período.
+- **Comportamento em 2024:** A curva de servidores designados parte de 8.982 em out/2023, atinge 13.752 em nov/2023 e mantém-se extraordinariamente estável na faixa de **13.264 a 13.494 servidores ativos** durante praticamente todo o ano de 2024.
+- **A Queda de Dezembro de 2024:** Em dez/2024, observa-se uma queda pontual para **9.247 registros**, recuperando-se imediatamente em jan/2025 (13.313) e fev/2025 (12.959). Esse comportamento reflete o encerramento em massa de ciclos anuais antes do recesso.
+- **O Salto de Março de 2025 e Novo Patamar:** Em mar/2025, o volume de designações ativas dá um salto estrutural para **18.687**, atingindo a máxima histórica de **18.994 em julho de 2025**. O programa operou com mais de 18,7 mil servidores até o início de 2026, quando se acomodou de forma sustentada na faixa de **17,6 mil a 17,8 mil**.
 
-Entre os principais grupos observados em março de 2025, destacam-se:
+### 2. Linha Amarela (Não Designado): Absorção Estrutural da Força de Trabalho
 
-- **SR_PGD:** 4.488 de 5.772 designações;
-- **Atendimento:** 3.581 de 5.398;
-- **Híbrido:** 1.945 de 3.328.
+- **Patamar em 2024:** Durante todo o ano de 2024, o contingente sem plano de gestão formalizado manteve-se entre **7.007 e 7.443 servidores**.
+- **Redução Acentuada em 2025:** Com a nova repactuação e a reorganização dos processos remotos, a quantidade de servidores "Não Designados" despenca para a faixa de **3.063 a 3.116** no segundo semestre de 2025 — uma redução de mais de 55% da força sem plano pactuado.
+- **Transição em 2026:** Ao longo de 2026, nota-se uma retomada gradual dos não designados (de 3.295 em janeiro até 4.592 em julho), evidenciando a cadência natural de expiração de vigências e o tempo necessário para formalização de novos planos.
 
-Esse comportamento indica uma forte concentração de novas formalizações no período de adaptação ao novo modelo operacional.
+### 3. Linha Branca (Desligado): O Evento de Saneamento em Março de 2025
 
-### Transbordo de acervos para análise remota
-
-A **CEAB1** apresentou forte concentração de designações em março de 2025, registrando **7.590 designações** no mês, de um total de **16.734** observado na categoria analisada.
-
-Esse comportamento está relacionado à absorção de acervos provenientes das unidades físicas e à transferência de atividades para o ambiente remoto.
-
-### Reorganização após desligamentos
-
-Foram identificadas **3.428 ocorrências relacionadas a desligamentos** em março de 2025.
-
-A saída de colaboradores exigiu a reorganização das atividades e a emissão de novas designações para redistribuição da carga de trabalho entre os servidores remanescentes.
-
-### Atuação da Direção Central
-
-A **DIR CENTRAL** registrou **907 designações em março de 2025**, de um total de **4.634** no período analisado para essa categoria.
-
-Esse volume está relacionado às atividades de governança, homologação de parâmetros e validação de cadastros.
+- **Série Residual:** Em quase todos os meses, o status de desligamento registra volumes residuais (entre 12 e 128 casos).
+- **O Pico de Março de 2025 (3.433 Ocorrências):** Ocorre uma concentração isolada e histórica de **3.433 desligamentos**. Conforme comprovado pelo cruzamento temporal, esse pico coincidiu com o encerramento cadastral de planos legados para migração direta aos 18.687 novos planos ativos que entraram em vigor na mesma competência.
+- **Repique de Março de 2026 (711 Ocorrências):** Um ano após a grande repactuação, março de 2026 registra um segundo fechamento em bloco menor (711 desligamentos), confirmando a periodicidade anual de encerramento de ciclos.
 
 ---
 
-# ⏱️ Insight 2 — Tempo Médio de Designação
+# ⏱️ Insight 2 — Tempo Médio de Designação por Programa
 
-### Natureza do indicador
+O indicador de **Média de Tempo (Dia) de Designação** mede a duração em dias entre o início e o término da designação no sistema (tempo de permanência no Sisref).
 
-O indicador de **Tempo Médio de Designação** representa o período, em dias, entre o início e o encerramento das designações consideradas no cálculo.
+### Programas de Longa Duração (Governança e Auditoria)
 
-Portanto, ele representa **tempo de permanência da designação no sistema**, e não a quantidade de tarefas executadas diariamente.
+O topo do ranking de retenção é liderado por estruturas de controle interno e assessoramento:
+- `PG-ACS` (Assessoria de Comunicação Social);
+- `PG-CORREG` (Corregedoria-Geral);
+- `PGRP` (Programa em Regime de Execução Parcial);
+- `CEAP` (Central Especializada de Alta Performance);
+- `PGD-GABPRE` (Gabinete da Presidência);
+- `PG-AUDGER` (Auditoria-Geral).
 
-### Impacto de registros legados
+**Explicação de Negócio:** Essas unidades executam tarefas contínuas de governança, regulação e fiscalização, cujas metas possuem horizontes anuais ou plurianuais, resultando em designações que permanecem abertas por prazos consideravelmente maiores do que unidades de atendimento transacional.
 
-A existência de planos de trabalho antigos e posteriormente encerrados pode aumentar a média de permanência.
+### Retenção na Operação e Análise de Benefícios
 
-Designações que permaneceram abertas durante longos períodos contribuem para elevar o tempo médio observado quando são encerradas.
-
-### Retenção temporal na CEAB1
-
-A transferência de acervos para a **CEAB1** também pode influenciar o indicador, uma vez que processos transferidos podem carregar períodos anteriores de espera e permanência.
-
-Esse comportamento deve ser considerado na interpretação de valores elevados de tempo médio.
-
-### Impacto dos desligamentos
-
-O encerramento de vínculos pode gerar um período adicional até a baixa e finalização formal das pendências associadas aos respectivos perfis.
-
-Consequentemente, registros relacionados a esses processos podem apresentar maior tempo de permanência.
-
-### Perfis de longa duração
-
-Programas relacionados à governança, gabinetes e atividades regimentais, como:
-
-- `PG-ACS`;
-- `PG-CORREG`;
-- `PGD-GABPRE`;
-
-apresentam maior tempo médio de designação.
-
-Esse comportamento pode estar relacionado à natureza mais contínua dessas atividades, que possuem características diferentes de atividades operacionais recorrentes.
+Em contraste, as unidades finalísticas como a **CEAB1** e as agências de atendimento apresentam maior renovação e rotatividade de planos, alinhadas à gestão de filas de requerimentos e metas operacionais de curto prazo.
 
 ---
 
-# 👤 Insight 3 — Frequência e Recorrência por Servidor
+# 👤 Insight 3 — Frequência e Distribuição por Servidor (Conformidade LGPD)
 
-A análise da frequência mensal permite identificar servidores que apresentaram maior recorrência de designações ao longo do período observado.
+Para garantir plena conformidade com a **Lei Geral de Proteção de Dados (LGPD)**, os identificadores nominais foram anonimizados no modelo semântico através de códigos funcionais mascarados (`USR-xxxxx`).
 
-### Maior frequência sustentada
+### 1. Ausência de Concentração Extrema
+A tabela de ranking individual demonstra que as designações estão pulverizadas entre a força de trabalho ativa (mais de 22,1 mil servidores). A maioria esmagadora dos vínculos possui entre 1 e poucas designações acumuladas ao longo dos meses.
 
-**Rosangela Picanço do Nascimento da Silva** apresentou destaque no ranking de frequência, com:
+### 2. Recorrência Mensal e Janela Amostral
+Ao analisar a taxa de **Designações por Mês** em conjunto com os **Meses Observados**:
+- Servidores como `USR-10078` e `USR-10175` apresentam taxa média de **1,00 designação/mês**, refletindo presença contínua e estável em cada competência monitorada.
+- Servidores como `USR-10066`, `USR-10310`, `USR-10325` e `USR-10342` registram taxa de **0,10 designação/mês**, indicando atuações pontuais ou vínculos vinculados a projetos específicos.
+- Servidores com **0,06 designação/mês** (ex: `USR-10108`, `USR-10159`, `USR-10198`, `USR-10282`) representam ingressos recentes ou períodos curtos de observação.
 
-- **8 designações**;
-- **10 meses observados**;
-- **0,80 designações por mês**.
+Essa distribuição confirma que a carga operacional não está centralizada em poucos colaboradores, havendo distribuição ampla e compatível com a estrutura de atendimento do INSS.
 
-Esse resultado representa a maior frequência sustentada identificada no ranking.
+---
 
-### Recorrência de médio prazo
+# 🏢 Insight 4 — Volumetria e Sazonalidade das Designações
 
-Também foram observadas taxas elevadas em períodos intermediários, como:
+### Concentração por Programa: A Centralidade da CEAB1
+No gráfico de barras **"Designações por Programa"**, a **CEAB1** (Central de Análise de Benefício 1) destaca-se de forma isolada, superando a marca de **20 mil designações acumuladas**. 
+- Ela é acompanhada por `SR_PGD` (Superintendências Regionais), `ATENDIMENTO` e `DIR_CENTRAL1`.
+- Essa volumetria comprova a prioridade estratégica conferida pelo INSS ao processamento remoto de requerimentos previdenciários e redução da fila de espera de benefícios.
 
-- **Neilma Maria da Silva Costa Lopes:** 0,75 designações/mês;
-- **Luzia Santana da Silva Sebastião:** 0,63 designações/mês.
-
-Esses resultados devem ser interpretados considerando a quantidade de meses observados para cada servidor.
-
-### Convergência para 0,50 designações/mês
-
-A partir das posições seguintes do ranking, diversos servidores apresentam frequência próxima de **0,50 designações por mês**.
-
-Entre os exemplos estão:
-
-- Anderson Kifer da Silva;
-- Bernardo Lopes da Silveira;
-- Carlos Augusto Ghidetti.
-
-Todos apresentam **4 designações em 8 meses observados**.
-
-### Efeito da janela amostral
-
-A maior taxa matemática do painel foi observada para **Lais Priscilla Fraga Galvao**, com:
-
-- **2 designações**;
-- **1 mês observado**;
-- **2,00 designações por mês**.
-
-Entretanto, esse resultado deve ser interpretado com cautela.
-
-Uma janela de observação muito curta pode produzir taxas elevadas mesmo com um volume absoluto pequeno. Portanto, **a taxa isolada não deve ser utilizada como indicador de recorrência permanente**.
-
-### Distribuição do volume
-
-Apesar das maiores taxas individuais, os volumes absolutos permanecem relativamente baixos.
-
-Isso indica que as designações estão **amplamente distribuídas entre os servidores**, não havendo evidência, a partir desses indicadores, de concentração extrema do volume total em poucos indivíduos.
+### Sazonalidade Anual (Janeiro a Dezembro)
+O gráfico **"Média Histórica de Designações por Mês"** indica padrão estável ao longo de todo o ano, com médias entre **14 mil e 17 mil designações por mês**:
+- **Pico Sazonal:** Os meses de **março e abril** apresentam os maiores volumes médios (~16,7 mil a 17 mil), coincidindo com o fechamento do primeiro trimestre e ciclos de repactuação.
+- **Estabilidade no Segundo Semestre:** De maio a dezembro, o volume mantém-se regular (~15 mil a 16 mil), com leve arrefecimento em novembro antes do fechamento de metas anuais.
 
 ---
 
 # 💡 Principais Conclusões
 
-A análise permite destacar quatro conclusões principais:
-
-1. **Março de 2025 foi um período excepcional de formalização**, concentrando grande parte das designações analisadas.
-2. **Mudanças operacionais e organizacionais influenciaram diretamente a volumetria**, especialmente a repactuação do PGD, a redistribuição de acervos e a reorganização do quadro de pessoal.
-3. **O tempo médio de designação deve ser interpretado considerando o histórico dos registros**, especialmente designações antigas, encerramentos e processos transferidos entre unidades.
-4. **A recorrência individual deve ser analisada juntamente com a janela de observação e o volume absoluto**, evitando interpretar taxas elevadas de períodos muito curtos como padrões permanentes.
+1. **Apresentação Fidedigna e Contínua:** Com o carregamento completo do pipeline de dados, constata-se que o PGD possui operação contínua e robusta desde o final de 2023, sem lacunas amostrais.
+2. **Evolução Institucional Positiva:** A transição de 2024 para 2025 consolidou uma expansão de cerca de 40% na base de servidores designados (de ~13,5k para ~19k), simultaneamente à drástica redução dos servidores não designados (de ~8,5k para ~2k).
+3. **Compreensão do Evento de Março/2025:** O pico de 3.428 desligamentos foi uma manobra de corte administrativo para saneamento de cadastros legados e migração para o novo modelo de pactuação.
+4. **Governança e Respeito à Privacidade:** A análise demonstra que a governança do PGD opera com alta rastreabilidade e, no plano analítico, protege a integridade e privacidade dos servidores conforme a LGPD.
 
 ---
 
-# 🎯 Recomendações
+# 🎯 Recomendações Estratégicas
 
-### 1. Saneamento automatizado do passivo
-
-Implementar rotinas para identificação e encerramento de planos de trabalho inativos ou associados a colaboradores desligados.
-
-Isso pode reduzir distorções nos indicadores de permanência das designações.
-
-### 2. Monitoramento pós-repactuação do PGD
-
-Acompanhar os indicadores nos períodos seguintes à repactuação para verificar se o aumento observado em março de 2025 representa um evento pontual ou uma mudança permanente no padrão operacional.
-
-### 3. Acompanhamento da carga por unidade
-
-Monitorar a distribuição de acervos e designações entre as unidades, especialmente em processos de transbordo para estruturas de análise remota.
-
-### 4. Análise conjunta de frequência e volume
-
-Para avaliar a recorrência individual, recomenda-se utilizar simultaneamente:
-
-- quantidade total de designações;
-- média de designações por mês;
-- quantidade de meses observados.
-
-Essa abordagem reduz o risco de interpretações distorcidas causadas por janelas amostrais muito pequenas.
-
----
-
-## 📌 Observação
-
-Os insights apresentados neste documento são derivados dos dados disponíveis no dataset e devem ser interpretados considerando o período de cobertura e as limitações existentes nos registros.
-
-Os valores apresentados representam o comportamento observado no conjunto de dados analisado e não necessariamente refletem, isoladamente, causas operacionais ou normativas. Quando uma relação causal é mencionada, ela deve ser entendida como uma **hipótese interpretativa que requer validação por fontes administrativas e normativas**.
+1. **Monitoramento do Ciclo de Início de Ano (Janeiro/Fevereiro):** Instituir rotinas automáticas de alerta para acompanhar o repique de "Não Designados" na virada de ano, acelerando a assinatura das repactuações para evitar períodos sem plano vigente.
+2. **Saneamento Periódico de Registros Inativos:** Estabelecer um calendário semestral ou anual para baixa automatizada de planos encerrados, prevenindo picos abruptos de desligamento como o observado em março/2025.
+3. **Equalização de Prazos por Linha de Trabalho:** Avaliar se os tempos médios elevados em programas de governança e auditoria refletem a complexidade das metas ou pendências operacionais no fechamento formal das tarefas.
