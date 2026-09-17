@@ -89,7 +89,7 @@ flowchart TD
    - Substituição transacional estruturada (`to_sql` com schema validado), garantindo prontidão para consultas analíticas complexas e consumo direto pelo Power BI.
 
 4. **Orquestração e CI/CD (GitHub Actions — `database_sync.yml`)**:
-   - Execução mensal automatizada via CRON (`0 9 1 * *`, no 1º dia de cada mês às 09:00 UTC) ou acionamento sob demanda (`workflow_dispatch`).
+   - Execução mensal automatizada via CRON (`0 9 1 * *`, no 1º dia de cada mês às 06:00 UTC-3) ou acionamento sob demanda (`workflow_dispatch`).
    - Execução sequencial da ingestão e do ETL em ambiente isolado (Python 3.12).
    - Versionamento automático de artefatos no repositório com usuário `github-actions[bot]`.
 
