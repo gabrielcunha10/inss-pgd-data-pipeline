@@ -86,7 +86,7 @@ flowchart TD
 
 3. **Camada de Armazenamento (PostgreSQL no Neon Tech)**:
    - Armazenamento em nuvem serverless sob a tabela `tb_pgd_inss`.
-   - Substituição transacional estruturada (`to_sql` com schema validado), garantindo prontidão para consultas analíticas complexas e consumo direto pelo Power BI.
+   - Carga incremental transacional e idempotente por partição de competência (`Delete & Insert` com schema validado via SQLAlchemy e `chunksize=10.000`), garantindo preservação de índices, zero indisponibilidade (*downtime*) para o Power BI e proteção contra duplicidades.
 
 4. **Orquestração e CI/CD (GitHub Actions — `database_sync.yml`)**:
    - Execução mensal automatizada via CRON (`0 9 1 * *`, no 1º dia de cada mês às 06:00 UTC-3) ou acionamento sob demanda (`workflow_dispatch`).

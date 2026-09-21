@@ -2,7 +2,7 @@
 import pandas as pd
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.types import BigInteger, Date, DateTime, Text
 import numpy as np
 import re
@@ -363,15 +363,51 @@ for col in df_total.columns:
 engine = create_engine(db_url)
 
 try:
-  df_total.to_sql(
-      'tb_pgd_inss',
-      con=engine,
-      if_exists='replace',
-      index=False,
-      dtype=dtype_mapping,
-  )
+  competencias_datas = [
+      d.strftime('%Y-%m-%d')
+      for d in df_total['competencia'].dropna().unique()
+  ]
+
+  with engine.begin() as conn:
+    inspector = inspect(conn)
+    tabela_existe = inspector.has_table('tb_pgd_inss')
+
+    if not tabela_existe:
+      print("Tabela 'tb_pgd_inss' não existe. Criando estrutura inicial no banco...")
+      df_total.head(0).to_sql(
+          'tb_pgd_inss',
+          con=conn,
+          if_exists='append',
+          index=False,
+          dtype=dtype_mapping,
+      )
+    elif competencias_datas:
+      print(
+          f"Executando exclusão preventiva de {len(competencias_datas)} competência(s)"
+          " para carga idempotente..."
+      )
+      conn.execute(
+          text("DELETE FROM tb_pgd_inss WHERE competencia = ANY(:comps::date[])"),
+          {"comps": competencias_datas},
+      )
+
+    print(
+        f"Inserindo {len(df_total)} registros na tabela 'tb_pgd_inss' em lotes"
+        " (chunksize=10.000)..."
+    )
+    df_total.to_sql(
+        'tb_pgd_inss',
+        con=conn,
+        if_exists='append',
+        index=False,
+        dtype=dtype_mapping,
+        chunksize=10000,
+    )
+
   print(
-    f"[SUCCESS] ETL concluído: {len(df_total)} linhas enviadas para a tabela"
-    " 'tb_pgd_inss' no Neon Tech.")
+      f"[SUCCESS] Carga incremental concluída: {len(df_total)} linhas sincronizadas"
+      f" ({len(competencias_datas)} competência(s)) na tabela 'tb_pgd_inss' no Neon Tech."
+  )
 except Exception as e:
-  print(f"Erro ao enviar dados: {e}")
+  print(f"Erro ao enviar dados de forma incremental: {e}")
+  raise e
