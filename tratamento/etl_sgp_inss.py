@@ -90,6 +90,7 @@ for i in files:
 #%%
 df_total = pd.concat(dfs, ignore_index=True, sort=False)
 df_total = df_total.replace("-", np.nan)
+df_total = df_total.dropna(subset=["id_matricula"])
 #%%
 df_total.isna().sum()
 #%%
