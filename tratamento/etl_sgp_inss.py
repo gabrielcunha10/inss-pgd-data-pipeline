@@ -289,6 +289,27 @@ def inferir_flag_pgd(programa):
 
 sugestao = df_total['programa'].apply(inferir_flag_pgd)
 df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
+
+#%%
+unique_matriculas = df_total["id_matricula"].dropna().unique()
+mapa_anonimizacao = {mat: f"USR-{str(i+1).zfill(5)}" for i, mat in enumerate(unique_matriculas)}
+df_total["id_usuario"] = df_total["id_matricula"].map(mapa_anonimizacao)
+
+df_total = df_total.drop(columns=["nome", "id_matricula"], errors="ignore")
+
+df_total = df_total.sort_values(by=["id_usuario", "competencia", "id_designacao", "dt_alteracao_designacao"])
+df_total = df_total.drop_duplicates(subset=["id_usuario", "competencia", "id_designacao"], keep="last")
+
+cols = ["id_usuario"] + [col for col in df_total.columns if col != "id_usuario"]
+df_total = df_total[cols]
+
+#%%
+df_total.to_csv(
+    PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.csv", 
+    index=False, 
+    sep=";"
+)
+
 #%%
 df_sample = df_total.sample(n=5000, random_state=42)
 #%%
@@ -321,7 +342,7 @@ for col in colunas_data:
   if col in df_total.columns:
     df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
 
-colunas_id = ['id_matricula', 'id_designacao']
+colunas_id = ['id_designacao']
 
 for col in colunas_id:
   if col in df_total.columns:
@@ -387,9 +408,9 @@ try:
           f"Executando exclusão preventiva de {len(competencias_datas)} competência(s)"
           " para carga idempotente..."
       )
+      comps_formatted = ", ".join(f"'{c}'" for c in competencias_datas)
       conn.execute(
-          text("DELETE FROM tb_pgd_inss WHERE competencia = ANY(:comps::date[])"),
-          {"comps": competencias_datas},
+          text(f"DELETE FROM tb_pgd_inss WHERE competencia IN ({comps_formatted})")
       )
 
     print(
