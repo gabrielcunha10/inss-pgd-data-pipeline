@@ -1,6 +1,6 @@
 # 📊 Dashboard de Designações — Acompanhamento PGD / INSS
 
-Este documento descreve os componentes, indicadores de negócio e formas de acesso ao painel analítico do **Programa de Gestão e Desempenho (PGD)** do INSS.
+Neste documento, eu descrevo os componentes, indicadores de negócio e formas de acesso ao painel analítico do **Programa de Gestão e Desempenho (PGD)** do INSS.
 
 ---
 
@@ -9,12 +9,12 @@ Este documento descreve os componentes, indicadores de negócio e formas de aces
 - **Evolução da Quantidade de Designações por Status e Competência (Out/2023 a Jan/2026):** Gráfico de linha que exibe a trajetória histórica integral dos status (Designado, Não Designado e Desligado). Evidencia a estabilidade dos servidores designados em 2024 (~13-14 mil), o salto estrutural para um novo patamar a partir de 2025 (~18-19 mil), o declínio sustentado dos não designados e o evento de corte/saneamento administrativo em **março de 2025** (~3.433 desligamentos em lote).
 - **Cartões de Métrica (KPIs Centrais):**
   - **45,40 Mil Designações:** Volume total acumulado de registros de designação no histórico monitorado.
-  - **22,13 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
+  - **22,17 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
   - **15,75 Mil Média Designações Mês:** Volume médio de designações mantidas ativas a cada mês na instituição.
   - **30 Contagem de Programas:** Número de programas e modalidades de gestão cadastrados no PGD.
 - **Média de Tempo (Dia) de Designação por Programa:** Gráfico de barras horizontal ordenado por duração. Mostra a **retenção temporal (em dias)** das designações, com topo liderado por unidades de governança, auditoria e gabinetes (`PG-ACS`, `PG-CORREG`, `PGRP`, `CEAP`), cujas tarefas permanecem ativas por mais tempo no Sisref.
 - **Média Histórica de Designações por Mês:** Gráfico de colunas que analisa a sazonalidade anual do volume de designações (de janeiro a dezembro), mostrando estabilidade com picos nos meses de **março e abril** (~16,7 mil a 17 mil).
-- **Tabela de Detalhamento por Servidor/Vínculo:** Tabela interativa com pseudonimização/anonimização por código numérico de servidor, em estrita conformidade com a LGPD. Permite duas análises cruciais de gestão: ordenação por **Total de Designações** (evidenciando a estabilidade a longo prazo, liderada pelo servidor `49732` com teto de 15 designações em 33 meses) e por **Designações/Mês** (evidenciando a frequência de curto prazo e o viés de janelas amostrais reduzidas, como o servidor `36060` com taxa 2,00 em apenas 1 mês).
+- **Tabela de Detalhamento por Servidor/Vínculo:** Tabela interativa com pseudonimização/anonimização em estrita conformidade com a LGPD (padrão `USR-XXXXX`). Permite duas análises cruciais de gestão: ordenação por **Total de Designações** (evidenciando a estabilidade a longo prazo, liderada pelo servidor `USR-04817` com teto de 12 designações em 33 meses) e por **Designações/Mês** (evidenciando a frequência de curto prazo e o viés de janelas amostrais reduzidas, como o servidor `USR-21972` com taxa 0,60 em apenas 5 meses).
 - **Designações por Programa:** Gráfico de barras horizontal que mede a **volumetria/quantidade acumulada de designações**. Liderado de forma isolada pela **CEAB1** (Central de Análise de Benefício 1), seguida por `SR_PGD`, `ATENDIMENTO` e `DIR_CENTRAL1`.
 
 ---
@@ -29,7 +29,7 @@ Este documento descreve os componentes, indicadores de negócio e formas de aces
 
 > [!NOTE]
 > **Status da Publicação Online (Power BI Service / Web):**
-> O objetivo é disponibilizar o dashboard para navegação pública e interativa diretamente pelo navegador via Power BI Service. Atualmente, a publicação web está temporariamente pausada devido a uma pendência de validação/provisionamento na conta estudantil da Microsoft, com **previsão de resolução e publicação do link online até 22/09/2026**.
+> Meu objetivo é disponibilizar o dashboard para navegação pública e interativa diretamente pelo navegador via Power BI Service. Atualmente, a publicação web está temporariamente pausada devido a uma pendência de validação/provisionamento na conta estudantil da Microsoft, com **previsão de resolução e publicação do link online até 22/09/2026**.
 > 
 > Enquanto a publicação web é concluída, o acesso pode ser realizado diretamente pelo Power BI Desktop conforme as opções abaixo.
 

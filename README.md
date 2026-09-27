@@ -9,13 +9,13 @@
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
-O projeto analisa o histórico do **Programa de Gestão e Desempenho (PGD)** aplicado ao quadro de atendimento do INSS (ACSINSS), cobrindo de **outubro/2023 em diante** (mais de 500 mil registros consolidados).
+Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PGD)** aplicado ao quadro de atendimento do INSS (ACSINSS), cobrindo de **outubro/2023 em diante** (mais de 500 mil registros consolidados).
 
 ---
 
 ## 🏛️ Contexto e Motivação
 
-Este projeto foi desenvolvido como peça de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev**. Durante a preparação para a seleção, surgiu o interesse pela atuação estratégica da empresa no processamento, governança e gestão de dados que sustentam a previdência, seguridade social e políticas públicas no Brasil.
+Desenvolvi este projeto como peça de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev**. Durante a preparação para a seleção, despertei um forte interesse pela atuação estratégica da empresa no processamento, governança e gestão de dados que sustentam a previdência, seguridade social e políticas públicas no Brasil.
 
 Lidar com dados governamentais reais impõe desafios práticos como:
 - Mudanças de layout ao longo do tempo (sistemas exportadores com cabeçalhos e formatos mutáveis);
@@ -23,7 +23,7 @@ Lidar com dados governamentais reais impõe desafios práticos como:
 - Campos ausentes decorrentes de migrações estruturais de sistemas legados;
 - Necessidade de conciliar transparência de dados públicos com **conformidade à LGPD**.
 
-A solução foi concebida para simular a maturidade técnica exigida em ambientes de dados do setor público e corporativo: automação, rastreabilidade, tipagem estrita, banco de dados relacional em nuvem e atualização programada.
+Concebi e projetei esta solução para simular a maturidade técnica exigida em ambientes de dados do setor público e corporativo: automação, rastreabilidade, tipagem estrita, banco de dados relacional em nuvem e atualização programada.
 
 ---
 
@@ -134,7 +134,7 @@ flowchart TD
 
 Os dados públicos de origem apresentavam inconsistências de histórico: colunas com nomenclaturas diferentes entre anos (`Matricula`, `Matrícula`, `siape2`), meses inteiros sem identificadores estruturais e fusão de conceitos operacionais.
 
-Todas as intervenções foram pautadas em validação empírica e rigor metodológico:
+Todas as minhas decisões e intervenções de dados foram pautadas em validação empírica e rigor metodológico:
 
 | Situação Encontrada | Decisão Técnica | Nível de Confiança / Justificativa |
 | :--- | :--- | :--- |
@@ -173,6 +173,20 @@ A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutur
 | `dt_fim_designacao` | `TIMESTAMP`| Data e hora de encerramento da designação |
 | `dt_criacao_designacao`| `TIMESTAMP`| Data e hora de criação do registro no sistema |
 | `dt_alteracao_designacao`| `TIMESTAMP`| Data e hora da última alteração do registro |
+
+---
+
+## ✅ Testes e Qualidade de Dados (Pytest)
+
+Para garantir a confiabilidade e integridade das cargas contínuas, desenvolvi uma suíte de testes automatizados construída com **`pytest`** ([`tests/test_pipeline.py`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/tests/test_pipeline.py)). Essa camada atua como uma malha fina de qualidade de dados.
+
+As seguintes validações de negócio e consistência são executadas automaticamente:
+- **Integridade de Siglas e Nomes:** Verifica se não existem registros órfãos (exemplo: uma `sigla_programa` preenchida, mas sem o `programa` correspondente, ou vice-versa). A mesma regra é aplicada para o mapeamento das Linhas de Trabalho.
+- **Consistência Temporal:** Garante que nenhuma data de fim (`dt_fim_designacao`) seja anterior à data de início (`dt_inicio_designacao`).
+- **Validação de Nulos Críticos:** Impede que chaves primárias e colunas essenciais para regras de negócio (como a `modalidade` em casos de status "Designado") fiquem vazias.
+- **Checagem de Domínios Restritos:** Assegura que colunas categóricas (`status`, `modalidade`, `flag_pgd`) contenham apenas os domínios normatizados, rejeitando anomalias originadas no CSV bruto.
+- **Unicidade e Deduplicação:** Analisa chaves compostas (`id_usuario` + `competencia` + `id_designacao`) para barrar duplicações de registros transacionais.
+- **Auditoria de Máscara LGPD:** Confere via *Regex* se todos os usuários da base foram devidamente anonimizados no padrão rigoroso `USR-XXXXX`.
 
 ---
 
@@ -248,7 +262,7 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 
 ## 📊 Visualização de Dados e Business Intelligence
 
-O modelo analítico foi desenvolvido no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
+Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
 
 ![Preview do Dashboard](dashboard/imagens/dashboard.png)
 
@@ -272,7 +286,7 @@ Para mais detalhes sobre a modelagem e os achados de negócio, consulte a docume
 
 ## 🔒 Privacidade e Conformidade com a LGPD
 
-Considerando que os dados de origem envolvem nomes e matrículas de servidores públicos, o projeto implementou salvaguardas de conformidade com a **Lei Geral de Proteção de Dados (Lei nº 13.709/2018)**:
+Considerando que os dados de origem envolvem nomes e matrículas de servidores públicos, implementei salvaguardas rigorosas de conformidade com a **Lei Geral de Proteção de Dados (Lei nº 13.709/2018)**:
 
 1. **Anonimização em Nível de Modelo (DAX)**:
    - Criação de coluna calculada no modelo semântico do Power BI que mascara os identificadores nominais e substitui a identificação direta por códigos ou versões pseudonimizadas em relatórios compartilháveis.
