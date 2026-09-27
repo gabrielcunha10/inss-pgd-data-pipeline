@@ -118,6 +118,9 @@ flowchart TD
 │       └── tabela_designacoes_mes.png             # Visão da tabela ordenada por frequência mensal
 ├── data/                                          # Armazenamento local dos CSVs brutos (não versionados)
 │   └── pgd_inss_*.csv
+├── tests/                                         # Testes automatizados e base de saída do pipeline
+│   ├── pgd_designacoes_inss_2023_2026.csv         # Base tratada salva após o ETL (não versionado)
+│   └── test_pipeline.py                           # Suíte de testes da qualidade dos dados e pipeline
 ├── tratamento/
 │   ├── download_sgp.py                            # Ingestor automatizado via API CKAN do INSS
 │   ├── etl_sgp_inss.py                            # Pipeline completo de ETL e carga no Neon DB
@@ -155,11 +158,10 @@ A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutur
 | Coluna | Tipo SQL | Descrição |
 | :--- | :--- | :--- |
 | `competencia` | `DATE` | Data correspondente ao primeiro dia do mês de competência |
-| `id_matricula` | `BIGINT` | Matrícula funcional unificada do servidor |
+| `id_usuario` | `TEXT` | Identificador anonimizado do servidor (formato USR-XXXXX) |
 | `id_designacao` | `BIGINT` | Código identificador da designação no SGP |
 | `id_lotacao` | `TEXT` | Código da unidade organizacional de lotação |
 | `lotacao` | `TEXT` | Nome descritivo da unidade de lotação |
-| `nome` | `TEXT` | Nome do profissional / servidor |
 | `sigla_programa` | `TEXT` | Sigla do programa de gestão associado |
 | `programa` | `TEXT` | Nome por extenso do programa de gestão |
 | `sigla_linha_trabalho`| `TEXT` | Sigla da linha de trabalho executada |
