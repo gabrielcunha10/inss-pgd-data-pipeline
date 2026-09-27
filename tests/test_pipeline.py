@@ -46,7 +46,6 @@ def test_valores_nulos_criticos(df_inss):
         nulos = df_inss[col].isna().sum()
         assert nulos == 0, f"A coluna crítica '{col}' possui {nulos} valores nulos!"
 
-    # Verifica nulos na modalidade APENAS para quem está 'Designado'
     designados = df_inss[df_inss["status"] == "Designado"]
     nulos_modalidade = designados["modalidade"].isna().sum()
     assert nulos_modalidade == 0, f"Foram encontrados {nulos_modalidade} registros com status 'Designado' mas sem 'modalidade' informada!"
@@ -71,3 +70,25 @@ def test_unicidade_chave_primaria(df_inss):
     qtd_duplicados = duplicados.sum()
     
     assert qtd_duplicados == 0, f"Encontrados {qtd_duplicados} registros duplicados na mesma competência para o mesmo usuário e designação."
+
+#%%
+def test_correspondencia_sigla_programa(df_inss):
+    sigla_nula = df_inss["sigla_programa"].isna()
+    programa_nulo = df_inss["programa"].isna()
+    inconsistencias = df_inss[(sigla_nula & ~programa_nulo) | (~sigla_nula & programa_nulo)]
+    
+    total_erros = len(inconsistencias)
+    if total_erros > 0:
+        amostra = inconsistencias[['sigla_programa', 'programa']].drop_duplicates().to_dict('records')
+        pytest.fail(f"Falha de integridade: encontrados {total_erros} registros com sigla ou programa órfãos! Amostra: {amostra}")
+
+#%%
+def test_correspondencia_linha_trabalho(df_inss):
+    sigla_nula = df_inss["sigla_linha_trabalho"].isna()
+    linha_nula = df_inss["linha_trabalho"].isna()
+    inconsistencias = df_inss[(sigla_nula & ~linha_nula) | (~sigla_nula & linha_nula)]
+    
+    total_erros = len(inconsistencias)
+    if total_erros > 0:
+        amostra = inconsistencias[['sigla_linha_trabalho', 'linha_trabalho']].drop_duplicates().to_dict('records')
+        pytest.fail(f"Falha de integridade: encontrados {total_erros} registros com sigla ou linha de trabalho órfãos! Amostra: {amostra}")

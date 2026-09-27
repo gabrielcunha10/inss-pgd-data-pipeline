@@ -90,6 +90,13 @@ for i in files:
 #%%
 df_total = pd.concat(dfs, ignore_index=True, sort=False)
 df_total = df_total.replace("-", np.nan)
+
+# Correções ortográficas na base de dados
+df_total["sigla_programa"] = df_total["sigla_programa"].replace({"ATENDIMENT0": "ATENDIMENTO"})
+df_total["programa"] = df_total["programa"].replace({
+    "PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO": "PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO"
+})
+
 df_total = df_total.dropna(subset=["id_matricula"])
 #%%
 df_total.isna().sum()
@@ -156,7 +163,7 @@ df_total['sigla_programa'] = df_total['sigla_programa'].fillna(
 #%%
 programas_nao_pgd = [
     'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
-    'PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO',
+    'PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO',
     'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
 ]
 
@@ -244,13 +251,12 @@ dicionario_externo = {
     "PG-DIGOV": "PROGRAMA DE GESTÃO - DIRETORIA DE GOVERNANÇA, PLANEJAMENTO E INOVAÇÃO",
     "PGD-GABPRE": "PROGRAMA DE GESTÃO E DESEMPENHO - GABINETE DA PRESIDÊNCIA",
     "PG-ACS": "PROGRAMA DE GESTÃO - ASSESSORIA DE COMUNICAÇÃO SOCIAL",
+    "CEABSEMPGD": "PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO",
 }
 
 dicionario.update(dicionario_externo)
 #%%
-df_total["programa"] = df_total["programa"].fillna(
-    df_total["sigla_programa"].map(dicionario)
-)
+df_total["programa"] = df_total["sigla_programa"].map(dicionario).fillna(df_total["programa"])
 #%%
 df_total
 #%%
@@ -269,12 +275,12 @@ df_total.isna().sum()
 # %%
 programas_nao_pgd_confirmados = [
     'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
-    'PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO',
+    'PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO',
     'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
 ]
 
 programas_com_flag_pgd_conhecida = [
-    'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE', 'PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO',
+    'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE', 'PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO',
     'PROG. PRESENCIAL 6H + PONTUAÇÃO', 'PROGRAMA DA CEAB I', 'PROGRAMA DA REABILITAÇÃO PROFISSIONAL',
     'PROGRAMA DA REABILITAÇÃO PROFISSIONAL - REMOTO', 'PROGRAMA DA REABILITAÇÃO PROFISSIONAL PT 1800',
     'PROGRAMA DAS CENTRAIS DE SUPORTE', 'PROGRAMA DAS GERÊNCIAS EXECUTIVAS - PGD',
