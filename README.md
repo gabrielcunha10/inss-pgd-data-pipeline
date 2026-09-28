@@ -1,11 +1,12 @@
 # Pipeline de Dados e Analytics — Programa de Gestão de Desempenho (PGD) INSS
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
-[![PostgreSQL Neon](https://img.shields.io/badge/Database-PostgreSQL%20(Neon)-4169E1?logo=postgresql&logoColor=white)](https://neon.tech/)
-[![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white)](https://github.com/features/actions)
-[![Power BI](https://img.shields.io/badge/Dashboard-Power%20BI-F2C811?logo=power-bi&logoColor=black)](https://powerbi.microsoft.com/)
-[![Power Automate](https://img.shields.io/badge/Automation-Power%20Automate-0066FF?logo=power-automate&logoColor=white)](https://powerautomate.microsoft.com/)
-[![LGPD](https://img.shields.io/badge/Compliance-LGPD%20Anonymized-008080)](#privacidade-e-conformidade-com-a-lgpd)
+[![PostgreSQL Neon](<https://img.shields.io/badge/Database-PostgreSQL%20(Neon)-4169E1?logo=postgresql&logoColor=white>)](https://neon.tech/)
+[![GitHub Actions](<https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white>)](https://github.com/features/actions)
+[![Power BI](<https://img.shields.io/badge/Dashboard-Power%20BI-F2C811?logo=power-bi&logoColor=black>)](https://powerbi.microsoft.com/)
+[![Power Automate](<https://img.shields.io/badge/Automation-Power%20Automate-0066FF?logo=power-automate&logoColor=white>)](https://powerautomate.microsoft.com/)
+[![Pytest](<https://img.shields.io/badge/QA-Pytest-0A9EDC?logo=pytest&logoColor=white>)](https://pytest.org/)
+[![LGPD](<https://img.shields.io/badge/Compliance-LGPD%20Anonymized-008080>)](#privacidade-e-conformidade-com-a-lgpd)
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
@@ -18,6 +19,7 @@ Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PG
 Desenvolvi este projeto como peça de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev**. Durante a preparação para a seleção, despertei um forte interesse pela atuação estratégica da empresa no processamento, governança e gestão de dados que sustentam a previdência, seguridade social e políticas públicas no Brasil.
 
 Lidar com dados governamentais reais impõe desafios práticos como:
+
 - Mudanças de layout ao longo do tempo (sistemas exportadores com cabeçalhos e formatos mutáveis);
 - Arquivos com múltiplos encodings (`utf-8`, `latin1`);
 - Campos ausentes decorrentes de migrações estruturais de sistemas legados;
@@ -40,6 +42,7 @@ flowchart TD
     SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
     RAW["Arquivos Brutos CSV<br/>(data/pgd_inss_AAAAMM.csv)"]
     SCRIPT_ETL["etl_sgp_inss.py<br/>(Limpeza, Tipagem e Ponte)"]
+    TESTS["Qualidade de Dados<br/>(Pytest)"]
     SAMPLE["Amostra Sample 5k<br/>(sample.csv)"]
     NEON[("PostgreSQL Serverless<br/>Neon: tb_pgd_inss")]
 
@@ -57,7 +60,8 @@ flowchart TD
     API -->|"Download Idempotente"| SCRIPT_IN
     SCRIPT_IN --> RAW
     RAW --> SCRIPT_ETL
-    SCRIPT_ETL --> NEON
+    SCRIPT_ETL --> TESTS
+    TESTS -->|"Aprovação"| NEON
     SCRIPT_ETL --> SAMPLE
     SAMPLE -->|"Versionamento"| BOT
     NEON -->|"Carga Finalizada"| HOOK
@@ -72,28 +76,29 @@ flowchart TD
 ### Componentes da Arquitetura:
 
 1. **Ingestão Automatizada via API (`download_sgp.py`)**:
+
    - Consome a API pública CKAN do portal oficial do INSS (`dadosabertos.inss.gov.br`).
    - Identifica novos meses publicados, extrai competências de forma determinística e padroniza a nomenclatura local dos arquivos (`pgd_inss_AAAAMM.csv`).
    - Operação idempotente: apenas arquivos inéditos são baixados, otimizando rede e tempo de execução.
-
 2. **Pipeline de ETL e Higienização (`etl_sgp_inss.py`)**:
+
    - Tratamento de encodings variáveis (`utf-8` e `latin1`).
    - Mapeamento dinâmico de cabeçalhos (~30 variantes para 19 colunas canônicas).
    - Reconstrução de dados ausentes usando técnica de **ponte temporal determinística** entre meses adjacentes.
    - Enriquecimento cadastral de siglas e programas com validação em portarias normativas do INSS.
    - Geração de amostra estatística (`sample`) de 5.000 registros para versionamento auditável no Git.
    - Tipagem rigorosa com SQLAlchemy (`Date`, `DateTime`, `BigInteger`, `Text`) e normalização universal de valores nulos.
-
 3. **Camada de Armazenamento (PostgreSQL no Neon Tech)**:
+
    - Armazenamento em nuvem serverless sob a tabela `tb_pgd_inss`.
    - Carga incremental transacional e idempotente por partição de competência (`Delete & Insert` com schema validado via SQLAlchemy e `chunksize=10.000`), garantindo preservação de índices, zero indisponibilidade (*downtime*) para o Power BI e proteção contra duplicidades.
-
 4. **Orquestração e CI/CD (GitHub Actions — `database_sync.yml`)**:
+
    - Execução mensal automatizada via CRON (`0 9 1 * *`, no 1º dia de cada mês às 06:00 UTC-3) ou acionamento sob demanda (`workflow_dispatch`).
    - Execução sequencial da ingestão e do ETL em ambiente isolado (Python 3.12).
    - Versionamento automático de artefatos no repositório com usuário `github-actions[bot]`.
-
 5. **Notificação e Atualização do BI (Power Automate & Power BI)**:
+
    - Disparo de Webhook via requisição HTTP POST autenticada para o **Power Automate**.
    - O fluxo do Power Automate aciona a atualização automática do modelo semântico do Power BI assim que a nova carga do banco é finalizada.
    - Implementação de camada de segurança e privacidade via DAX para mascaramento/anonimização de servidores (LGPD).
@@ -139,15 +144,15 @@ Os dados públicos de origem apresentavam inconsistências de histórico: coluna
 
 Todas as minhas decisões e intervenções de dados foram pautadas em validação empírica e rigor metodológico:
 
-| Situação Encontrada | Decisão Técnica | Nível de Confiança / Justificativa |
-| :--- | :--- | :--- |
-| `regime` (2023) e `Modalidade` (2024+) representam o mesmo conceito sob nomes distintos | Campos unificados com recodificação semântica (`Integral` → `Remoto`, `Parcial` → `Semipresencial`) | **97,9%** de concordância validada em cruzamento de meses consecutivos |
-| `sigla_programa` e `programa` possuem correspondência biunívoca quando preenchidos | Preenchimento bidirecional cruzado (`fillna`) complementado por dicionário de portarias normativas do INSS | **100%** determinístico |
-| `id_designacao` e `dt_criacao_designacao` ausentes em meses específicos por falha de exportação original (ex: 03/2024 e 05/2024) | Reconstrução via **ponte temporal** entre meses vizinhos (preenchimento condicionado à estabilidade das demais chaves do servidor antes e depois) | **~96%**, com limitação residual documentada em campos sem estabilidade |
-| `status` numérico (`1`, `2`) ou ausente | Mapeamento estruturado (`1` → `Designado`, `2` → `Desligado`) e inferência por intervalo de vigência (`dt_inicio` e `dt_fim` versus competência) | **100%** auditável por regras de negócio |
-| `flag_pgd` com valores nulos | Preenchimento exclusivo para programas com enquadramento oficial comprovado nos dados e normativos; demais mantidos como `NaN` | Decisão conservadora para evitar falsos positivos regulatórios |
-| `dt_alteracao_designacao`, `motivo_desligamento`, `id_lotacao` ausentes | Mantidos como valores nulos de banco (`NULL` / `None`) | Preservação da fidelidade do fato: ausência genuína de registro na fonte |
-| Variabilidade de nomes de colunas e caracteres especiais | Normalização em *snake_case* e remoção de caracteres não alfanuméricos | Padronização para compatibilidade com ANSI SQL e PostgreSQL |
+| Situação Encontrada                                                                                                                   | Decisão Técnica                                                                                                                                                 | Nível de Confiança / Justificativa                                            |
+| :-------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------ |
+| `regime` (2023) e `Modalidade` (2024+) representam o mesmo conceito sob nomes distintos                                             | Campos unificados com recodificação semântica (`Integral` → `Remoto`, `Parcial` → `Semipresencial`)                                                  | **97,9%** de concordância validada em cruzamento de meses consecutivos   |
+| `sigla_programa` e `programa` possuem correspondência biunívoca quando preenchidos                                                | Preenchimento bidirecional cruzado (`fillna`) complementado por dicionário de portarias normativas do INSS                                                     | **100%** determinístico                                                  |
+| `id_designacao` e `dt_criacao_designacao` ausentes em meses específicos por falha de exportação original (ex: 03/2024 e 05/2024) | Reconstrução via**ponte temporal** entre meses vizinhos (preenchimento condicionado à estabilidade das demais chaves do servidor antes e depois)         | **~96%**, com limitação residual documentada em campos sem estabilidade |
+| `status` numérico (`1`, `2`) ou ausente                                                                                          | Mapeamento estruturado (`1` → `Designado`, `2` → `Desligado`) e inferência por intervalo de vigência (`dt_inicio` e `dt_fim` versus competência) | **100%** auditável por regras de negócio                                |
+| `flag_pgd` com valores nulos                                                                                                          | Preenchimento exclusivo para programas com enquadramento oficial comprovado nos dados e normativos; demais mantidos como`NaN`                                   | Decisão conservadora para evitar falsos positivos regulatórios                |
+| `dt_alteracao_designacao`, `motivo_desligamento`, `id_lotacao` ausentes                                                           | Mantidos como valores nulos de banco (`NULL` / `None`)                                                                                                        | Preservação da fidelidade do fato: ausência genuína de registro na fonte    |
+| Variabilidade de nomes de colunas e caracteres especiais                                                                                | Normalização em*snake_case* e remoção de caracteres não alfanuméricos                                                                                     | Padronização para compatibilidade com ANSI SQL e PostgreSQL                   |
 
 ---
 
@@ -155,26 +160,26 @@ Todas as minhas decisões e intervenções de dados foram pautadas em validaçã
 
 A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutura de tipos:
 
-| Coluna | Tipo SQL | Descrição |
-| :--- | :--- | :--- |
-| `competencia` | `DATE` | Data correspondente ao primeiro dia do mês de competência |
-| `id_usuario` | `TEXT` | Identificador anonimizado do servidor (formato USR-XXXXX) |
-| `id_designacao` | `BIGINT` | Código identificador da designação no SGP |
-| `id_lotacao` | `TEXT` | Código da unidade organizacional de lotação |
-| `lotacao` | `TEXT` | Nome descritivo da unidade de lotação |
-| `sigla_programa` | `TEXT` | Sigla do programa de gestão associado |
-| `programa` | `TEXT` | Nome por extenso do programa de gestão |
-| `sigla_linha_trabalho`| `TEXT` | Sigla da linha de trabalho executada |
-| `linha_trabalho` | `TEXT` | Nome completo da linha de trabalho |
-| `status` | `TEXT` | Situação funcional (`Designado`, `Desligado`, `Não Designado`) |
-| `modalidade` | `TEXT` | Modalidade de trabalho (`Remoto`, `Semipresencial`, `Presencial`) |
-| `flag_pgd` | `TEXT` | Indicador de adesão ao PGD (`Sim`, `Não`) |
-| `tipo_entrega` | `TEXT` | Classificação do modelo de entrega |
-| `motivo_desligamento` | `TEXT` | Motivação registrada do desligamento |
-| `dt_inicio_designacao`| `TIMESTAMP`| Data e hora do início da vigência da designação |
-| `dt_fim_designacao` | `TIMESTAMP`| Data e hora de encerramento da designação |
-| `dt_criacao_designacao`| `TIMESTAMP`| Data e hora de criação do registro no sistema |
-| `dt_alteracao_designacao`| `TIMESTAMP`| Data e hora da última alteração do registro |
+| Coluna                      | Tipo SQL      | Descrição                                                             |
+| :-------------------------- | :------------ | :---------------------------------------------------------------------- |
+| `competencia`             | `DATE`      | Data correspondente ao primeiro dia do mês de competência             |
+| `id_usuario`              | `TEXT`      | Identificador anonimizado do servidor (formato USR-XXXXX)               |
+| `id_designacao`           | `BIGINT`    | Código identificador da designação no SGP                            |
+| `id_lotacao`              | `TEXT`      | Código da unidade organizacional de lotação                          |
+| `lotacao`                 | `TEXT`      | Nome descritivo da unidade de lotação                                 |
+| `sigla_programa`          | `TEXT`      | Sigla do programa de gestão associado                                  |
+| `programa`                | `TEXT`      | Nome por extenso do programa de gestão                                 |
+| `sigla_linha_trabalho`    | `TEXT`      | Sigla da linha de trabalho executada                                    |
+| `linha_trabalho`          | `TEXT`      | Nome completo da linha de trabalho                                      |
+| `status`                  | `TEXT`      | Situação funcional (`Designado`, `Desligado`, `Não Designado`) |
+| `modalidade`              | `TEXT`      | Modalidade de trabalho (`Remoto`, `Semipresencial`, `Presencial`) |
+| `flag_pgd`                | `TEXT`      | Indicador de adesão ao PGD (`Sim`, `Não`)                         |
+| `tipo_entrega`            | `TEXT`      | Classificação do modelo de entrega                                    |
+| `motivo_desligamento`     | `TEXT`      | Motivação registrada do desligamento                                  |
+| `dt_inicio_designacao`    | `TIMESTAMP` | Data e hora do início da vigência da designação                     |
+| `dt_fim_designacao`       | `TIMESTAMP` | Data e hora de encerramento da designação                             |
+| `dt_criacao_designacao`   | `TIMESTAMP` | Data e hora de criação do registro no sistema                         |
+| `dt_alteracao_designacao` | `TIMESTAMP` | Data e hora da última alteração do registro                          |
 
 ---
 
@@ -183,6 +188,7 @@ A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutur
 Para garantir a confiabilidade e integridade das cargas contínuas, desenvolvi uma suíte de testes automatizados construída com **`pytest`** ([`tests/test_pipeline.py`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/tests/test_pipeline.py)). Essa camada atua como uma malha fina de qualidade de dados.
 
 As seguintes validações de negócio e consistência são executadas automaticamente:
+
 - **Integridade de Siglas e Nomes:** Verifica se não existem registros órfãos (exemplo: uma `sigla_programa` preenchida, mas sem o `programa` correspondente, ou vice-versa). A mesma regra é aplicada para o mapeamento das Linhas de Trabalho.
 - **Consistência Temporal:** Garante que nenhuma data de fim (`dt_fim_designacao`) seja anterior à data de início (`dt_inicio_designacao`).
 - **Validação de Nulos Críticos:** Impede que chaves primárias e colunas essenciais para regras de negócio (como a `modalidade` em casos de status "Designado") fiquem vazias.
@@ -195,6 +201,7 @@ As seguintes validações de negócio e consistência são executadas automatica
 ## 🚀 Como Executar o Projeto
 
 ### Pré-requisitos
+
 - Python 3.12+
 - Gerenciador de pacotes `pip`
 - Acesso a uma instância PostgreSQL (ex: [Neon Tech](https://neon.tech/))
@@ -228,6 +235,7 @@ cp .env.example .env
 ```
 
 Edite o arquivo `.env`:
+
 ```env
 DATABASE_URL=postgresql://usuario:senha@ep-exemplo.us-east-2.aws.neon.tech/neondb?sslmode=require
 ```
@@ -249,16 +257,20 @@ python tratamento/etl_sgp_inss.py
 O fluxo de atualização contínua está configurado em [`.github/workflows/database_sync.yml`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/.github/workflows/database_sync.yml).
 
 ### Segredos Necessários no Repositório (Settings > Secrets and variables > Actions):
+
 - `NEON_DATABASE_URL`: URL de conexão ao banco PostgreSQL do Neon.
 - `POWER_AUTOMATE_WEBHOOK_URL`: URL do gatilho HTTP do fluxo no Power Automate.
 
 ### Ciclo de Execução:
+
 1. Disparo agendado via Cron (`0 9 1 * *`) todo dia 1º de cada mês ou sob demanda pelo botão **Run workflow**;
 2. Setup do ambiente Python 3.12 e instalação dos requisitos;
 3. Execução de `download_sgp.py` (download das novas competências publicadas pelo INSS);
-4. Execução de `etl_sgp_inss.py` (transformação e sincronização com o banco PostgreSQL);
-5. Commit automático de artefatos e da amostra CSV atualizada com a mensagem `chore(data): atualiza amostra e artefatos [skip ci]`;
-6. Disparo do Webhook para o Power Automate atualizar o relatório no Power BI Service.
+4. Execução de `etl_sgp_inss.py` (transformação dos dados);
+5. Execução do `pytest` (validação de integridade e regras de negócio);
+6. Sincronização dos dados aprovados com o banco PostgreSQL;
+7. Commit automático da amostra CSV atualizada com a mensagem `chore(data): atualiza amostra e artefatos [skip ci]`;
+8. Disparo do Webhook para o Power Automate atualizar o relatório no Power BI Service.
 
 ---
 
@@ -272,6 +284,7 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 > **Formas de Acesso:** O relatório pode ser aberto e explorado diretamente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon), ou manualmente via dataset do Kaggle. A publicação online pública no Power BI Service está em fase final de homologação (previsão até **22/09/2026** devido à liberação de licença na conta estudantil Microsoft). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
 
 ### Principais Indicadores Monitorados:
+
 - **45,40 Mil Designações:** Volume total acumulado de registros de designação no histórico monitorado.
 - **22,13 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
 - **15,75 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
@@ -281,6 +294,7 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 - **Sazonalidade e Curva de Status:** Identificação de picos operacionais (ex: março de 2025) e repactuação de teletrabalho.
 
 Para mais detalhes sobre a modelagem e os achados de negócio, consulte a documentação específica:
+
 - 📖 [Documentação Técnica do Dashboard](dashboard/dashboard_README.md)
 - 💡 [Relatório de Insights e Análise Executiva](dashboard/insights_README.md)
 
@@ -300,14 +314,14 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Camada | Tecnologias |
-| :--- | :--- |
-| **Linguagem & Core** | Python 3.12, Pandas, NumPy, Requests, Pathlib |
-| **Engenharia de Banco de Dados** | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB) |
-| **Orquestração & CI/CD** | GitHub Actions, Git, Cron Scheduling |
-| **Integração & Webhooks** | cURL, Microsoft Power Automate |
-| **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX |
-| **Governança & Qualidade** | Conformidade LGPD, Type Casting Estrito, Tratamento de Nulos |
+| Camada                                      | Tecnologias                                                  |
+| :------------------------------------------ | :----------------------------------------------------------- |
+| **Linguagem & Core**                  | Python 3.12, Pandas, NumPy, Requests, Pathlib                |
+| **Engenharia de Banco de Dados**      | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB)  |
+| **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                         |
+| **Integração & Webhooks**           | cURL, Microsoft Power Automate                               |
+| **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX                    |
+| **Governança & Qualidade**           | Pytest, Conformidade LGPD, Type Casting Estrito, Tratamento de Nulos |
 
 ---
 
