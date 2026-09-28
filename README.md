@@ -88,16 +88,21 @@ flowchart TD
    - Enriquecimento cadastral de siglas e programas com validação em portarias normativas do INSS.
    - Geração de amostra estatística (`sample`) de 5.000 registros para versionamento auditável no Git.
    - Tipagem rigorosa com SQLAlchemy (`Date`, `DateTime`, `BigInteger`, `Text`) e normalização universal de valores nulos.
-3. **Camada de Armazenamento (PostgreSQL no Neon Tech)**:
+3. **Qualidade de Dados e Testes Automatizados (`test_pipeline.py`)**:
+
+   - Execução de malha fina via `pytest` para validação de regras de negócio, como integridade de siglas e consistência temporal.
+   - Verificação de unicidade de chaves, restrição de nulos em colunas críticas e adesão de categorias aos domínios normatizados.
+   - Auditoria de privacidade (LGPD), assegurando a correta aplicação das máscaras nos identificadores de usuários.
+4. **Camada de Armazenamento (PostgreSQL no Neon Tech)**:
 
    - Armazenamento em nuvem serverless sob a tabela `tb_pgd_inss`.
    - Carga incremental transacional e idempotente por partição de competência (`Delete & Insert` com schema validado via SQLAlchemy e `chunksize=10.000`), garantindo preservação de índices, zero indisponibilidade (*downtime*) para o Power BI e proteção contra duplicidades.
-4. **Orquestração e CI/CD (GitHub Actions — `database_sync.yml`)**:
+5. **Orquestração e CI/CD (GitHub Actions — `database_sync.yml`)**:
 
    - Execução mensal automatizada via CRON (`0 9 1 * *`, no 1º dia de cada mês às 06:00 UTC-3) ou acionamento sob demanda (`workflow_dispatch`).
-   - Execução sequencial da ingestão e do ETL em ambiente isolado (Python 3.12).
+   - Execução sequencial da ingestão, do ETL e da validação (pytest) em ambiente isolado (Python 3.12).
    - Versionamento automático de artefatos no repositório com usuário `github-actions[bot]`.
-5. **Notificação e Atualização do BI (Power Automate & Power BI)**:
+6. **Notificação e Atualização do BI (Power Automate & Power BI)**:
 
    - Disparo de Webhook via requisição HTTP POST autenticada para o **Power Automate**.
    - O fluxo do Power Automate aciona a atualização automática do modelo semântico do Power BI assim que a nova carga do banco é finalizada.
