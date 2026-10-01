@@ -5,11 +5,11 @@ import pytest
 #%%
 @pytest.fixture(scope="module")
 def df_inss():
-  caminho_csv = Path(__file__).parent / "pgd_designacoes_inss_2023_2026.csv"
+  caminho_csv = Path(__file__).parent / "pgd_designacoes_inss_2023_2026.parquet"
   if not caminho_csv.exists():
     pytest.fail(f"Arquivo de dados não encontrado em: {caminho_csv}")
   print(f"\nCarregando dados de: {caminho_csv}")
-  return pd.read_csv(caminho_csv, sep=";", parse_dates=["dt_inicio_designacao", "dt_fim_designacao"])
+  return pd.read_parquet(caminho_csv)
 #%%
 def test_tipos_datas(df_inss):
     assert pd.api.types.is_datetime64_any_dtype(df_inss["dt_inicio_designacao"])

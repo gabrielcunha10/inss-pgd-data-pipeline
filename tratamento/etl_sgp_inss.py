@@ -2,16 +2,12 @@
 import pandas as pd
 import os
 from dotenv import load_dotenv
-from sqlalchemy import create_engine, inspect, text
-from sqlalchemy.types import BigInteger, Date, DateTime, Text
+
 import numpy as np
 import re
 from pathlib import Path
 
-#%%
-load_dotenv()
-db_url = os.getenv("DATABASE_URL")
-#%%
+
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "data"
 OUTPUT_FILE = PROJECT_DIR / "pgd_designacoes_inss_2023_2026.csv"
@@ -91,7 +87,6 @@ for i in files:
 df_total = pd.concat(dfs, ignore_index=True, sort=False)
 df_total = df_total.replace("-", np.nan)
 
-# Correções ortográficas na base de dados
 df_total["sigla_programa"] = df_total["sigla_programa"].replace({"ATENDIMENT0": "ATENDIMENTO"})
 df_total["programa"] = df_total["programa"].replace({
     "PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO": "PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO"
@@ -310,10 +305,9 @@ cols = ["id_usuario"] + [col for col in df_total.columns if col != "id_usuario"]
 df_total = df_total[cols]
 
 #%%
-df_total.to_csv(
-    PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.csv", 
-    index=False, 
-    sep=";"
+df_total.to_parquet(
+    PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet", 
+    index=False
 )
 
 #%%
@@ -324,118 +318,4 @@ df_sample.to_csv(
     index=False, 
     sep=";"
 )
-# %%
-df_total.columns = (
-    df_total.columns.str.strip()
-    .str.lower()
-    .str.replace(' ', '_')
-    .str.replace('[^a-z0-9_]', '', regex=True)
-)
 
-if 'competencia' in df_total.columns:
-  df_total['competencia'] = pd.to_datetime(
-      df_total['competencia'].astype(str) + '-01', errors='coerce'
-  )
-
-colunas_data = [
-    'dt_inicio_designacao',
-    'dt_fim_designacao',
-    'dt_criacao_designacao',
-    'dt_alteracao_designacao',
-]
-
-for col in colunas_data:
-  if col in df_total.columns:
-    df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
-
-colunas_id = ['id_designacao']
-
-for col in colunas_id:
-  if col in df_total.columns:
-    df_total[col] = pd.to_numeric(df_total[col], errors='coerce').astype(
-        'Int64'
-    )
-
-colunas_texto = [
-    col
-    for col in df_total.select_dtypes(
-        include=['object', 'string']
-    ).columns.tolist()
-    if col not in ['competencia']
-]
-
-for col in colunas_texto:
-  df_total[col] = df_total[col].astype(str).replace({
-      'nan': None,
-      'NaN': None,
-      'None': None,
-      'null': None,
-      'NULL': None,
-      'Null': None,
-      '': None,
-      '<NA>': None,
-      'NaT': None,
-  })
-
-dtype_mapping = {}
-for col in df_total.columns:
-  if col == 'competencia':
-    dtype_mapping[col] = Date()
-  elif col in colunas_data:
-    dtype_mapping[col] = DateTime()
-  elif col in colunas_id:
-    dtype_mapping[col] = BigInteger()
-  else:
-    dtype_mapping[col] = Text()
-
-engine = create_engine(db_url)
-
-try:
-  competencias_datas = [
-      d.strftime('%Y-%m-%d')
-      for d in df_total['competencia'].dropna().unique()
-  ]
-
-  with engine.begin() as conn:
-    inspector = inspect(conn)
-    tabela_existe = inspector.has_table('tb_pgd_inss')
-
-    if not tabela_existe:
-      print("Tabela 'tb_pgd_inss' não existe. Criando estrutura inicial no banco...")
-      df_total.head(0).to_sql(
-          'tb_pgd_inss',
-          con=conn,
-          if_exists='append',
-          index=False,
-          dtype=dtype_mapping,
-      )
-    elif competencias_datas:
-      print(
-          f"Executando exclusão preventiva de {len(competencias_datas)} competência(s)"
-          " para carga idempotente..."
-      )
-      comps_formatted = ", ".join(f"'{c}'" for c in competencias_datas)
-      conn.execute(
-          text(f"DELETE FROM tb_pgd_inss WHERE competencia IN ({comps_formatted})")
-      )
-
-    print(
-        f"Inserindo {len(df_total)} registros na tabela 'tb_pgd_inss' em lotes"
-        " (chunksize=10.000)..."
-    )
-    df_total.to_sql(
-        'tb_pgd_inss',
-        con=conn,
-        if_exists='append',
-        index=False,
-        dtype=dtype_mapping,
-        chunksize=10000,
-    )
-
-  print(
-      f"[SUCCESS] Carga incremental concluída: {len(df_total)} linhas sincronizadas"
-      f" ({len(competencias_datas)} competência(s)) na tabela 'tb_pgd_inss' no Neon Tech."
-  )
-except Exception as e:
-  print(f"Erro ao enviar dados de forma incremental: {e}")
-  raise e
