@@ -41,9 +41,10 @@ flowchart TD
     API["Portal de Dados Abertos INSS<br/>(API CKAN Pública)"]
     SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
     RAW["Arquivos Brutos CSV<br/>(data/pgd_inss_AAAAMM.csv)"]
-    SCRIPT_ETL["etl_sgp_inss.py<br/>(Limpeza, Tipagem e Ponte)"]
+    SCRIPT_ETL["etl_sgp_inss.py<br/>(Limpeza, Tipagem e Parquet)"]
     TESTS["Qualidade de Dados<br/>(Pytest)"]
     SAMPLE["Amostra Sample 5k<br/>(sample.csv)"]
+    SCRIPT_LOAD["load_neon.py<br/>(Carga Segura)"]
     NEON[("PostgreSQL Serverless<br/>Neon: tb_pgd_inss")]
 
     subgraph GH_ACTIONS ["Orquestração e CI/CD (GitHub Actions)"]
@@ -61,7 +62,8 @@ flowchart TD
     SCRIPT_IN --> RAW
     RAW --> SCRIPT_ETL
     SCRIPT_ETL --> TESTS
-    TESTS -->|"Aprovação"| NEON
+    TESTS -->|"Aprovação"| SCRIPT_LOAD
+    SCRIPT_LOAD -->|"Insert"| NEON
     SCRIPT_ETL --> SAMPLE
     SAMPLE -->|"Versionamento"| BOT
     NEON -->|"Carga Finalizada"| HOOK
@@ -86,15 +88,16 @@ flowchart TD
    - Mapeamento dinâmico de cabeçalhos (~30 variantes para 19 colunas canônicas).
    - Reconstrução de dados ausentes usando técnica de **ponte temporal determinística** entre meses adjacentes.
    - Enriquecimento cadastral de siglas e programas com validação em portarias normativas do INSS.
-   - Geração de amostra estatística (`sample`) de 5.000 registros para versionamento auditável no Git.
-   - Tipagem rigorosa com SQLAlchemy (`Date`, `DateTime`, `BigInteger`, `Text`) e normalização universal de valores nulos.
+   - Geração de amostra estatística (`sample`) de 5.000 registros em CSV para versionamento auditável no Git.
+   - Geração do arquivo principal otimizado em `.parquet` preservando a tipagem estrita para a etapa de testes.
 3. **Qualidade de Dados e Testes Automatizados (`test_pipeline.py`)**:
 
    - Execução de malha fina via `pytest` para validação de regras de negócio, como integridade de siglas e consistência temporal.
    - Verificação de unicidade de chaves, restrição de nulos em colunas críticas e adesão de categorias aos domínios normatizados.
    - Auditoria de privacidade (LGPD), assegurando a correta aplicação das máscaras nos identificadores de usuários.
-4. **Camada de Armazenamento (PostgreSQL no Neon Tech)**:
+4. **Carga Segura e Armazenamento (`load_neon.py` e PostgreSQL Neon)**:
 
+   - Processo desacoplado que atua no padrão *Write-Audit-Publish (WAP)*, entrando em ação apenas se o `pytest` aprovar os dados.
    - Armazenamento em nuvem serverless sob a tabela `tb_pgd_inss`.
    - Carga incremental transacional e idempotente por partição de competência (`Delete & Insert` com schema validado via SQLAlchemy e `chunksize=10.000`), garantindo preservação de índices, zero indisponibilidade (*downtime*) para o Power BI e proteção contra duplicidades.
 5. **Orquestração e CI/CD (GitHub Actions — `database_sync.yml`)**:
@@ -129,11 +132,12 @@ flowchart TD
 ├── data/                                          # Armazenamento local dos CSVs brutos (não versionados)
 │   └── pgd_inss_*.csv
 ├── tests/                                         # Testes automatizados e base de saída do pipeline
-│   ├── pgd_designacoes_inss_2023_2026.csv         # Base tratada salva após o ETL (não versionado)
+│   ├── pgd_designacoes_inss_2023_2026.parquet     # Base tratada salva após o ETL (não versionado)
 │   └── test_pipeline.py                           # Suíte de testes da qualidade dos dados e pipeline
 ├── tratamento/
 │   ├── download_sgp.py                            # Ingestor automatizado via API CKAN do INSS
-│   ├── etl_sgp_inss.py                            # Pipeline completo de ETL e carga no Neon DB
+│   ├── etl_sgp_inss.py                            # Transformação de dados e geração do Parquet
+│   ├── load_neon.py                               # Script isolado para carga idempotente no Neon DB
 │   └── pgd_designacoes_inss_2023_2026_sample.csv  # Amostra tratada (5.000 linhas) para consulta rápida
 ├── .env.example                                   # Modelo de variáveis de ambiente
 ├── requirements.txt                               # Dependências Python do projeto
@@ -251,8 +255,14 @@ DATABASE_URL=postgresql://usuario:senha@ep-exemplo.us-east-2.aws.neon.tech/neond
 # 1. Ingestão automática: consulta a API do INSS e baixa os arquivos em data/
 python tratamento/download_sgp.py
 
-# 2. Processamento e Carga: limpa os dados e carrega na tabela tb_pgd_inss no Neon DB
+# 2. Processamento (ETL): limpa os dados e gera o arquivo Parquet e o CSV sample
 python tratamento/etl_sgp_inss.py
+
+# 3. Qualidade de Dados: roda a suíte de testes (Pytest) no Parquet gerado
+pytest tests/
+
+# 4. Carga no Banco (Load): insere os dados validados na tabela tb_pgd_inss no Neon DB
+python tratamento/load_neon.py
 ```
 
 ---
@@ -271,9 +281,9 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 1. Disparo agendado via Cron (`0 9 1 * *`) todo dia 1º de cada mês ou sob demanda pelo botão **Run workflow**;
 2. Setup do ambiente Python 3.12 e instalação dos requisitos;
 3. Execução de `download_sgp.py` (download das novas competências publicadas pelo INSS);
-4. Execução de `etl_sgp_inss.py` (transformação dos dados);
-5. Execução do `pytest` (validação de integridade e regras de negócio);
-6. Sincronização dos dados aprovados com o banco PostgreSQL;
+4. Execução de `etl_sgp_inss.py` (transformação dos dados e geração do Parquet);
+5. Execução do `pytest` (validação de integridade e regras de negócio como guardião do banco);
+6. Execução de `load_neon.py` (sincronização idempotente dos dados aprovados com o banco PostgreSQL);
 7. Commit automático da amostra CSV atualizada com a mensagem `chore(data): atualiza amostra e artefatos [skip ci]`;
 8. Disparo do Webhook para o Power Automate atualizar o relatório no Power BI Service.
 
