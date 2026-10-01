@@ -9,9 +9,20 @@ jobs:
   sync-and-commit:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout do Repositório
         uses: actions/checkout@v4
+
+      - name: Cache dos dados locais
+        uses: actions/cache@v4
+        with:
+          path: data/
+          key: dados-inss-${{ hashFiles('data/**') }}
+          restore-keys: |
+            dados-inss-${{ runner.os }}-
 
       - name: Configurar Python
         uses: actions/setup-python@v5
@@ -49,7 +60,7 @@ jobs:
             echo "Alterações detectadas. Criando commit..."
             git commit -m "chore(data): atualiza amostra e artefatos [skip ci]"
             git push
-          else
+          else 
             echo "Nenhuma alteração nos arquivos. Pulando commit."
           fi
 
