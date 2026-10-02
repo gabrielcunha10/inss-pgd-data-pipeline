@@ -23,44 +23,13 @@ def main():
         
     df_total = pd.read_parquet(PARQUET_FILE)
 
-    df_total.columns = (
-        df_total.columns.str.strip()
-        .str.lower()
-        .str.replace(' ', '_')
-        .str.replace('[^a-z0-9_]', '', regex=True)
-    )
-
-    if 'competencia' in df_total.columns:
-        df_total['competencia'] = pd.to_datetime(
-            df_total['competencia'].astype(str) + '-01', errors='coerce'
-        )
-
     colunas_data = [
         'dt_inicio_designacao',
         'dt_fim_designacao',
         'dt_criacao_designacao',
         'dt_alteracao_designacao',
     ]
-
-    for col in colunas_data:
-        if col in df_total.columns:
-            df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
-
     colunas_id = ['id_designacao']
-    for col in colunas_id:
-        if col in df_total.columns:
-            df_total[col] = pd.to_numeric(df_total[col], errors='coerce').astype('Int64')
-
-    colunas_texto = [
-        col for col in df_total.select_dtypes(include=['object', 'string']).columns.tolist()
-        if col not in ['competencia']
-    ]
-
-    for col in colunas_texto:
-        df_total[col] = df_total[col].astype(str).replace({
-            'nan': None, 'NaN': None, 'None': None, 'null': None,
-            'NULL': None, 'Null': None, '': None, '<NA>': None, 'NaT': None,
-        })
 
     dtype_mapping = {}
     for col in df_total.columns:

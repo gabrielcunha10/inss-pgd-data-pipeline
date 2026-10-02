@@ -304,6 +304,43 @@ df_total = df_total.drop_duplicates(subset=["id_usuario", "competencia", "id_des
 cols = ["id_usuario"] + [col for col in df_total.columns if col != "id_usuario"]
 df_total = df_total[cols]
 
+# ==========================================
+# TRATAMENTO FINAL DE TIPOS E LIMPEZA
+# ==========================================
+df_total.columns = (
+    df_total.columns.str.strip()
+    .str.lower()
+    .str.replace(' ', '_')
+    .str.replace('[^a-z0-9_]', '', regex=True)
+)
+
+if 'competencia' in df_total.columns:
+    # Como já é Period no script, basta to_timestamp para virar Data (1º do mês)
+    df_total['competencia'] = df_total['competencia'].dt.to_timestamp()
+
+colunas_data = [
+    'dt_inicio_designacao', 'dt_fim_designacao', 
+    'dt_criacao_designacao', 'dt_alteracao_designacao'
+]
+for col in colunas_data:
+    if col in df_total.columns:
+        df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
+
+colunas_id = ['id_designacao']
+for col in colunas_id:
+    if col in df_total.columns:
+        df_total[col] = pd.to_numeric(df_total[col], errors='coerce').astype('Int64')
+
+colunas_texto = [
+    col for col in df_total.select_dtypes(include=['object', 'string']).columns.tolist()
+    if col not in ['competencia']
+]
+for col in colunas_texto:
+    df_total[col] = df_total[col].astype(str).replace({
+        'nan': None, 'NaN': None, 'None': None, 'null': None,
+        'NULL': None, 'Null': None, '': None, '<NA>': None, 'NaT': None,
+    })
+
 #%%
 df_total.to_parquet(
     PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet", 
