@@ -1,6 +1,8 @@
 import os
 import re
 import requests
+import io
+import pandas as pd
 from datetime import datetime
 
 API_URL = "https://dadosabertos.inss.gov.br/api/3/action/package_show?id=sistema-de-gerenciamento-de-produtividade-sgp"
@@ -31,7 +33,6 @@ def extrair_competencia(nome_recurso, url, data_criacao):
         except Exception:
             pass
 
-    # Formato unificado AAAAMM (ex: pgd_inss_202310.csv)
     if ano and mes:
         return f"pgd_inss_{ano}{mes}.csv"
     
@@ -62,7 +63,10 @@ def baixar_arquivos_padronizados():
         url_download = res.get("url", "")
         format_file = res.get("format", "").upper()
         
-        if format_file == "CSV" or url_download.lower().endswith(".csv"):
+        is_csv = format_file == "CSV" or url_download.lower().endswith(".csv")
+        is_excel = format_file in ("XLSX", "XLS") or url_download.lower().endswith((".xlsx", ".xls"))
+        
+        if is_csv or is_excel:
             nome_original = res.get("name", "")
             data_criacao = res.get("created", "") or res.get("last_modified", "")
             
@@ -72,15 +76,23 @@ def baixar_arquivos_padronizados():
             if not os.path.exists(caminho_local):
                 print(f"Baixando e padronizando em 'data/': {nome_padronizado}...")
                 try:
-                    r = requests.get(url_download, headers=headers, stream=True, timeout=60)
-                    r.raise_for_status()
-                    
-                    if r.encoding is None:
-                        r.encoding = 'utf-8'
+                    if is_csv:
+                        r = requests.get(url_download, headers=headers, stream=True, timeout=60)
+                        r.raise_for_status()
+                        
+                        if r.encoding is None:
+                            r.encoding = 'utf-8'
 
-                    with open(caminho_local, "wb") as f:
-                        for chunk in r.iter_content(chunk_size=8192):
-                            f.write(chunk)
+                        with open(caminho_local, "wb") as f:
+                            for chunk in r.iter_content(chunk_size=8192):
+                                f.write(chunk)
+                    elif is_excel:
+                        r = requests.get(url_download, headers=headers, timeout=60)
+                        r.raise_for_status()
+                        
+                        df = pd.read_excel(io.BytesIO(r.content))
+                        df.to_csv(caminho_local, index=False, encoding='utf-8')
+                        
                     print(f"Salvo como: {nome_padronizado}")
                     novos_arquivos += 1
                 except Exception as err:
