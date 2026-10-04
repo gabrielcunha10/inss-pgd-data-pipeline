@@ -17,9 +17,9 @@ colunas = set()
 
 def ler_csv(caminho):
     try:
-        return pd.read_csv(caminho, sep=";", dtype="str", encoding="utf-8")
+        return pd.read_csv(caminho, sep=None, engine="python", dtype="str", encoding="utf-8")
     except UnicodeDecodeError:
-        return pd.read_csv(caminho, sep=";", dtype="str", encoding="latin1")
+        return pd.read_csv(caminho, sep=None, engine="python", dtype="str", encoding="latin1")
 
 #%%
 for i in files:
