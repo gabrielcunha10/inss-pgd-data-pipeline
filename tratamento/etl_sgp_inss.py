@@ -10,7 +10,7 @@ from pathlib import Path
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "data"
-OUTPUT_FILE = PROJECT_DIR / "pgd_designacoes_inss_2023_2026.csv"
+OUTPUT_FILE = PROJECT_DIR / "tratamento" / "pgd_designacoes_inss_2023_2026.csv"
 
 files = os.listdir(DATA_DIR)
 colunas = set()
@@ -355,4 +355,8 @@ df_sample.to_csv(
     index=False, 
     sep=";"
 )
+
+#%%
+# CSV total limpo (ignorado pelo git; para consumo local)
+df_total.to_csv(OUTPUT_FILE, index=False, sep=";")
 
