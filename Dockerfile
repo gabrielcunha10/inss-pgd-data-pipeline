@@ -12,4 +12,4 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-CMD ["sh", "-c", "python tratamento/download_sgp.py && python tratamento/etl_sgp_inss.py && pytest tests/ && rm -f tests/pgd_designacoes_inss_2023_2026.parquet"]
+CMD ["sh", "run_pipeline.sh"]
