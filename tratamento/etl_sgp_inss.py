@@ -223,8 +223,14 @@ def preencher_por_ponte(df_total, colunas, competencia_alvo, competencia_antes, 
 
 #%%
 colunas_para_preencher = ['id_designacao', 'dt_criacao_designacao']
-df_total = preencher_por_ponte(df_total, colunas_para_preencher, '202403', '202402', '202404')
-df_total = preencher_por_ponte(df_total, colunas_para_preencher, '202405', '202404', '202406')
+comps_ordenadas = sorted(df_total['competencia'].dropna().unique())
+for i in range(1, len(comps_ordenadas) - 1):
+    df_total = preencher_por_ponte(
+        df_total, colunas_para_preencher, 
+        comps_ordenadas[i], 
+        comps_ordenadas[i - 1], 
+        comps_ordenadas[i + 1]
+    )
 # %%
 dicionario = (
     df_total.dropna(subset=["sigla_programa", "programa"])
