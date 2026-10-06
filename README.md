@@ -324,7 +324,7 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 - **15,80 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
 - **30 Programas Monitorados:** Diversidade de programas e modalidades de gestão cadastrados no PGD.
 - **Retenção Temporal (Dias):** Tempo médio de permanência das designações no sistema por programa.
-- **Detalhamento Anonimizado (LGPD):** Ranking por servidor identificado via código seguro (`USR-xxxxx`).
+- **Detalhamento Anonimizado (LGPD):** Ranking por servidor identificado via código seguro criptografado por hash (`USR-XXXXXXXX`).
 - **Sazonalidade e Curva de Status:** Identificação de picos operacionais (ex: março de 2025) e repactuação de teletrabalho.
 
 Para mais detalhes sobre a modelagem e os achados de negócio, consulte a documentação específica:
@@ -338,8 +338,8 @@ Para mais detalhes sobre a modelagem e os achados de negócio, consulte a docume
 
 Considerando que os dados de origem envolvem nomes e matrículas de servidores públicos, implementei salvaguardas rigorosas de conformidade com a **Lei Geral de Proteção de Dados (Lei nº 13.709/2018)**:
 
-1. **Anonimização em Nível de Modelo (DAX)**:
-   - Criação de coluna calculada no modelo semântico do Power BI que mascara os identificadores nominais e substitui a identificação direta por códigos ou versões pseudonimizadas em relatórios compartilháveis.
+1. **Anonimização Criptográfica via HMAC (SHA-256)**:
+   - As matrículas originais dos servidores são mascaradas estruturalmente logo na etapa de ETL em Python. Utilizando `hashlib` e `hmac`, o pipeline gera um hash irreversível de 8 caracteres a partir de uma chave secreta (`HMAC_SECRET_KEY`), resultando em identificadores como `USR-A1B2C3D4`. Isso garante que as informações sensíveis originais jamais transitem ou cheguem ao banco de dados em nuvem e ao Power BI.
 2. **Dados Sensíveis Fora do Versionamento**:
    - Os arquivos brutos da pasta `data/` e arquivos `.env` são estritamente ignorados pelo `.gitignore`.
    - Apenas uma amostra (`sample`) estatisticamente reduzida (5.000 linhas) é versionada no repositório para permitir a validação da estrutura sem exposição desnecessária.
@@ -356,7 +356,7 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 | **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                                 |
 | **Integração & Webhooks**           | cURL, Microsoft Power Automate                                       |
 | **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX                            |
-| **Governança & Qualidade**           | Pytest, Conformidade LGPD, Type Casting Estrito, Tratamento de Nulos |
+| **Governança & Qualidade**           | Pytest, Conformidade LGPD (HMAC, Hashlib), Type Casting Estrito, Tratamento de Nulos |
 
 ---
 
