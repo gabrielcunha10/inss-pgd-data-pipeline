@@ -64,9 +64,9 @@ def main():
                 )
             elif competencias_datas:
                 print(f"Executando exclusão preventiva de {len(competencias_datas)} competência(s) para carga idempotente...")
-                comps_formatted = ", ".join(f"'{c}'" for c in competencias_datas)
                 conn.execute(
-                    text(f"DELETE FROM tb_pgd_inss WHERE competencia IN ({comps_formatted})")
+                    text("DELETE FROM tb_pgd_inss WHERE competencia = ANY(CAST(:comps AS date[]))"),
+                    {"comps": list(competencias_datas)}
                 )
 
             print(f"Inserindo {len(df_total)} registros na tabela 'tb_pgd_inss' em lotes (chunksize=10.000)...")

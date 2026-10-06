@@ -20,7 +20,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: data/
-          key: dados-inss-${{ hashFiles('data/**') }}
+          key: dados-inss-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             dados-inss-${{ runner.os }}-
 
