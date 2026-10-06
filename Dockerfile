@@ -12,4 +12,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+# Garante quebras de linha LF no script (evita erro se vier com CRLF do Windows)
+RUN sed -i 's/\r$//' run_pipeline.sh
+
 CMD ["sh", "run_pipeline.sh"]
