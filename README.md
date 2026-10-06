@@ -1,12 +1,15 @@
 # Pipeline de Dados e Analytics — Programa de Gestão de Desempenho (PGD) INSS
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![PostgreSQL Neon](<https://img.shields.io/badge/Database-PostgreSQL%20(Neon)-4169E1?logo=postgresql&logoColor=white>)](https://neon.tech/)
 [![GitHub Actions](<https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-2088FF?logo=github-actions&logoColor=white>)](https://github.com/features/actions)
 [![Power BI](<https://img.shields.io/badge/Dashboard-Power%20BI-F2C811?logo=power-bi&logoColor=black>)](https://powerbi.microsoft.com/)
 [![Power Automate](<https://img.shields.io/badge/Automation-Power%20Automate-0066FF?logo=power-automate&logoColor=white>)](https://powerautomate.microsoft.com/)
-[![Pytest](<https://img.shields.io/badge/QA-Pytest-0A9EDC?logo=pytest&logoColor=white>)](https://pytest.org/)
+[![Pytest](https://img.shields.io/badge/QA-Pytest-0A9EDC?logo=pytest&logoColor=white)](https://pytest.org/)
 [![LGPD](<https://img.shields.io/badge/Compliance-LGPD%20Anonymized-008080>)](#privacidade-e-conformidade-com-a-lgpd)
+
+👉 **[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9)**
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
@@ -211,8 +214,8 @@ As seguintes validações de negócio e consistência são executadas automatica
 
 ### Pré-requisitos
 
-- Python 3.12+
-- Gerenciador de pacotes `pip`
+- Python 3.12+ (para execução local manual)
+- Docker e Docker Compose (para execução em container)
 - Acesso a uma instância PostgreSQL (ex: [Neon Tech](https://neon.tech/))
 
 ### 1. Clonar e Configurar o Ambiente
@@ -249,7 +252,23 @@ Edite o arquivo `.env`:
 DATABASE_URL=postgresql://usuario:senha@ep-exemplo.us-east-2.aws.neon.tech/neondb?sslmode=require
 ```
 
-### 3. Executar o Pipeline Localmente
+### 3. Executar o Pipeline
+
+Você pode rodar o pipeline de duas formas: usando Docker (recomendado) ou executando os scripts Python diretamente na sua máquina.
+
+#### Opção A: Executar via Docker (Recomendado)
+
+Esta é a forma mais simples e isolada, pois resolve automaticamente as dependências e orquestra a execução via `run_pipeline.sh`:
+
+```bash
+docker-compose up --build
+```
+
+O container executará todo o fluxo em ordem: ingestão, tratamento (ETL), testes automatizados (pytest) e carga no banco de dados.
+
+#### Opção B: Executar Manualmente (Local)
+
+Se preferir rodar passo a passo:
 
 ```bash
 # 1. Ingestão automática: consulta a API do INSS e baixa os arquivos em data/
@@ -274,7 +293,7 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 ### Segredos Necessários no Repositório (Settings > Secrets and variables > Actions):
 
 - `NEON_DATABASE_URL`: URL de conexão ao banco PostgreSQL do Neon.
-- `POWER_AUTOMATE_WEBHOOK_URL`: URL do gatilho HTTP do fluxo no Power Automate.
+- `POWER_AUTOMATE_WEBHOOK_URL`: URL do gatilho HTTP do fluxo no Power Automate (copiada no campo *URL HTTP* dentro do gatilho *"Quando uma solicitação HTTP é recebida"*).
 
 ### Ciclo de Execução:
 
@@ -285,7 +304,7 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 5. Execução do `pytest` (validação de integridade e regras de negócio como guardião do banco);
 6. Execução de `load_neon.py` (sincronização idempotente dos dados aprovados com o banco PostgreSQL);
 7. Commit automático da amostra CSV atualizada com a mensagem `chore(data): atualiza amostra e artefatos [skip ci]`;
-8. Disparo do Webhook para o Power Automate atualizar o relatório no Power BI Service.
+8. Disparo do Webhook para o Power Automate atualizar o relatório no Power BI Service (usando o gatilho *"Quando uma solicitação HTTP é recebida"* conectado à ação *"Atualizar um conjunto de dados (Power BI)"*).
 
 ---
 
@@ -296,13 +315,13 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 ![Preview do Dashboard](dashboard/imagens/dashboard.png)
 
 > [!TIP]
-> **Formas de Acesso:** O relatório pode ser aberto e explorado diretamente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon), ou manualmente via dataset do Kaggle. A publicação online pública no Power BI Service está em fase final de homologação (previsão até **22/09/2026** devido à liberação de licença na conta estudantil Microsoft). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
+> **Formas de Acesso:** O relatório pode ser acessado de forma interativa diretamente pelo navegador via **[Power BI Service (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9)**, ou baixado e explorado localmente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
 
 ### Principais Indicadores Monitorados:
 
-- **45,40 Mil Designações:** Volume total acumulado de registros de designação no histórico monitorado.
-- **22,13 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
-- **15,75 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
+- **45,81 Mil Designações:** Volume total acumulado de registros de designação no histórico monitorado.
+- **22,20 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
+- **15,80 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
 - **30 Programas Monitorados:** Diversidade de programas e modalidades de gestão cadastrados no PGD.
 - **Retenção Temporal (Dias):** Tempo médio de permanência das designações no sistema por programa.
 - **Detalhamento Anonimizado (LGPD):** Ranking por servidor identificado via código seguro (`USR-xxxxx`).
@@ -329,13 +348,14 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 
 ## 🛠️ Tecnologias Utilizadas
 
-| Camada                                      | Tecnologias                                                  |
-| :------------------------------------------ | :----------------------------------------------------------- |
-| **Linguagem & Core**                  | Python 3.12, Pandas, NumPy, Requests, Pathlib                |
-| **Engenharia de Banco de Dados**      | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB)  |
-| **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                         |
-| **Integração & Webhooks**           | cURL, Microsoft Power Automate                               |
-| **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX                    |
+| Camada                                      | Tecnologias                                                          |
+| :------------------------------------------ | :------------------------------------------------------------------- |
+| **Linguagem & Core**                  | Python 3.12, Pandas, NumPy, Requests, Pathlib                        |
+| **Engenharia de Banco de Dados**      | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB)          |
+| **Ambiente & Containerização**      | Docker, Docker Compose                                               |
+| **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                                 |
+| **Integração & Webhooks**           | cURL, Microsoft Power Automate                                       |
+| **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX                            |
 | **Governança & Qualidade**           | Pytest, Conformidade LGPD, Type Casting Estrito, Tratamento de Nulos |
 
 ---
