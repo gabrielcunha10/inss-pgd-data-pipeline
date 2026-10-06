@@ -31,13 +31,13 @@ def test_conformidade_lgpd_identificador(df_inss):
   assert (
       nulos == 0
   ), f"Existem {nulos} registros com identificador de usuário nulo."
-  padrao_lgpd = r"^USR-\d{5}$"
+  padrao_lgpd = r"^USR-[A-F0-9]{8}$"
   mascara_valida = df_inss[coluna].astype(str).str.match(padrao_lgpd)
   
   inconformidades = (~mascara_valida).sum()
   assert inconformidades == 0, (
       f"Risco de conformidade LGPD: {inconformidades} registros fora do padrão"
-      " 'USR-XXXXX'."
+      " 'USR-XXXXXXXX'."
   )
 #%%
 def test_valores_nulos_criticos(df_inss):

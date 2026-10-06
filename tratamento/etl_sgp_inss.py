@@ -1,11 +1,16 @@
 #%%
 import pandas as pd
 import os
+import hmac
+import hashlib
 from dotenv import load_dotenv
 
 import numpy as np
 import re
 from pathlib import Path
+
+load_dotenv()
+HMAC_SECRET_KEY = os.getenv("HMAC_SECRET_KEY", "chave_secreta_padrao_inss_pgd").encode("utf-8")
 
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -292,8 +297,12 @@ sugestao = df_total['programa'].apply(inferir_flag_pgd)
 df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 
 #%%
+def gerar_hash_usuario(mat):
+    hash_obj = hmac.new(HMAC_SECRET_KEY, str(mat).encode("utf-8"), hashlib.sha256)
+    return f"USR-{hash_obj.hexdigest()[:8].upper()}"
+
 unique_matriculas = df_total["id_matricula"].dropna().unique()
-mapa_anonimizacao = {mat: f"USR-{str(i+1).zfill(5)}" for i, mat in enumerate(unique_matriculas)}
+mapa_anonimizacao = {mat: gerar_hash_usuario(mat) for mat in unique_matriculas}
 df_total["id_usuario"] = df_total["id_matricula"].map(mapa_anonimizacao)
 
 df_total = df_total.drop(columns=["nome", "id_matricula"], errors="ignore")
@@ -304,9 +313,6 @@ df_total = df_total.drop_duplicates(subset=["id_usuario", "competencia", "id_des
 cols = ["id_usuario"] + [col for col in df_total.columns if col != "id_usuario"]
 df_total = df_total[cols]
 
-# ==========================================
-# TRATAMENTO FINAL DE TIPOS E LIMPEZA
-# ==========================================
 df_total.columns = (
     df_total.columns.str.strip()
     .str.lower()
@@ -315,7 +321,6 @@ df_total.columns = (
 )
 
 if 'competencia' in df_total.columns:
-    # Como já é Period no script, basta to_timestamp para virar Data (1º do mês)
     df_total['competencia'] = df_total['competencia'].dt.to_timestamp()
 
 colunas_data = [
@@ -357,6 +362,5 @@ df_sample.to_csv(
 )
 
 #%%
-# CSV total limpo (ignorado pelo git; para consumo local)
 df_total.to_csv(OUTPUT_FILE, index=False, sep=";")
 
