@@ -291,6 +291,8 @@ def inferir_flag_pgd(programa):
 sugestao = df_total['programa'].apply(inferir_flag_pgd)
 df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 
+df_total['filtro_programa'] = df_total['sigla_programa'] + ' - ' + df_total['programa']
+
 #%%
 unique_matriculas = df_total["id_matricula"].dropna().unique()
 mapa_anonimizacao = {mat: f"USR-{str(i+1).zfill(5)}" for i, mat in enumerate(unique_matriculas)}
