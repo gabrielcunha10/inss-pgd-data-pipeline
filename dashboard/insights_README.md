@@ -25,7 +25,7 @@ O gráfico de linha **"Evolução da Quantidade de Designações por Status e Co
 
 | Período | Designados (Verde) | Não Designados (Amarelo) | Desligados (Branco) | O que pode explicar esse movimento? (Hipóteses) |
 | :--- | :--- | :--- | :--- | :--- |
-| **2024 (Ritmo Constante)** | Estável entre **13.264 e 13.494** (cai em dez/24 para **9.247**) | Fica em torno de **7k a 7,4k** | Quase nada (~12 a 110) | O programa funcionou em ritmo regular. A queda em dezembro provavelmente foi por conta de recesso e fechamento anual de planos. |
+| **2024 (Ritmo Constante)** | Estável entre **13.264 e 13.494** (cai em dez/24 para **9.247**) | Alterna picos de **~7k a 7,4k** com quedas a **zero** | Alterna ocorrências normais (~12 a 110) com quedas a **zero** | O programa funcionou em ritmo regular. A queda de designados em dezembro foi provável fechamento anual. Já os "zeros" nas outras linhas sugerem meses sem consolidação de dados na base. |
 | **Março/2025 (Virada de Chave)** | Salto rápido para **18.687** | Queda acelerada nos registros | **Pico histórico de 3.433** | Provável encerramento em lote de planos legados para migrar todo mundo de uma vez para novas regras. |
 | **2025 (Novo Patamar)** | Mantém-se alto entre **18.687 e 18.994** | Mínimas de **3.063 a 3.116** | Residual (~15 a 128) | O novo volume se consolidou, sugerindo que mais servidores passaram a atuar formalmente no PGD. |
 | **2026 (Transição de Ano)** | Sustentado entre **17.624 e 18.770** | Sobe aos poucos até **4.592** | Baixo (~19 a 711) | Padrão condizente com vencimento de contratos anuais e o intervalo necessário para assinar os novos. |
@@ -36,15 +36,15 @@ O gráfico de linha **"Evolução da Quantidade de Designações por Status e Co
 - **A queda de Dezembro de 2024:** Em dez/24 cai pontualmente para **9.247**, mas logo em janeiro já se recupera (13.313). A explicação mais óbvia é o encerramento em massa de planos antes do recesso de fim de ano, aguardando renovação em janeiro.
 - **O salto de Março de 2025:** Em mar/25 o número pula direto para **18.687**, atingindo a máxima histórica de **18.994 em julho de 2025**. Tudo indica que o PGD ampliou seu alcance de forma sustentada a partir daí.
 
-### 2. Linha Amarela (Não Designados): Mais gente entrando no programa
+### 2. Linha Amarela (Não Designados): Padrão intermitente e queda em 2025
 
-- **Em 2024:** Durante todo o ano, havia entre **7.000 e 7.400 servidores** sem plano ativo registrado.
-- **Queda forte em 2025:** Junto com o salto dos designados, os não designados desabam para a faixa de **3.000 a 3.100** (queda de mais de 50%). A suposição mais provável é que boa parte dessa galera foi pactuada formalmente.
+- **Em 2024 (Picos e Zeros):** O gráfico exibe um forte padrão de "zigue-zague", alternando picos na faixa de **7.000 a 7.400 servidores** e quedas abruptas a **zero**. Isso indica meses em que o status de não designado simplesmente não foi reportado ou consolidado na base (o gráfico agora exibe o 0 nesses casos em vez de ignorar o mês).
+- **Queda forte em 2025:** Junto com o salto dos designados, os picos de não designados desabam para a faixa de **3.000 a 3.100**. A suposição mais provável é que boa parte dessa galera foi pactuada formalmente.
 - **Volta a subir em 2026:** Ao longo de 2026 nota-se uma subida gradual (chegando a 4.592 em julho). Provavelmente é o efeito de planos vencendo e aguardando a assinatura de um novo termo.
 
-### 3. Linha Branca (Desligados): Aquele pico curioso em Março de 2025
+### 3. Linha Branca (Desligados): Zigue-zague e o pico curioso em Março de 2025
 
-- **Comportamento normal:** Na esmagadora maioria dos meses, os desligamentos são mínimos (entre 12 e 120 casos).
+- **Comportamento normal:** Semelhante à linha amarela, os desligamentos também apresentam meses em que caem a **zero**, alternados com meses de ocorrência natural (geralmente entre 12 e 120 casos). O traçado reflete essas "falhas" mensais onde não houve apontamento desse status.
 - **O pico de Março de 2025 (3.433 casos):** Aconteceu uma concentração gigante e pontual. Como no mesmíssimo mês as novas designações deram um salto de mais de 5 mil registros, tudo aponta para uma rotina no sistema que "baixou" os planos antigos em lote para dar entrada nos novos. Dificilmente se tratou de gente saindo do INSS.
 - **Repique em Março de 2026 (711 casos):** Exatamente um ano depois, ocorre outro pico menor, o que reforça a ideia de que março costuma ser um mês padrão de fechamento de ciclos anuais.
 

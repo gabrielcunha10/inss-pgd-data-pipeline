@@ -12,4 +12,6 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
+RUN sed -i 's/\r$//' run_pipeline.sh
+
 CMD ["sh", "run_pipeline.sh"]

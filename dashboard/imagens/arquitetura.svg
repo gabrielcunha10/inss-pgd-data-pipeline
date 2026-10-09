@@ -98,9 +98,9 @@
     <circle cx="475" cy="126" r="6" fill="#c084fc"/>
     <text x="487" y="130" font-size="11" font-weight="700" fill="#f3e8ff">3. TRANSFORMAÇÃO</text>
     <text x="555" y="168" text-anchor="middle" font-size="14" font-weight="600" fill="#c084fc">etl_sgp_inss.py</text>
-    <text x="555" y="188" text-anchor="middle" font-size="10" fill="#cbd5e1">• 30 p/ 19 colunas</text>
+    <text x="555" y="188" text-anchor="middle" font-size="10" fill="#cbd5e1">• 32 p/ 18 colunas</text>
     <text x="555" y="206" text-anchor="middle" font-size="10" fill="#cbd5e1">• Ponte temporal nulos</text>
-    <text x="555" y="224" text-anchor="middle" font-size="10" fill="#cbd5e1">• Tipagem SQLAlchemy</text>
+    <text x="555" y="224" text-anchor="middle" font-size="10" fill="#cbd5e1">• Hash LGPD (HMAC)</text>
     <text x="555" y="242" text-anchor="middle" font-size="10" fill="#cbd5e1">• Amostra Sample 5k</text>
   </g>
 
@@ -184,7 +184,7 @@
     <line x1="860" y1="445" x2="1030" y2="445" stroke="#334155" stroke-width="1"/>
 
     <text x="860" y="470" font-size="12" font-weight="600" fill="#ffffff">Recursos &amp; Governança:</text>
-    <text x="860" y="492" font-size="11" fill="#cbd5e1">• Anonimização DAX (LGPD)</text>
+    <text x="860" y="492" font-size="11" fill="#cbd5e1">• Filtros Dinâmicos (Modalidade)</text>
     <text x="860" y="512" font-size="11" fill="#cbd5e1">• KPIs de Força de Trabalho</text>
     <text x="860" y="532" font-size="11" fill="#cbd5e1">• Análise de Picos e Retenção</text>
     <text x="860" y="552" font-size="11" fill="#cbd5e1">• Sazonalidade das Linhas</text>

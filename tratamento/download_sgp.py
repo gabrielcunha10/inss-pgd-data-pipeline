@@ -3,7 +3,12 @@ import re
 import requests
 import io
 import pandas as pd
+import logging
+import sys
 from datetime import datetime
+
+# Configuração de logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 API_URL = "https://dadosabertos.inss.gov.br/api/3/action/package_show?id=sistema-de-gerenciamento-de-produtividade-sgp"
 
@@ -48,14 +53,14 @@ def baixar_arquivos_padronizados():
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
     }
 
-    print("Consultando API publica do INSS (dadosabertos.inss.gov.br)...")
+    logging.info("Consultando API publica do INSS (dadosabertos.inss.gov.br)...")
     try:
         response = requests.get(API_URL, headers=headers, timeout=30)
         response.raise_for_status()
         resources = response.json().get("result", {}).get("resources", [])
     except Exception as e:
-        print(f"Erro na consulta a API: {e}")
-        return
+        logging.error(f"Erro fatal na consulta a API do INSS: {e}")
+        sys.exit(1)
 
     novos_arquivos = 0
 
@@ -74,7 +79,7 @@ def baixar_arquivos_padronizados():
             caminho_local = os.path.join(data_dir, nome_padronizado)
 
             if not os.path.exists(caminho_local):
-                print(f"Baixando e padronizando em 'data/': {nome_padronizado}...")
+                logging.info(f"Baixando e padronizando em 'data/': {nome_padronizado}...")
                 try:
                     if is_csv:
                         r = requests.get(url_download, headers=headers, stream=True, timeout=60)
@@ -93,12 +98,16 @@ def baixar_arquivos_padronizados():
                         df = pd.read_excel(io.BytesIO(r.content))
                         df.to_csv(caminho_local, index=False, encoding='utf-8')
                         
-                    print(f"Salvo como: {nome_padronizado}")
+                    logging.info(f"Salvo como: {nome_padronizado}")
                     novos_arquivos += 1
                 except Exception as err:
-                    print(f"Erro ao baixar {nome_padronizado}: {err}")
+                    logging.error(f"Erro critico ao baixar {nome_padronizado}: {err}")
+                    sys.exit(1)
 
-    print(f"\nIngestao concluida! {novos_arquivos} arquivo(s) novo(s) processado(s) em 'data/'.")
+    logging.info(f"Ingestao concluida! {novos_arquivos} arquivo(s) novo(s) processado(s) em 'data/'.")
+
+def main():
+    baixar_arquivos_padronizados()
 
 if __name__ == "__main__":
-    baixar_arquivos_padronizados()
+    main()
