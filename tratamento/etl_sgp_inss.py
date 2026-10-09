@@ -277,6 +277,11 @@ df_total["sigla_programa"] = df_total["sigla_programa"].fillna(
 )
 
 # %%
+# Preenche os programas vazios baseados no mesmo id_designacao em outros meses
+df_total = df_total.sort_values(['id_designacao', 'competencia'])
+df_total[['programa', 'sigla_programa']] = df_total.groupby('id_designacao')[['programa', 'sigla_programa']].ffill().bfill()
+
+# %%
 df_total.isna().sum()
 # %%
 programas_nao_pgd_confirmados = [
