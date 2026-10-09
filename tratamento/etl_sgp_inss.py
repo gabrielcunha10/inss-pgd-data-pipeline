@@ -160,6 +160,30 @@ df_total['programa'] = df_total['programa'].fillna(
 df_total['sigla_programa'] = df_total['sigla_programa'].fillna(
     df_total['programa'].map(mapa_programa_para_sigla)
 )
+
+mapa_sigla_para_linha = (
+    df_total.dropna(subset=['sigla_linha_trabalho', 'linha_trabalho'])
+    [['sigla_linha_trabalho', 'linha_trabalho']]
+    .drop_duplicates()
+    .set_index('sigla_linha_trabalho')['linha_trabalho']
+    .to_dict()
+)
+
+mapa_linha_para_sigla = (
+    df_total.dropna(subset=['sigla_linha_trabalho', 'linha_trabalho'])
+    [['linha_trabalho', 'sigla_linha_trabalho']]
+    .drop_duplicates()
+    .set_index('linha_trabalho')['sigla_linha_trabalho']
+    .to_dict()
+)
+
+df_total['linha_trabalho'] = df_total['linha_trabalho'].fillna(
+    df_total['sigla_linha_trabalho'].map(mapa_sigla_para_linha)
+)
+
+df_total['sigla_linha_trabalho'] = df_total['sigla_linha_trabalho'].fillna(
+    df_total['linha_trabalho'].map(mapa_linha_para_sigla)
+)
 #%%
 programas_nao_pgd = [
     'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
@@ -308,6 +332,7 @@ sugestao = df_total['programa'].apply(inferir_flag_pgd)
 df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
 
 df_total['filtro_programa'] = df_total['sigla_programa'] + ' - ' + df_total['programa']
+df_total['filtro_linha_trabalho'] = df_total['sigla_linha_trabalho'] + ' - ' + df_total['linha_trabalho']
 
 #%%
 def gerar_hash_usuario(mat):
