@@ -301,12 +301,10 @@ df_total["sigla_programa"] = df_total["sigla_programa"].fillna(
 )
 
 # %%
-# Preenche os programas vazios baseados no mesmo id_designacao em outros meses
 df_total = df_total.sort_values(['id_designacao', 'competencia'])
-df_total[['programa', 'sigla_programa']] = df_total.groupby('id_designacao')[['programa', 'sigla_programa']].ffill().bfill()
-
-# %%
-df_total.isna().sum()
+df_total[['programa', 'sigla_programa', 'id_lotacao', 'lotacao']] = df_total.groupby('id_designacao')[['programa', 'sigla_programa', 'id_lotacao', 'lotacao']].ffill().bfill()
+df_total = df_total.sort_values(['nome', 'competencia'])
+df_total[['id_lotacao', 'lotacao']] = df_total.groupby('nome')[['id_lotacao', 'lotacao']].ffill().bfill()
 # %%
 programas_nao_pgd_confirmados = [
     'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
