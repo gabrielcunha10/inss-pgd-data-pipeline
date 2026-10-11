@@ -96,6 +96,9 @@ df_total["sigla_programa"] = df_total["sigla_programa"].replace({"ATENDIMENT0": 
 df_total["programa"] = df_total["programa"].replace({
     "PROFISSIONAIS SEM PROGAMA DE GESTÃO E DESEMPENHO": "PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO"
 })
+df_total["lotacao"] = df_total["lotacao"].str.replace(
+    r'\bAG[EÊ]NCIA D[AE] PREVID[EÊ]NCIA SOCIAL\b', 'APS', regex=True, case=False
+)
 
 df_total = df_total.dropna(subset=["id_matricula"])
 #%%
@@ -306,28 +309,21 @@ df_total[['programa', 'sigla_programa', 'id_lotacao', 'lotacao', 'tipo_entrega',
 df_total = df_total.sort_values(['nome', 'competencia'])
 df_total[['id_lotacao', 'lotacao', 'tipo_entrega', 'linha_trabalho', 'sigla_linha_trabalho']] = df_total.groupby('nome')[['id_lotacao', 'lotacao', 'tipo_entrega', 'linha_trabalho', 'sigla_linha_trabalho']].ffill().bfill()
 # %%
-programas_nao_pgd_confirmados = [
+programas_nao_pgd = [
     'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE',
     'PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO',
     'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
 ]
 
-programas_com_flag_pgd_conhecida = [
-    'PACTUAÇÃO DE 6H PELO ACORDO DE GREVE', 'PROFISSIONAIS SEM PROGRAMA DE GESTÃO E DESEMPENHO',
-    'PROG. PRESENCIAL 6H + PONTUAÇÃO', 'PROGRAMA DA CEAB I', 'PROGRAMA DA REABILITAÇÃO PROFISSIONAL',
-    'PROGRAMA DA REABILITAÇÃO PROFISSIONAL - REMOTO', 'PROGRAMA DA REABILITAÇÃO PROFISSIONAL PT 1800',
-    'PROGRAMA DAS CENTRAIS DE SUPORTE', 'PROGRAMA DAS GERÊNCIAS EXECUTIVAS - PGD',
-    'PROGRAMA DAS SUPERINTENDÊNCIAS - PGD', 'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
-    'PROGRAMA DAS UNIDADES DE ATENDIMENTO - PT 1800', 'PROGRAMA DAS ÁREAS DA DIREÇÃO CENTRAL',
+condicoes_pgd = [
+    df_total['programa'].isin(programas_nao_pgd),
+    df_total['programa'].isna() & (df_total['status'] == 'Não Designado'),
+    df_total['programa'].notna(),
 ]
+escolhas_pgd = ['Não', 'Não', 'Sim']
 
-def inferir_flag_pgd(programa):
-    if pd.isna(programa) or programa not in programas_com_flag_pgd_conhecida:
-        return None
-    return 'Não' if programa in programas_nao_pgd_confirmados else 'Sim'
-
-sugestao = df_total['programa'].apply(inferir_flag_pgd)
-df_total['flag_pgd'] = df_total['flag_pgd'].fillna(sugestao)
+inferencia_pgd = pd.Series(np.select(condicoes_pgd, escolhas_pgd, default='Não'), index=df_total.index)
+df_total['flag_pgd'] = df_total['flag_pgd'].fillna(inferencia_pgd).fillna('Não')
 
 df_total['filtro_programa'] = df_total['sigla_programa'] + ' - ' + df_total['programa']
 df_total['filtro_linha_trabalho'] = df_total['sigla_linha_trabalho'] + ' - ' + df_total['linha_trabalho']
