@@ -315,15 +315,12 @@ programas_nao_pgd = [
     'PROGRAMA DAS UNIDADES - ACORDO DE GREVE',
 ]
 
-condicoes_pgd = [
-    df_total['programa'].isin(programas_nao_pgd),
-    df_total['programa'].isna() & (df_total['status'] == 'Não Designado'),
-    df_total['programa'].notna(),
-]
-escolhas_pgd = ['Não', 'Não', 'Sim']
+mapa_pgd = {prog: 'Sim' for prog in df_total['programa'].dropna().unique()}
+for prog in programas_nao_pgd:
+    mapa_pgd[prog] = 'Não'
 
-inferencia_pgd = pd.Series(np.select(condicoes_pgd, escolhas_pgd, default='Não'), index=df_total.index)
-df_total['flag_pgd'] = df_total['flag_pgd'].fillna(inferencia_pgd).fillna('Não')
+df_total['flag_pgd'] = df_total['programa'].map(mapa_pgd)
+df_total.loc[df_total['status'] == 'Não Designado', 'flag_pgd'] = np.nan
 
 df_total['filtro_programa'] = df_total['sigla_programa'] + ' - ' + df_total['programa']
 df_total['filtro_linha_trabalho'] = df_total['sigla_linha_trabalho'] + ' - ' + df_total['linha_trabalho']
