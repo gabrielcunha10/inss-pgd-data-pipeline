@@ -358,7 +358,16 @@ colunas_data = [
 ]
 for col in colunas_data:
     if col in df_total.columns:
+        df_total[col] = df_total[col].astype(str).str.replace('2203', '2023', regex=False)
         df_total[col] = pd.to_datetime(df_total[col], errors='coerce')
+
+# Invalida datas finais inconsistentes (anteriores à data de início)
+inconsistentes = (
+    df_total['dt_inicio_designacao'].notna() & 
+    df_total['dt_fim_designacao'].notna() & 
+    (df_total['dt_fim_designacao'] < df_total['dt_inicio_designacao'])
+)
+df_total.loc[inconsistentes, 'dt_fim_designacao'] = pd.NaT
 
 colunas_id = ['id_designacao']
 for col in colunas_id:
