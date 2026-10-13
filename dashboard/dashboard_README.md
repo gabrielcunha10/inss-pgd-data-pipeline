@@ -29,7 +29,7 @@ Neste documento, eu descrevo os componentes, indicadores de negócio e formas de
 
 O dashboard está publicado e disponível publicamente para navegação interativa na web. Você pode acessá-lo diretamente pelo link abaixo, que reflete os dados mais recentes do nosso pipeline PostgreSQL Neon:
 
-👉 **[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9)**
+👉 **[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
 
 ---
 
