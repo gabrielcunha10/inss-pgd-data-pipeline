@@ -3,6 +3,7 @@ import hmac
 import logging
 import os
 import re
+import unicodedata
 from pathlib import Path
 from dotenv import load_dotenv
 import numpy as np
@@ -170,6 +171,20 @@ def limpar_e_inferir_status(df: pd.DataFrame) -> pd.DataFrame:
         regex=True,
         case=False,
     )
+    df["lotacao"] = df["lotacao"].str.replace(
+        r"\bGER[EÊ]NCIA EXECUTIVA\b",
+        "GEX",
+        regex=True,
+        case=False,
+    )
+    mapa_lotacao_sem_acento = {
+        val: "".join(
+            c for c in unicodedata.normalize("NFKD", val)
+            if not unicodedata.combining(c)
+        )
+        for val in df["lotacao"].dropna().unique()
+    }
+    df["lotacao"] = df["lotacao"].map(mapa_lotacao_sem_acento)
 
     df = df.dropna(subset=["id_matricula"]).copy()
     df["competencia"] = pd.to_datetime(
