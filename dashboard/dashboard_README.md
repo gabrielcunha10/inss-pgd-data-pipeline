@@ -1,10 +1,10 @@
-# 📊 Dashboard de Designações — Acompanhamento PGD / INSS
+# Dashboard de Designações — Acompanhamento PGD / INSS
 
 Neste documento, eu descrevo os componentes, indicadores de negócio e formas de acesso ao painel analítico do **Programa de Gestão e Desempenho (PGD)** do INSS.
 
 ---
 
-## 📌 Explicação dos Componentes do Dashboard
+## Explicação dos Componentes do Dashboard
 
 - **Evolução da Quantidade de Designações por Status e Competência (Out/2023 a Jan/2026):** Gráfico de linha que exibe a trajetória histórica integral dos status (Designado, Não Designado e Desligado). Evidencia a estabilidade dos servidores designados em 2024 (~13-14 mil), o salto estrutural para um novo patamar a partir de 2025 (~18-19 mil), o declínio sustentado dos não designados e o evento de corte/saneamento administrativo em **março de 2025** (~3.433 desligamentos em lote).
 - **Cartões de Métrica (KPIs Centrais):**
@@ -19,25 +19,24 @@ Neste documento, eu descrevo os componentes, indicadores de negócio e formas de
 
 ---
 
-## 🖼️ Visualização do Dashboard
+## Visualização do Dashboard
 
 ![Dashboard de Designações](imagens/dashboard.png)
 
 ---
 
-## 🌐 Acesso Online (Power BI Service)
+## Acesso Online (Power BI Service)
 
 O dashboard está publicado e disponível publicamente para navegação interativa na web. Você pode acessá-lo diretamente pelo link abaixo, que reflete os dados mais recentes do nosso pipeline PostgreSQL Neon:
-
-👉 **[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
+**[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
 
 ---
 
-## 🚀 Como Acessar Localmente (Power BI Desktop)
+## Como Acessar Localmente (Power BI Desktop)
 
 Existem duas formas de abrir e utilizar o relatório localmente no Power BI Desktop:
 
-### 🟢 Opção 1: Acesso Direto via .PBIX (Principal e Recomendada)
+### Opção 1: Acesso Direto via .PBIX (Principal e Recomendada)
 
 Esta é a opção mais rápida e automatizada. O relatório já está configurado e integrado nativamente ao banco de dados relacional **PostgreSQL na nuvem (Neon Tech)**:
 
@@ -51,14 +50,14 @@ Esta é a opção mais rápida e automatizada. O relatório já está configurad
 
 ---
 
-### 🟡 Opção 2: Carga Manual via CSV / Kaggle (100% Manual e Offline)
+### Opção 2: Carga Manual via CSV / Kaggle (100% Manual e Offline)
 
 Caso prefira operar de forma estritamente offline ou queira recriar o processo a partir de arquivos planos sem conectar ao banco de dados em nuvem, você pode fazer todo o processo manualmente:
 
 #### 1. Baixar o dataset no Kaggle
 
 Acesse o conjunto de dados no Kaggle:
-👉 [Dataset INSS - PGD Designações no Kaggle](https://www.kaggle.com/datasets/4894808d3f21243e3185b33f3d31f0881fc39ac74124b015dd2c2f2d017bac80)
+[Dataset INSS - PGD Designações no Kaggle](https://www.kaggle.com/datasets/4894808d3f21243e3185b33f3d31f0881fc39ac74124b015dd2c2f2d017bac80)
 
 Clique em **Download** para baixar o arquivo compactado (`archive.zip`).
 
@@ -81,7 +80,7 @@ Clique em **Download** para baixar o arquivo compactado (`archive.zip`).
 
 ---
 
-## 📄 Documentos Relacionados
+## Documentos Relacionados
 
-- 💡 [Relatório de Insights e Análise Executiva](insights_README.md): Análise detalhada das tendências temporais, do pico de março/2025 e do comportamento das linhas de trabalho.
-- 📘 [README Principal do Projeto](../README.md): Arquitetura completa da solução, scripts de ingestão/ETL e orquestração CI/CD.
+- [Relatório de Insights e Análise Executiva](insights_README.md): Análise detalhada das tendências temporais, do pico de março/2025 e do comportamento das linhas de trabalho gerada com auxílio de Inteligência Artificial (`gerar_insights.py`).
+- [README Principal do Projeto](../README.md): Arquitetura completa da solução, scripts de ingestão/ETL e orquestração CI/CD.

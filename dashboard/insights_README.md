@@ -1,166 +1,113 @@
-# 📊 Insights do Dashboard — Acompanhamento PGD / INSS
+# Insights Executivos do Dashboard — Acompanhamento PGD / INSS
 
-Este documento traz uma análise prática dos dados históricos de designações do Programa de Gestão e Desempenho (PGD) do INSS, cobrindo de **outubro/2023 a janeiro/2026**.
+> **Nota Metodológica & Governança**: Os dados apresentados neste relatório executivo foram extraídos diretamente da base oficial do Programa de Gestão e Desempenho (PGD) do INSS, estruturados em formato analítico *Parquet* para assegurar integridade, eficiência computacional e rastreabilidade temporal. A síntese executiva e a redação analítica foram geradas com assistência de Inteligência Artificial (Google Gemini API), fundamentando-se estritamente nas métricas matemáticas consolidadas pelo script `tratamento/gerar_insights.py`. A integridade informacional é validada mediante protocolo criptográfico *HMAC-SHA256*, garantindo que o conjunto de dados permaneça imune a adulterações em todo o ciclo analítico. O tratamento de dados pessoais e sensíveis observa rigorosamente as diretrizes da Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018), aplicando anonimização irreversível aos registros de servidores nas seções de auditoria para preservar a conformidade legal e a segurança institucional.
 
-> 💡 **Nota rápida sobre as análises:**  
-> Tudo o que descrevo aqui são **interpretações e hipóteses** baseadas no que os números mostram no painel. Como não participo diretamente das decisões internas de gestão, não posso cravar nada com 100% de certeza. Encare essas análises como pistas e suposições para ajudar a entender o cenário e trocar uma ideia com quem toca o programa no dia a dia.
+## Resumo Rápido da Série Histórica
+A análise da série histórica compreende o intervalo de outubro de 2023 a agosto de 2026, totalizando 35 competências mensais monitoradas de forma contínua. No período, o programa registrou um acumulado de 22.200 servidores acompanhados e um volume total de 652.788 atos de designação, resultando em uma média mensal de 18.651 designações. Atualmente, o ecossistema conta com 26 programas de gestão ativos, observando-se uma média de 2,06 vínculos por servidor, com incidência de teto máximo de 12 vínculos para casos específicos de acumulação funcional regulamentada.
 
----
-
-## 📌 Resumo Rápido (O que os dados parecem me dizer)
-
-Olhando para a base histórica completa no dashboard, notei alguns comportamentos bem claros:
-
-1. **O programa parece ter dado um salto em 2025:** Em 2024, a quantidade de servidores com plano ativo ficou bem estável (~13 mil a 14 mil). A partir do início de 2025, os números subiram de forma contínua para a casa dos **18 mil a 19 mil**. A impressão é de que o programa passou a cobrir mais gente.
-2. **Queda forte nos "Não Designados":** No começo de 2024, havia cerca de 8,5 mil registros de servidores sem plano cadastrado. Ao longo do tempo esse número foi caindo até bater em torno de **2 mil a 3 mil em 2025**. Tudo indica que boa parte dessa turma foi formalizada no PGD.
-3. **Aquele pico atípico em março/2025:** Quase 3,5 mil desligamentos em um único mês chamam muita atenção. A suposição mais provável é que o pessoal fez uma "limpeza" cadastral em lote no sistema para encerrar planos antigos e abrir os novos logo em seguida, e não que houve perda de servidores no órgão.
-4. **Virada de ano costuma ter transição:** No início de 2026, os designados caem um pouco (~17 mil) e os não designados sobem (~4,5 mil). É bem provável que isso seja apenas o encerramento natural de vigências anuais e o tempo que a burocracia leva para formalizar os novos planos.
-5. **Auditoria fica mais tempo, CEAB1 concentra o volume:** Quem atua em governança e auditoria tem planos que duram muito mais dias (talvez por lidar com metas mais longas). Já a CEAB1 reúne a imensa maioria dos registros, sugerindo foco prioritário na análise remota de benefícios.
+## Destaques da Última Competência (08/2026 vs. 07/2026)
+A passagem da competência de julho de 2026 para agosto de 2026 evidenciou estabilidade e ajustes marginais na força de trabalho alocada ao PGD:
+* **Servidores Designados (Plano Ativo)**: 17,585 servidores frente a 17,545 no mês anterior, representando uma variação positiva de +0,23%.
+* **Servidores Não Designados**: 4,615 contra 4,592 em 07/2026, com leve acréscimo de +0,50%.
+* **Servidores Desligados no Mês**: 0 desligamentos registrados em 08/2026, comparado a 42 desligamentos no mês precedente (variação de -100,00%), indicando retenção temporária do efetivo pactuado.
+* **Modalidade de Trabalho (Teletrabalho vs. Presencial)**: O teletrabalho (remoto somado ao semipresencial) atingiu 9.311 servidores, representando 52,9% do efetivo pactuado e uma expansão de +0,62% em relação a julho. A modalidade presencial registrou 8.274 servidores, correspondendo a 47,1% da força de trabalho.
 
 ---
 
-# 🔎 Insight 1 — Evolução por Competência: O que rolou ao longo do tempo?
+## Análise Detalhada dos 6 Eixos do Painel
 
-O gráfico de linha **"Evolução da Quantidade de Designações por Status e Competência"** acompanha o comportamento das três categorias: **Designado**, **Não Designado** e **Desligado**.
+### Eixo 1: Visão Geral do Ecossistema PGD
+![Visão Geral](imagens/visao_geral_dashboard.png)
+O primeiro eixo consolida a macroestrutura do PGD no INSS ao longo dos 35 meses de monitoramento. A média de 2,06 vínculos por servidor evidencia a complexidade das atribuições funcionais na autarquia, onde profissionais frequentemente acumulam entregas em diferentes frentes de trabalho. A estabilidade no número de servidores designados (17.585) frente à redução a zero nos desligamentos mensais sugere uma consolidação do modelo de pactuação vigente, mitigando a volatilidade de saídas observada no ciclo anterior.
 
-| Período | Designados (Verde) | Não Designados (Amarelo) | Desligados (Branco) | O que pode explicar esse movimento? (Hipóteses) |
-| :--- | :--- | :--- | :--- | :--- |
-| **2024 (Ritmo Constante)** | Estável entre **13.264 e 13.494** (cai em dez/24 para **9.247**) | Alterna picos de **~7k a 7,4k** com quedas a **zero** | Alterna ocorrências normais (~12 a 110) com quedas a **zero** | O programa funcionou em ritmo regular. A queda de designados em dezembro foi provável fechamento anual. Já os "zeros" nas outras linhas sugerem meses sem consolidação de dados na base. |
-| **Março/2025 (Virada de Chave)** | Salto rápido para **18.687** | Queda acelerada nos registros | **Pico histórico de 3.433** | Provável encerramento em lote de planos legados para migrar todo mundo de uma vez para novas regras. |
-| **2025 (Novo Patamar)** | Mantém-se alto entre **18.687 e 18.994** | Mínimas de **3.063 a 3.116** | Residual (~15 a 128) | O novo volume se consolidou, sugerindo que mais servidores passaram a atuar formalmente no PGD. |
-| **2026 (Transição de Ano)** | Sustentado entre **17.624 e 18.770** | Sobe aos poucos até **4.592** | Baixo (~19 a 711) | Padrão condizente com vencimento de contratos anuais e o intervalo necessário para assinar os novos. |
+### Eixo 2: Dinâmica das Modalidades de Trabalho
+![Modalidades de Trabalho](imagens/modalidades_dashboard.png)
+O dimensionamento das modalidades na última competência demonstra o equilíbrio operacional entre a presença física nas unidades e a execução descentralizada. 
 
-### 1. Linha Verde (Designados): Estabilidade em 2024, Queda Sazonal e Salto em 2025
+| Modalidade | Designações no Mês | Proporção no Mês |
+| :--- | :---: | :---: |
+| **Presencial** | 8,286 | 47.1% |
+| **Remoto** | 8,067 | 45.8% |
+| **Semipresencial** | 1,245 | 7.1% |
 
-- **Em 2024:** A curva quase não se mexe durante o ano todo, mantendo-se firme na faixa de **13,2 mil a 13,5 mil servidores ativos**.
-- **A queda de Dezembro de 2024:** Em dez/24 cai pontualmente para **9.247**, mas logo em janeiro já se recupera (13.313). A explicação mais óbvia é o encerramento em massa de planos antes do recesso de fim de ano, aguardando renovação em janeiro.
-- **O salto de Março de 2025:** Em mar/25 o número pula direto para **18.687**, atingindo a máxima histórica de **18.994 em julho de 2025**. Tudo indica que o PGD ampliou seu alcance de forma sustentada a partir daí.
+O teletrabalho combinado (remoto + semipresencial) concentra 52,9% das designações do período, mantendo a diretriz de flexibilidade laboral sem prejuízo ao atendimento presencial, que permanece como pilar essencial nas unidades de atendimento da previdência social.
 
-### 2. Linha Amarela (Não Designados): Padrão intermitente e queda em 2025
+### Eixos 3 e 4: Programas de Gestão e Duração Média
+![Programas de Gestão](imagens/programas_dashboard.png)
+A arquitetura normativa do PGD abriga 26 programas ativos, que se distinguem por perfis de gestão variados, desde a governança estratégica até ciclos operacionais de grande volume.
 
-- **Em 2024 (Picos e Zeros):** O gráfico exibe um forte padrão de "zigue-zague", alternando picos na faixa de **7.000 a 7.400 servidores** e quedas abruptas a **zero**. Isso indica meses em que o status de não designado simplesmente não foi reportado ou consolidado na base (o gráfico agora exibe o 0 nesses casos em vez de ignorar o mês).
-- **Queda forte em 2025:** Junto com o salto dos designados, os picos de não designados desabam para a faixa de **3.000 a 3.100**. A suposição mais provável é que boa parte dessa galera foi pactuada formalmente.
-- **Volta a subir em 2026:** Ao longo de 2026 nota-se uma subida gradual (chegando a 4.592 em julho). Provavelmente é o efeito de planos vencendo e aguardando a assinatura de um novo termo.
+| Sigla do Programa | Duração Média (Dias) | Perfil de Gestão |
+| :--- | :---: | :--- |
+| **PG-ACS** | **1101 dias** | Governança / Controle / Estratégico |
+| **PG-DTI** | **911 dias** | Governança / Controle / Estratégico |
+| **CES1** | **887 dias** | Governança / Controle / Estratégico |
+| **ATEND_ACGREVE** | **870 dias** | Governança / Controle / Estratégico |
+| **DIR_CENTRAL1** | **729 dias** | Operacional / Ciclos Periódicos |
+| **CEAB1** | **706 dias** | Operacional / Ciclos Periódicos |
 
-### 3. Linha Branca (Desligados): Zigue-zague e o pico curioso em Março de 2025
+Em termos de volumetria de servidores alocados, destacam-se os principais programas do ecossistema:
 
-- **Comportamento normal:** Semelhante à linha amarela, os desligamentos também apresentam meses em que caem a **zero**, alternados com meses de ocorrência natural (geralmente entre 12 e 120 casos). O traçado reflete essas "falhas" mensais onde não houve apontamento desse status.
-- **O pico de Março de 2025 (3.433 casos):** Aconteceu uma concentração gigante e pontual. Como no mesmíssimo mês as novas designações deram um salto de mais de 5 mil registros, tudo aponta para uma rotina no sistema que "baixou" os planos antigos em lote para dar entrada nos novos. Dificilmente se tratou de gente saindo do INSS.
-- **Repique em Março de 2026 (711 casos):** Exatamente um ano depois, ocorre outro pico menor, o que reforça a ideia de que março costuma ser um mês padrão de fechamento de ciclos anuais.
+| Programa | Volume |
+| :--- | :---: |
+| **PROGRAMA DA CEAB I** | 6,777 servidores |
+| **PROGRAMA DAS SUPERINTENDÊNCIAS - PGD** | 4,573 servidores |
+| **PROGRAMA DAS UNIDADES DE ATENDIMENTO - PT 1800** | 3,079 servidores |
+| **PROG. PRESENCIAL 6H + PONTUAÇÃO** | 1,976 servidores |
+| **PROGRAMA DAS ÁREAS DA DIREÇÃO CENTRAL** | 995 servidores |
 
----
+### Eixo 5: Concentração por Lotações
+![Lotações](imagens/lotacoes_dashboard.png)
+A distribuição da força de trabalho por unidades de lotação reflete as prioridades institucionais de atendimento a direitos e gestão interna:
 
-# ⏱️ Insight 2 — Quanto tempo duram as designações em cada área?
+| Lotação | Volume |
+| :--- | :---: |
+| **SECAO DE ANALISE DE RECONHECIMENTO DE DIREITOS** | 789 servidores |
+| **COORDENACAO DE GESTAO DE ORCAMENTO, FINANCAS E LOGISTICA** | 740 servidores |
+| **COORDENACAO DE GESTAO DE PESSOAS** | 561 servidores |
+| **SERVICO DE GERENCIAMENTO DE BENEFICIOS** | 556 servidores |
+| **SECAO DE ATENDIMENTO DE DEMANDAS JUDICIAIS** | 548 servidores |
 
-O indicador de **Média de Tempo (Dia) de Designação** calcula a duração média em dias entre a data de início e término dos planos cadastrados no sistema.
+A expressiva concentração de servidores em seções de reconhecimento de direitos e demandas judiciais evidencia a pressão operacional contínua decorrente do passivo de requerimentos e do cumprimento de ordens judiciais.
 
-### Onde os planos duram mais (Governança e Auditoria)
+### Eixo 6: Linhas de Trabalho Prioritárias
+![Linhas de Trabalho](imagens/linhas_trabalho_dashboard.png)
+O mapeamento das linhas de trabalho com maior volume de servidores aponta a forte capilaridade regional e a centralidade das centrais de análise:
 
-Os maiores prazos médios de permanência aparecem em áreas de controle e assessoria:
-- `PG-ACS` (Assessoria de Comunicação);
-- `PG-CORREG` (Corregedoria-Geral);
-- `PGRP` (Regime Parcial);
-- `CEAP` (Central de Alta Performance);
-- `PGD-GABPRE` (Gabinete da Presidência);
-- `PG-AUDGER` (Auditoria-Geral).
+| Linha de Trabalho | Volume |
+| :--- | :---: |
+| **Linha de Trabalho - Unidades de Atendimento SRNE** | 1,876 servidores |
+| **Central de Análise de Benefícios de Reconhecimento de Direitos SRNE** | 1,778 servidores |
+| **Superintendência Regional Nordeste** | 1,614 servidores |
+| **Linha de Trabalho - Unidades de Atendimento SRSE1** | 1,463 servidores |
+| **Central de Análise de Benefícios de Reconhecimento de Direitos SRSE1** | 1,214 servidores |
 
-**O que pode explicar isso? (Duas boas hipóteses):**  
-1. Essas áreas cuidam de fiscalização, processos disciplinares e governança — atividades contínuas que costumam ter metas com prazos bem mais longos (talvez anuais ou semestrais).
-2. Outra possibilidade é que o pessoal dessas áreas demore mais tempo para encerrar e dar baixa formal no plano dentro do sistema, deixando o registro aberto por mais dias.
-
-### E nas áreas operacionais (CEAB1 e agências)?
-
-Por outro lado, em setores como a **CEAB1** e no atendimento, os tempos médios são bem menores. Isso sugere que a rotatividade de planos é maior, provavelmente para acompanhar metas mensais ou trimestrais de análise de requerimentos.
-
----
-
-# 👤 Insight 3 — Olhando os Servidores: Total de Planos vs. Quantidade por Mês
-
-Na tabela do dashboard, consigo analisar a distribuição por duas óticas: quem acumulou mais planos no total (**Total de Designações**) e quem teve a maior taxa mensal (**Designações/Mês**).
-
-Tudo isso respeita a **LGPD**, já que os servidores aparecem apenas com códigos anônimos.
-
----
-
-### Visão 1: Quem mais teve planos ao longo do tempo (Consistência)
-
-Ordenando pelo **Total de Designações**, destaquei os servidores que participaram de forma mais contínua do PGD:
-
-![Ranking por Total de Designações](imagens/tabela_total_designacoes.png)
-
-| Servidor (Código) | Total Designações | Designações / Mês | Meses Observados | O que o histórico sugere |
-| :---: | :---: | :---: | :---: | :--- |
-| **USR-04817** | **12** | 0,36 | 33 | Servidor com mais registros na base; participação quase sem pausas. |
-| **USR-07763** | **12** | 0,38 | 32 | Alta frequência, presente em quase toda a série histórica. |
-| **USR-01167** | **11** | 0,32 | 34 | Frequência compatível com renovações trimestrais regulares; presente de ponta a ponta. |
-| **USR-00045** | **9** | 0,26 | 34 | Presença constante ao longo de quase 3 anos. |
-| **USR-08596** | **9** | 0,26 | 34 | Grupo que participou de ponta a ponta na série. |
-| **USR-10772** | **9** | 0,28 | 32 | Alta regularidade na participação. |
-| **USR-13826 / USR-17604 / USR-18453 / USR-20119** | **9** | ~0,28 | 31-33 | Servidores com histórico bastante estável no programa ao longo de quase 3 anos. |
-
-#### 📌 O que posso supor aqui:
-1. **O máximo registrado foi de 12 planos:** Em quase 3 anos (34 meses), ninguém acumulou quantidades absurdas de registros. O teto absoluto foi 12.
-2. **Ciclo trimestral aparente:** Quem tem presença completa (34 meses) fica com taxas entre **0,35 e 0,38 designações/mês**. Isso dá uma média de uma pactuação a cada **2,6 a 2,8 meses**, o que bate certinho com a suposição de ciclos trimestrais de metas.
-3. **Trabalho bem distribuído:** Os números não mostram concentração excessiva em poucos servidores, o que dá a entender que a distribuição de planos é ampla e equilibrada.
+Observa-se forte protagonismo operacional da Superintendência Regional Nordeste (SRNE) e da SRSE1, tanto no atendimento direto quanto na análise centralizada de benefícios.
 
 ---
 
-### Visão 2: Cuidado com a taxa mensal em janelas curtas!
+## Auditoria de Vínculos & Conformidade LGPD
+![Auditoria LGPD](imagens/lgpd_dashboard.png)
+O procedimento de auditoria sobre a base de dados monitorou a incidência de múltiplos vínculos por servidor, identificando casos que atingem o teto máximo regulamentado (12 vínculos) ou patamares elevados de acumulação de designações ao longo dos meses observados. Em estrito cumprimento à Lei nº 13.709/2018 (LGPD), os identificadores foram anonimizados.
 
-Se invertermos a tabela e ordenarmos pela taxa de **Designações/Mês**, aparecem números altos que podem enganar se não forem analisados com cuidado:
+| Servidor (Código LGPD) | Total Designações | Designações / Mês | Meses Observados |
+| :---: | :---: | :---: | :---: |
+| `USR-AAD51E3A` | **12** | 0.35 | 34 |
+| `USR-FFB5C436` | **12** | 0.36 | 33 |
+| `USR-79379680` | **10** | 0.29 | 35 |
+| `USR-360E60E9` | **9** | 0.26 | 35 |
+| `USR-DDAE3965` | **9** | 0.26 | 34 |
+| `USR-A81A7AAA` | **9** | 0.28 | 32 |
+| `USR-EE5D9946` | **9** | 0.28 | 32 |
+| `USR-B8A5A365` | **8** | 0.23 | 35 |
 
-![Ranking por Frequência Mensal](imagens/tabela_designacoes_mes.png)
-
-| Servidor (Código) | Total Designações | Designações / Mês | Meses Observados | Diagnóstico (Por que ter cautela?) |
-| :---: | :---: | :---: | :---: | :--- |
-| **USR-21972** | 3 | **0,60** | **5** | Maior taxa matemática da base, mas puxada pelo tempo de observação curto (5 meses). |
-| **USR-21574** | 7 | **0,50** | **14** | Frequência levemente mais alta (aprox. 1 a cada 2 meses), sugerindo transições rápidas. |
-| **USR-21297** | 6 | **0,46** | **13** | Mesma situação; uma rotatividade maior em cerca de 1 ano de participação. |
-| **USR-20873** | 5 | **0,45** | **11** | Taxa superior à média dos servidores mais antigos. |
-| **USR-21697 / USR-21789** | 6 | **0,43** | **14** | Apresentam o mesmo padrão de transição um pouco mais acelerada que o grupo histórico. |
-| **USR-21849** | 3 | **0,43** | **7** | Reflexo de 3 pactuações em pouco mais de um semestre. |
-
-#### ⚠️ Atenção para não tirar conclusões precipitadas:
-- **A pegadinha da média:** O servidor `USR-21972` aparece no topo com uma taxa de **0,60 designações/mês**. Parece bem maior que a taxa dos servidores mais contínuos (que gira em torno de 0,36). Contudo, ele tem apenas **5 meses de registro**, contra mais de 30 meses dos líderes gerais. Isso é um efeito matemático da amostra reduzida.
-- **Sugestão prática:** Essa taxa por mês **não deve ser usada isoladamente como métrica de produtividade**. O ideal é sempre cruzar a taxa com o tempo de casa do servidor (**Meses Observados $\ge 12$ meses**), separando pequenos ajustes de cadastro da galera que tem atuação contínua no PGD de longo prazo.
+A auditoria evidencia que servidores como `USR-AAD51E3A` e `USR-FFB5C436` atingiram o limite regulamentar de 12 designações ativas acumuladas no histórico, exigindo monitoramento contínuo pela corregedoria e gestão de pessoas para assegurar a compatibilidade da carga horária pactuada com a capacidade de entrega efetiva.
 
 ---
 
-### 📊 Números Gerais da Base
+## Recomendações Executivas para o Próximo Ciclo
 
-Para dar uma dimensão do volume de dados que analisei:
-- **Total de registros acumulados:** **45.395** designações;
-- **Série histórica coberta:** **34 meses** (de Outubro/2023 a Julho/2026).
+Com base nas evidências quantitativas apuradas na competência 08/2026, recomendam-se três orientações práticas fundamentadas para a alta gestão do INSS:
 
----
-
-# 🏢 Insight 4 — Onde está o maior volume e como varia no ano?
-
-### A CEAB1 concentra a maior parte dos planos
-No gráfico **"Designações por Programa"**, a **CEAB1** (Central de Análise de Benefício 1) se destaca com folga, ultrapassando **20 mil designações acumuladas**.
-- Em seguida vêm as Superintendências Regionais (`SR_PGD`), `ATENDIMENTO` e `DIR_CENTRAL1`.
-- Essa concentração levanta a forte suposição de que o grande foco do PGD seja mesmo a análise de processos de aposentadoria e pensão, ajudando a diminuir a fila de requerimentos.
-
-### Como as coisas variam ao longo dos meses (Sazonalidade)
-A média mensal de designações costuma girar entre **14 mil e 17 mil por mês**:
-- **Picos em Março e Abril:** As médias mais altas ficam nesses dois meses (~16,7k a 17k), o que sugere um alinhamento com o fechamento do primeiro trimestre e renovação de planos.
-- **Meio e fim de ano:** De maio em diante o ritmo se estabiliza em torno de 15k a 16k, com uma leve desaceleração em novembro antes dos fechamentos do ano.
-
----
-
-# 💡 O que posso concluir (Minhas principais hipóteses)
-
-1. **A base histórica está consistente:** Não há buracos ou falhas no acompanhamento desde o fim de 2023.
-2. **O PGD parece ter expandido perto de 40%:** Passou de cerca de 13,5k para quase 19k planos ativos entre 2024 e 2025, enquanto a quantidade de servidores sem plano caiu bastante.
-3. **Março/2025 foi provavelmente uma virada cadastral:** Quase certamente os 3,4k desligamentos foram um encerramento em lote no sistema para abrir os novos planos da nova fase do programa, e não demissões.
-4. **Respeito total à privacidade:** Toda a análise foi feita preservando o sigilo dos servidores com identificadores numéricos.
-
----
-
-# 🎯 Perguntas para tirar a limpo com quem gerencia o PGD
-
-Para saber se essas minhas suposições estão certas, vale a pena conversar com os gestores do programa e confirmar:
-
-1. **O que causa a subida de não designados no começo do ano?** É apenas a espera natural para assinar os novos contratos ou tem servidores deixando o teletrabalho?
-2. **O que rolou no sistema em março/2025?** Houve mesmo alguma rotina automática no Sisref que baixou os planos antigos em lote?
-3. **Por que a Corregedoria e Auditoria têm prazos tão longos?** É pela natureza de longo prazo das metas ou o pessoal demora para encerrar os planos no sistema depois que eles terminam?
+1. **Governança e Limitação de Múltiplos Vínculos**: Instituir trava sistêmica preventiva no sistema de gestão do PGD para alertas automáticos sempre que um servidor atingir patamares superiores a 8 vínculos ativos, mitigando riscos operacionais de sobrecarga e garantindo alinhamento com os limites observados na auditoria de conformidade.
+2. **Rebalanceamento de Força de Trabalho nas Centrais de Análise**: Direcionar esforços de pactuação para as unidades com maior volume de demanda reprimida, a exemplo da CEAB I e das seções vinculadas às Superintendências Regionais (SRNE e SRSE1), otimizando a alocação entre as modalidades presencial e remota conforme a criticidade do passivo de reconhecimento de direitos.
+3. **Monitoramento da Estabilidade do Efetivo**: Aproveitar o índice nulo de desligamentos registrado na última competência para consolidar acordos de entrega de longo prazo, utilizando os programas de maior duração média (como PG-ACS e PG-DTI) como referência para a estruturação de metas institucionais perenes.

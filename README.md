@@ -1,5 +1,4 @@
 # Pipeline de Dados e Analytics — Programa de Gestão de Desempenho (PGD) INSS
-
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 [![PostgreSQL Neon](<https://img.shields.io/badge/Database-PostgreSQL%20(Neon)-4169E1?logo=postgresql&logoColor=white>)](https://neon.tech/)
@@ -9,7 +8,8 @@
 [![Pytest](https://img.shields.io/badge/QA-Pytest-0A9EDC?logo=pytest&logoColor=white)](https://pytest.org/)
 [![LGPD](<https://img.shields.io/badge/Compliance-LGPD%20Anonymized-008080>)](#privacidade-e-conformidade-com-a-lgpd)
 
-👉 **[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
+**[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
+
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
@@ -17,7 +17,7 @@ Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PG
 
 ---
 
-## 🏛️ Contexto e Motivação
+## Contexto e Motivação
 
 Desenvolvi este projeto como peça de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev**. Durante a preparação para a seleção, despertei um forte interesse pela atuação estratégica da empresa no processamento, governança e gestão de dados que sustentam a previdência, seguridade social e políticas públicas no Brasil.
 
@@ -32,7 +32,7 @@ Concebi e projetei esta solução para simular a maturidade técnica exigida em 
 
 ---
 
-## 📐 Arquitetura da Solução
+## Arquitetura da Solução
 
 ![Arquitetura da Solução](dashboard/imagens/arquitetura.svg)
 
@@ -116,7 +116,7 @@ flowchart TD
 
 ---
 
-## 📂 Estrutura do Repositório
+## Estrutura do Repositório
 
 ```text
 ├── .github/
@@ -150,7 +150,7 @@ flowchart TD
 
 ---
 
-## ⚙️ Decisões de Engenharia e Tratamento de Dados
+## Decisões de Engenharia e Tratamento de Dados
 
 Os dados públicos de origem apresentavam inconsistências de histórico: colunas com nomenclaturas diferentes entre anos (`Matricula`, `Matrícula`, `siape2`), meses inteiros sem identificadores estruturais e fusão de conceitos operacionais.
 
@@ -168,7 +168,7 @@ Todas as minhas decisões e intervenções de dados foram pautadas em validaçã
 
 ---
 
-## 🗄️ Esquema do Banco de Dados (`tb_pgd_inss`)
+## Esquema do Banco de Dados (`tb_pgd_inss`)
 
 A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutura de tipos:
 
@@ -195,7 +195,7 @@ A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutur
 
 ---
 
-## ✅ Testes e Qualidade de Dados (Pytest)
+## Testes e Qualidade de Dados (Pytest)
 
 Para garantir a confiabilidade e integridade das cargas contínuas, desenvolvi uma suíte de testes automatizados construída com **`pytest`** ([`tests/test_pipeline.py`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/tests/test_pipeline.py)). Essa camada atua como uma malha fina de qualidade de dados.
 
@@ -210,7 +210,7 @@ As seguintes validações de negócio e consistência são executadas automatica
 
 ---
 
-## 🚀 Como Executar o Projeto
+## Como Executar o Projeto
 
 ### Pré-requisitos
 
@@ -286,7 +286,7 @@ python tratamento/load_neon.py
 
 ---
 
-## 🔄 Automação CI/CD no GitHub Actions
+## Automação CI/CD no GitHub Actions
 
 O fluxo de atualização contínua está configurado em [`.github/workflows/database_sync.yml`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/.github/workflows/database_sync.yml).
 
@@ -308,7 +308,7 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 
 ---
 
-## 📊 Visualização de Dados e Business Intelligence
+## Visualização de Dados e Business Intelligence
 
 Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
 
@@ -329,12 +329,12 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 
 Para mais detalhes sobre a modelagem e os achados de negócio, consulte a documentação específica:
 
-- 📖 [Documentação Técnica do Dashboard](dashboard/dashboard_README.md)
-- 💡 [Relatório de Insights e Análise Executiva](dashboard/insights_README.md)
+- [Documentação Técnica do Dashboard](dashboard/dashboard_README.md)
+- [Relatório de Insights e Análise Executiva](dashboard/insights_README.md): Relatório executivo gerado com auxílio de Inteligência Artificial (Google Gemini) através do script automatizado [`tratamento/gerar_insights.py`](tratamento/gerar_insights.py).
 
 ---
 
-## 🔒 Privacidade e Conformidade com a LGPD
+## Privacidade e Conformidade com a LGPD
 
 Considerando que os dados de origem envolvem nomes e matrículas de servidores públicos, implementei salvaguardas rigorosas de conformidade com a **Lei Geral de Proteção de Dados (Lei nº 13.709/2018)**:
 
@@ -346,12 +346,13 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 | Camada                                      | Tecnologias                                                          |
 | :------------------------------------------ | :------------------------------------------------------------------- |
 | **Linguagem & Core**                  | Python 3.12, Pandas, NumPy, Requests, Pathlib                        |
 | **Engenharia de Banco de Dados**      | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB)          |
+| **Inteligência Artificial & GenAI**   | Google Gemini API (google-genai SDK), Script Automatizado de Insights |
 | **Ambiente & Containerização**      | Docker, Docker Compose                                               |
 | **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                                 |
 | **Integração & Webhooks**           | cURL, Microsoft Power Automate                                       |
@@ -360,6 +361,6 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 
 ---
 
-## 📄 Licença
+## Licença
 
 Este projeto está sob a licença [MIT](LICENSE).
