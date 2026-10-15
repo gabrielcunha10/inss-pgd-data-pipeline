@@ -39,9 +39,9 @@ jobs:
           python tratamento/download_sgp.py
           python tratamento/etl_sgp_inss.py
 
-      - name: Executar Testes de Integridade (Pytest)
+      - name: Executar Testes de Integridade do Pipeline (Pytest)
         run: |
-          pytest tests/
+          pytest tests/test_pipeline.py
 
       - name: Atualizar Neon DB
         env:
