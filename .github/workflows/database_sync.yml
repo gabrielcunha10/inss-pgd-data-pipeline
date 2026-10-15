@@ -49,6 +49,12 @@ jobs:
         run: |
           python tratamento/load_neon.py
 
+      - name: Gerar Insights Executivos com Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python tratamento/gerar_insights.py
+
       - name: Remover Parquet total (Gerado para testes)
         run: |
           rm -f tests/pgd_designacoes_inss_2023_2026.parquet
@@ -62,7 +68,7 @@ jobs:
           
           if [ -n "$(git status --porcelain)" ]; then
             echo "Alterações detectadas. Criando commit..."
-            git commit -m "chore(data): atualiza amostra e artefatos [skip ci]"
+            git commit -m "chore(data): atualiza amostra, insights e artefatos [skip ci]"
             git push
           else 
             echo "Nenhuma alteração nos arquivos. Pulando commit."

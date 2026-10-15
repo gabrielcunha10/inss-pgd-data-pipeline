@@ -16,6 +16,9 @@ echo "Executando testes..."
 pytest tests/
 TEST_EXIT_CODE=$?
 
+echo "Gerando insights analíticos..."
+python tratamento/gerar_insights.py
+
 echo "Limpando arquivo parquet temporário..."
 rm -f tests/pgd_designacoes_inss_2023_2026.parquet
 
