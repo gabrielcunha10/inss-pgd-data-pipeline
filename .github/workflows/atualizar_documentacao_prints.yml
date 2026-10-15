@@ -33,22 +33,16 @@ jobs:
         run: |
           python dashboard/capturar_prints.py
 
-      - name: Atualizar Insights Executivos com Gemini
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: |
-          python tratamento/gerar_insights.py
-
       - name: Commitar e Subir Imagens e Documentação
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add dashboard/imagens/ dashboard/insights_README.md dashboard/dashboard_README.md
+          git add dashboard/imagens/ dashboard/dashboard_README.md
           
           if [ -n "$(git status --porcelain)" ]; then
-            echo "Novos prints ou análises detectados. Criando commit..."
-            git commit -m "chore(docs): atualiza prints das páginas e insights do dashboard [skip ci]"
+            echo "Novos prints detectados. Criando commit..."
+            git commit -m "chore(docs): atualiza prints das páginas do dashboard [skip ci]"
             git push
           else 
             echo "Nenhuma alteração nos prints ou documentação. Pulando commit."
