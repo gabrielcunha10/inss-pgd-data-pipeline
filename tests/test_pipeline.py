@@ -1,7 +1,20 @@
-#%%
+import re
+import sys
 from pathlib import Path
 import pandas as pd
 import pytest
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+
+from tratamento.etl_sgp_inss import (
+    enriquecer_cadastros_e_pontes,
+    gerar_hash_usuario,
+    limpar_e_inferir_status,
+    preencher_por_ponte,
+)
+
 #%%
 @pytest.fixture(scope="module")
 def df_inss():
@@ -92,3 +105,112 @@ def test_correspondencia_linha_trabalho(df_inss):
     if total_erros > 0:
         amostra = inconsistencias[['sigla_linha_trabalho', 'linha_trabalho']].drop_duplicates().to_dict('records')
         pytest.fail(f"Falha de integridade: encontrados {total_erros} registros com sigla ou linha de trabalho órfãos! Amostra: {amostra}")
+
+#%%
+def test_funcao_anonimizacao_determinismo():
+    matricula = "1234567"
+    hash_1 = gerar_hash_usuario(matricula)
+    hash_2 = gerar_hash_usuario(matricula)
+    hash_int = gerar_hash_usuario(1234567)
+    hash_diff = gerar_hash_usuario("1234568")
+
+    assert hash_1 == hash_2, "A anonimização deve ser determinística para a mesma matrícula."
+    assert hash_1 == hash_int, "A função deve tratar strings e inteiros de forma equivalente."
+    assert hash_1 != hash_diff, "Matrículas distintas não podem colidir no mesmo hash."
+    assert re.match(r"^USR-[A-F0-9]{8}$", hash_1), f"Formato inválido: '{hash_1}'"
+
+
+def test_funcao_normalizacao_lotacao():
+    df_raw = pd.DataFrame({
+        "competencia": ["202602", "202602"],
+        "id_matricula": ["M01", "M02"],
+        "lotacao": [
+            "GERÊNCIA EXECUTIVA JOÃO PESSOA",
+            "AGÊNCIA DA PREVIDÊNCIA SOCIAL SÃO PAULO",
+        ],
+        "sigla_programa": ["ATENDIMENT0", "PGD"],
+        "programa": ["PROG 1", "PROG 2"],
+        "status": ["Designado", "Designado"],
+        "dt_inicio_designacao": [None, None],
+        "dt_fim_designacao": [None, None],
+        "dt_criacao_designacao": [None, None],
+        "dt_alteracao_designacao": [None, None],
+    })
+
+    df_limpo = limpar_e_inferir_status(df_raw)
+    lotacoes = df_limpo["lotacao"].tolist()
+
+    assert lotacoes[0] == "GEX JOAO PESSOA", f"Falha ao normalizar GEX e acentos: {lotacoes[0]}"
+    assert lotacoes[1] == "APS SAO PAULO", f"Falha ao normalizar APS e acentos: {lotacoes[1]}"
+    assert df_limpo["sigla_programa"].iloc[0] == "ATENDIMENTO", "Falha na correção de typo em sigla_programa."
+
+
+def test_funcao_inferencia_status_temporal():
+    df_raw = pd.DataFrame({
+        "competencia": ["202601", "202601", "202601", "202601"],
+        "id_matricula": ["M01", "M02", "M03", "M04"],
+        "lotacao": ["GEX CENTRAL"] * 4,
+        "sigla_programa": ["PGD"] * 4,
+        "programa": ["PROG"] * 4,
+        "status": [None, None, None, "2"],
+        "dt_inicio_designacao": [None, "01/01/2026", "01/01/2026", None],
+        "dt_fim_designacao": [None, "20/01/2026", "28/02/2026", None],
+        "dt_criacao_designacao": [None] * 4,
+        "dt_alteracao_designacao": [None] * 4,
+    })
+
+    df_limpo = limpar_e_inferir_status(df_raw)
+    status_resultado = df_limpo["status"].tolist()
+
+    assert status_resultado[0] == "Não Designado", "Sem data e sem status deve inferir 'Não Designado'."
+    assert status_resultado[1] == "Desligado", "Plano com término antes do fim da competência deve inferir 'Desligado'."
+    assert status_resultado[2] == "Designado", "Plano com término após o fim da competência deve inferir 'Designado'."
+    assert status_resultado[3] == "Desligado", "Código '2' deve mapear diretamente para 'Desligado'."
+
+
+def test_funcao_preenchimento_por_ponte():
+    comp1 = pd.Period("2024-01", freq="M")
+    comp2 = pd.Period("2024-02", freq="M")
+    comp3 = pd.Period("2024-03", freq="M")
+
+    df_ponte = pd.DataFrame({
+        "competencia": [comp1, comp2, comp3, comp1, comp2, comp3],
+        "id_matricula": ["M01", "M01", "M01", "M02", "M02", "M02"],
+        "id_designacao": ["100", None, "100", "200", None, "300"],
+    })
+
+    resultado = preencher_por_ponte(df_ponte, ["id_designacao"], comp2, comp1, comp3)
+    val_m1 = resultado.loc[(resultado["id_matricula"] == "M01") & (resultado["competencia"] == comp2), "id_designacao"].values[0]
+    val_m2 = resultado.loc[(resultado["id_matricula"] == "M02") & (resultado["competencia"] == comp2), "id_designacao"].values[0]
+
+    assert val_m1 == "100", "A ponte deve preencher valores idênticos entre competências adjacentes."
+    assert pd.isna(val_m2), "A ponte não deve imputar valores quando houver divergência entre as pontas."
+
+
+def test_funcao_regras_flag_pgd():
+    df_cadastros = pd.DataFrame({
+        "competencia": [pd.Period("2025-01", freq="M")] * 3,
+        "id_matricula": ["M01", "M02", "M03"],
+        "nome": ["Servidor 1", "Servidor 2", "Servidor 3"],
+        "id_designacao": [1, 2, 3],
+        "sigla_programa": ["PG-DIRBEN", None, None],
+        "programa": [
+            "PROGRAMA DA CEAB I",
+            "PACTUAÇÃO DE 6H PELO ACORDO DE GREVE",
+            "OUTRO PROGRAMA",
+        ],
+        "id_lotacao": ["L1", "L2", "L3"],
+        "lotacao": ["GEX 1", "GEX 2", "GEX 3"],
+        "tipo_entrega": ["Meta e Produto"] * 3,
+        "linha_trabalho": ["LT1", "LT2", "LT3"],
+        "sigla_linha_trabalho": ["SLT1", "SLT2", "SLT3"],
+        "status": ["Designado", "Designado", "Não Designado"],
+        "dt_criacao_designacao": [None] * 3,
+    })
+
+    res = enriquecer_cadastros_e_pontes(df_cadastros)
+    flags = res["flag_pgd"].tolist()
+
+    assert flags[0] == "Sim", "Programas institucionais regulares devem receber flag_pgd = 'Sim'."
+    assert flags[1] == "Não", "Programas de acordo de greve devem receber flag_pgd = 'Não'."
+    assert pd.isna(flags[2]), "Status 'Não Designado' deve permanecer com flag_pgd nula."
