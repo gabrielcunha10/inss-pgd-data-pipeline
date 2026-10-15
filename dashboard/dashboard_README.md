@@ -182,5 +182,7 @@ O arquivo `.pbix` já está configurado com a cadeia de conexão para o banco re
 
 ## Documentos Relacionados
 
-* [Relatório de Insights Automatizado por IA (Gemini)](insights_README.md): Documento analítico gerado de forma autônoma pelo pipeline a cada ciclo mensal, interpretando as variações dos números.
+* [Relatório de Insights Automatizado por IA (Gemini)](insights_README.md): Documento analítico gerado de forma autônoma pelo pipeline a cada ciclo mensal, interpretando as variações dos números (versão vigente).
+* [Histórico de Relatórios Mensais](relatorios/): Pasta com todas as versões mensais arquivadas (`insights_AAAA_MM.md`), mantendo o registro evolutivo do projeto vivo.
 * [README Principal do Repositório](../README.md): Arquitetura completa da solução, scripts de engenharia de dados, testes automatizados e esteira de CI/CD.
+
