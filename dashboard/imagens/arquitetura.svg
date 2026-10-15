@@ -1,212 +1,311 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 680" width="100%" height="100%" style="background:#0b0f19; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 760" width="100%" height="100%" style="background:#ffffff; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;">
   <defs>
-    <!-- Gradients -->
-    <linearGradient id="grad-blue" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e3a8a"/>
-      <stop offset="100%" stop-color="#172554"/>
-    </linearGradient>
-    <linearGradient id="grad-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0e7490"/>
-      <stop offset="100%" stop-color="#155e75"/>
-    </linearGradient>
-    <linearGradient id="grad-purple" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#581c87"/>
-      <stop offset="100%" stop-color="#3b0764"/>
-    </linearGradient>
-    <linearGradient id="grad-emerald" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#065f46"/>
-      <stop offset="100%" stop-color="#022c22"/>
-    </linearGradient>
-    <linearGradient id="grad-amber" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#854d0e"/>
-      <stop offset="100%" stop-color="#451a03"/>
-    </linearGradient>
-    <linearGradient id="grad-card" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#1e293b"/>
-      <stop offset="100%" stop-color="#0f172a"/>
-    </linearGradient>
-    <linearGradient id="grad-header" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#38bdf8"/>
-      <stop offset="100%" stop-color="#818cf8"/>
-    </linearGradient>
-
-    <!-- Filters for soft shadow -->
-    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
-      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.5"/>
+    <!-- Soft Shadows -->
+    <filter id="card-shadow" x="-8%" y="-8%" width="120%" height="125%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0f172a" flood-opacity="0.08"/>
+    </filter>
+    <filter id="glow-pbi" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#eab308" flood-opacity="0.25"/>
     </filter>
 
-    <!-- Arrow Marker -->
+    <!-- Gradients -->
+    <linearGradient id="card-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#f1f5f9"/>
+    </linearGradient>
+
+    <linearGradient id="header-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+
+    <linearGradient id="grad-gemini" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a73e8"/>
+      <stop offset="50%" stop-color="#8ab4f8"/>
+      <stop offset="100%" stop-color="#c58af9"/>
+    </linearGradient>
+
+    <!-- Marker Arrows -->
     <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#38bdf8"/>
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#475569"/>
     </marker>
-    <marker id="arrow-green" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#34d399"/>
-    </marker>
-    <marker id="arrow-amber" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#fbbf24"/>
+    <marker id="arrow-blue" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2563eb"/>
     </marker>
     <marker id="arrow-purple" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#a855f7"/>
-    </marker>
-    <marker id="arrow-rose" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-      <path d="M 0 1 L 10 5 L 0 9 z" fill="#f43f5e"/>
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#7c3aed"/>
     </marker>
   </defs>
 
-  <!-- Background Grid Pattern -->
-  <g opacity="0.05">
-    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#ffffff" stroke-width="1"/>
-    </pattern>
-    <rect width="100%" height="100%" fill="url(#grid)" />
-  </g>
-
   <!-- Title Header -->
-  <text x="550" y="46" text-anchor="middle" font-size="22" font-weight="700" fill="url(#grad-header)" letter-spacing="1">ARQUITETURA DO PIPELINE DE DADOS — PGD INSS</text>
-  <text x="550" y="70" text-anchor="middle" font-size="13" font-weight="400" fill="#94a3b8">Fluxo Contínuo de Ingestão, Engenharia de Dados, Nuvem e Analytics</text>
+  <text x="680" y="44" text-anchor="middle" font-size="22" font-weight="800" fill="url(#header-grad)" letter-spacing="0.5">ARQUITETURA COMPLETA DO PIPELINE DE DADOS — PGD INSS</text>
+  <text x="680" y="68" text-anchor="middle" font-size="13" font-weight="500" fill="#64748b">Fluxo Integrado de Engenharia, Banco em Nuvem, Analytics, IA Executiva e Documentação</text>
 
-  <!-- ================= TOP LAYER: INGESTÃO E ETL ================= -->
-
-  <!-- Card 1: API INSS -->
-  <g filter="url(#shadow)">
-    <rect x="30" y="110" width="180" height="150" rx="12" fill="url(#grad-card)" stroke="#38bdf8" stroke-width="1.5"/>
-    <rect x="30" y="110" width="180" height="32" rx="12" fill="#0284c7" fill-opacity="0.3"/>
-    <circle cx="45" cy="126" r="6" fill="#38bdf8"/>
-    <text x="57" y="130" font-size="11" font-weight="700" fill="#e0f2fe">1. FONTE PÚBLICA</text>
-    <text x="120" y="170" text-anchor="middle" font-size="14" font-weight="600" fill="#ffffff">Portal Dados</text>
-    <text x="120" y="190" text-anchor="middle" font-size="11" fill="#94a3b8">API CKAN (INSS)</text>
-    <rect x="50" y="210" width="140" height="24" rx="6" fill="#0369a1" fill-opacity="0.4"/>
-    <text x="120" y="226" text-anchor="middle" font-size="10" fill="#7dd3fc">28+ CSVs Mensais</text>
+  <!-- ================= SECTION 1: PIPELINE PRINCIPAL ================= -->
+  <!-- Section 1 Badge -->
+  <g transform="translate(40, 95)">
+    <rect x="0" y="0" width="560" height="28" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+    <circle cx="14" cy="14" r="5" fill="#2563eb"/>
+    <text x="26" y="18" font-size="11" font-weight="700" fill="#1e40af">WORKFLOW 1: PIPELINE PRINCIPAL (database_sync.yml — Mensalmente, todo dia 01 às 06:00 BRT)</text>
   </g>
 
-  <!-- Card 2: Ingestor download_sgp.py -->
-  <g filter="url(#shadow)">
-    <rect x="240" y="110" width="190" height="150" rx="12" fill="url(#grad-card)" stroke="#0ea5e9" stroke-width="1.5"/>
-    <rect x="240" y="110" width="190" height="32" rx="12" fill="#0369a1" fill-opacity="0.3"/>
-    <circle cx="255" cy="126" r="6" fill="#38bdf8"/>
-    <text x="267" y="130" font-size="11" font-weight="700" fill="#e0f2fe">2. INGESTÃO</text>
-    <text x="335" y="170" text-anchor="middle" font-size="14" font-weight="600" fill="#38bdf8">download_sgp.py</text>
-    <text x="335" y="192" text-anchor="middle" font-size="11" fill="#cbd5e1">Download Incremental</text>
-    <text x="335" y="210" text-anchor="middle" font-size="10" fill="#94a3b8">Extração de Competências</text>
-    <text x="335" y="228" text-anchor="middle" font-size="10" fill="#94a3b8">Padronização pgd_inss_*.csv</text>
+  <!-- Card 1: Fonte de Dados -->
+  <g transform="translate(40, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Brasil / Dados Abertos -->
+    <g transform="translate(42, 22)">
+      <circle cx="25" cy="25" r="23" fill="#15803d"/>
+      <polygon points="25,7 44,25 25,43 6,25" fill="#facc15"/>
+      <circle cx="25" cy="25" r="11" fill="#1d4ed8"/>
+      <path d="M 14 26 Q 25 21 36 24" stroke="#ffffff" stroke-width="2" fill="none"/>
+    </g>
+    <text x="67" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Fonte de Dados:</text>
+    <text x="67" y="123" text-anchor="middle" font-size="10" font-weight="600" fill="#334155">API Dados Abertos</text>
+    <text x="67" y="139" text-anchor="middle" font-size="10" font-weight="400" fill="#64748b">INSS (CKAN)</text>
+    <text x="67" y="157" text-anchor="middle" font-size="9" font-weight="500" fill="#2563eb">CSVs Mensais</text>
   </g>
 
-  <!-- Card 3: ETL etl_sgp_inss.py -->
-  <g filter="url(#shadow)">
-    <rect x="460" y="110" width="190" height="150" rx="12" fill="url(#grad-card)" stroke="#a855f7" stroke-width="1.5"/>
-    <rect x="460" y="110" width="190" height="32" rx="12" fill="#7e22ce" fill-opacity="0.3"/>
-    <circle cx="475" cy="126" r="6" fill="#c084fc"/>
-    <text x="487" y="130" font-size="11" font-weight="700" fill="#f3e8ff">3. TRANSFORMAÇÃO</text>
-    <text x="555" y="168" text-anchor="middle" font-size="14" font-weight="600" fill="#c084fc">etl_sgp_inss.py</text>
-    <text x="555" y="188" text-anchor="middle" font-size="10" fill="#cbd5e1">• 32 p/ 18 colunas</text>
-    <text x="555" y="206" text-anchor="middle" font-size="10" fill="#cbd5e1">• Ponte temporal nulos</text>
-    <text x="555" y="224" text-anchor="middle" font-size="10" fill="#cbd5e1">• Hash LGPD (HMAC)</text>
-    <text x="555" y="242" text-anchor="middle" font-size="10" fill="#cbd5e1">• Amostra Sample 5k</text>
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 175 220 L 199 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 2: Ingestão -->
+  <g transform="translate(205, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Python -->
+    <g transform="translate(42, 22)">
+      <path d="M 23 2 C 12 2 13 7 13 7 L 13 12 L 24 12 L 24 13 L 8 13 C 8 13 2 13 2 23 C 2 33 7 33 7 33 L 11 33 L 11 28 C 11 23 16 23 16 23 L 27 23 C 32 23 32 18 32 18 L 32 7 C 32 7 33 2 23 2 Z" fill="#387eb8"/>
+      <circle cx="17" cy="7" r="2" fill="#ffffff"/>
+      <path d="M 27 48 C 38 48 37 43 37 43 L 37 38 L 26 38 L 26 37 L 42 37 C 42 37 48 37 48 27 C 48 17 43 17 43 17 L 39 17 L 39 22 C 39 27 34 27 34 27 L 23 27 C 18 27 18 32 18 32 L 18 43 C 18 43 17 48 27 48 Z" fill="#ffe052"/>
+      <circle cx="33" cy="43" r="2" fill="#ffffff"/>
+    </g>
+    <text x="67" y="105" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Ingestão:</text>
+    <text x="67" y="123" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">download_sgp.py</text>
+    <text x="67" y="139" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">Carga Incremental</text>
+    <text x="67" y="157" text-anchor="middle" font-size="9" font-weight="500" fill="#059669">2023 a 2026</text>
   </g>
 
-  <!-- Card 4: Testes test_pipeline.py -->
-  <g filter="url(#shadow)">
-    <rect x="680" y="110" width="180" height="150" rx="12" fill="url(#grad-card)" stroke="#f43f5e" stroke-width="1.5"/>
-    <rect x="680" y="110" width="180" height="32" rx="12" fill="#be123c" fill-opacity="0.3"/>
-    <circle cx="695" cy="126" r="6" fill="#fb7185"/>
-    <text x="707" y="130" font-size="11" font-weight="700" fill="#ffe4e6">4. QUALIDADE (QA)</text>
-    <text x="770" y="168" text-anchor="middle" font-size="14" font-weight="600" fill="#fb7185">test_pipeline.py</text>
-    <text x="770" y="188" text-anchor="middle" font-size="10" fill="#cbd5e1">• Pytest automatizado</text>
-    <text x="770" y="206" text-anchor="middle" font-size="10" fill="#cbd5e1">• Validação temporal</text>
-    <text x="770" y="224" text-anchor="middle" font-size="10" fill="#cbd5e1">• Unicidade de chaves</text>
-    <text x="770" y="242" text-anchor="middle" font-size="10" fill="#cbd5e1">• Mascaramento LGPD</text>
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 340 220 L 364 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 3: Transformação ETL -->
+  <g transform="translate(370, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Engrenagem Coral -->
+    <g transform="translate(42, 22)">
+      <circle cx="25" cy="25" r="20" fill="#f87171"/>
+      <circle cx="25" cy="25" r="15" fill="#ef4444"/>
+      <circle cx="25" cy="25" r="7" fill="#ffffff"/>
+      <rect x="22" y="2" width="6" height="46" rx="2" fill="#ef4444"/>
+      <rect x="2" y="22" width="46" height="6" rx="2" fill="#ef4444"/>
+      <rect x="22" y="2" width="6" height="46" rx="2" fill="#ef4444" transform="rotate(45 25 25)"/>
+      <rect x="2" y="22" width="46" height="6" rx="2" fill="#ef4444" transform="rotate(45 25 25)"/>
+      <circle cx="25" cy="25" r="8" fill="#ffffff"/>
+      <circle cx="25" cy="25" r="5" fill="#dc2626"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Transformação:</text>
+    <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#dc2626">etl_sgp_inss.py</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">Limpeza &amp; Pontes</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#b91c1c">Base Parquet</text>
   </g>
 
-  <!-- Card 5: Neon DB -->
-  <g filter="url(#shadow)">
-    <rect x="890" y="110" width="180" height="150" rx="12" fill="url(#grad-card)" stroke="#10b981" stroke-width="1.5"/>
-    <rect x="890" y="110" width="180" height="32" rx="12" fill="#047857" fill-opacity="0.3"/>
-    <circle cx="905" cy="126" r="6" fill="#34d399"/>
-    <text x="917" y="130" font-size="11" font-weight="700" fill="#d1fae5">5. BANCO NUVEM</text>
-    <text x="980" y="168" text-anchor="middle" font-size="14" font-weight="600" fill="#34d399">PostgreSQL</text>
-    <text x="980" y="188" text-anchor="middle" font-size="11" fill="#a7f3d0">Neon Tech Serverless</text>
-    <rect x="915" y="206" width="130" height="26" rx="6" fill="#064e3b" stroke="#059669" stroke-width="1"/>
-    <text x="980" y="223" text-anchor="middle" font-size="11" font-weight="600" fill="#6ee7b7">tb_pgd_inss</text>
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 505 220 L 529 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 4: Anonimização LGPD -->
+  <g transform="translate(535, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Escudo Cadeado Verde -->
+    <g transform="translate(42, 22)">
+      <path d="M 25 4 L 45 11 C 45 29 25 44 25 44 C 25 44 5 29 5 11 Z" fill="#16a34a"/>
+      <rect x="18" y="22" width="14" height="11" rx="2" fill="#ffffff"/>
+      <path d="M 21 22 L 21 17 C 21 14.5 29 14.5 29 17 L 29 22" stroke="#ffffff" stroke-width="2.5" fill="none"/>
+      <circle cx="25" cy="27" r="1.5" fill="#16a34a"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Anonimização:</text>
+    <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#15803d">LGPD / Sigilo</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">HMAC-SHA256</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#166534">Hash USR-XXXXXXXX</text>
   </g>
 
-  <!-- Flow Arrows Row 1 -->
-  <path d="M 210 185 L 234 185" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
-  <path d="M 430 185 L 454 185" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#arrow)"/>
-  <path d="M 650 185 L 674 185" stroke="#a855f7" stroke-width="2.5" fill="none" marker-end="url(#arrow-purple)"/>
-  <path d="M 860 185 L 884 185" stroke="#f43f5e" stroke-width="2.5" fill="none" marker-end="url(#arrow-rose)"/>
+  <!-- Arrow 4 -> 5 -->
+  <path d="M 670 220 L 694 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- ================= MIDDLE / BOTTOM: ORCHESTRATION & BI ================= -->
-
-  <!-- Large Container: CI/CD GitHub Actions -->
-  <g filter="url(#shadow)">
-    <rect x="50" y="320" width="480" height="310" rx="16" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
-    <rect x="50" y="320" width="480" height="38" rx="16" fill="#1e293b"/>
-    <circle cx="75" cy="339" r="6" fill="#38bdf8"/>
-    <text x="90" y="344" font-size="14" font-weight="700" fill="#f8fafc">ORQUESTRAÇÃO &amp; CI/CD — GitHub Actions (database_sync.yml)</text>
-
-    <!-- Substep A: Trigger -->
-    <rect x="75" y="380" width="430" height="60" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
-    <text x="95" y="405" font-size="13" font-weight="600" fill="#38bdf8">⏱️ Gatilho Automatizado</text>
-    <text x="95" y="425" font-size="12" fill="#94a3b8">Cron mensal (0 9 1 * *) ou execução manual via workflow_dispatch</text>
-
-    <!-- Substep B: Ingestion + ETL execution -->
-    <rect x="75" y="455" width="430" height="60" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
-    <text x="95" y="480" font-size="13" font-weight="600" fill="#a855f7">⚙️ Execução do Pipeline no Runner</text>
-    <text x="95" y="500" font-size="12" fill="#94a3b8">Ambiente Python 3.12: download_sgp.py ➔ etl ➔ pytest ➔ Neon DB</text>
-
-    <!-- Substep C: Git commit bot & Webhook -->
-    <rect x="75" y="530" width="430" height="75" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1"/>
-    <text x="95" y="555" font-size="13" font-weight="600" fill="#34d399">🤖 Git Commit Bot + Webhook</text>
-    <text x="95" y="575" font-size="12" fill="#94a3b8">• Atualiza amostra sample.csv no repositório [skip ci]</text>
-    <text x="95" y="593" font-size="12" fill="#94a3b8">• cURL POST aciona webhook do Power Automate</text>
+  <!-- Card 5: Testes QA Pipeline -->
+  <g transform="translate(700, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Checkmark Azul / Selo -->
+    <g transform="translate(42, 22)">
+      <path d="M 25 2 L 31 6 L 38 4 L 41 11 L 48 13 L 47 21 L 51 26 L 47 31 L 48 39 L 41 41 L 38 48 L 31 46 L 25 50 L 19 46 L 12 48 L 9 41 L 2 39 L 3 31 L -1 26 L 3 21 L 2 13 L 9 11 L 12 4 L 19 6 Z" fill="#3b82f6"/>
+      <path d="M 16 26 L 22 32 L 34 18" stroke="#ffffff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Testes QA Dados:</text>
+    <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#1d4ed8">test_pipeline.py</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">13 Testes Pytest</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#1e40af">Integridade &amp; ETL</text>
   </g>
 
-  <!-- Card 5: Power Automate -->
-  <g filter="url(#shadow)">
-    <rect x="580" y="360" width="200" height="120" rx="12" fill="url(#grad-card)" stroke="#0284c7" stroke-width="1.5"/>
-    <rect x="580" y="360" width="200" height="30" rx="12" fill="#0369a1" fill-opacity="0.4"/>
-    <circle cx="600" cy="375" r="5" fill="#38bdf8"/>
-    <text x="615" y="379" font-size="11" font-weight="700" fill="#e0f2fe">AUTOMAÇÃO</text>
-    <text x="680" y="415" text-anchor="middle" font-size="15" font-weight="600" fill="#38bdf8">Power Automate</text>
-    <text x="680" y="435" text-anchor="middle" font-size="11" fill="#cbd5e1">Recebe Webhook HTTP</text>
-    <text x="680" y="455" text-anchor="middle" font-size="11" fill="#94a3b8">Dispara refresh do PBI</text>
+  <!-- Arrow 5 -> 6 -->
+  <path d="M 835 220 L 859 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 6: Banco Neon -->
+  <g transform="translate(865, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Banco Neon Cilindro -->
+    <g transform="translate(42, 22)">
+      <ellipse cx="25" cy="11" rx="20" ry="8" fill="#06b6d4"/>
+      <path d="M 5 11 L 5 37 C 5 43 45 43 45 37 L 45 11" fill="#0891b2"/>
+      <ellipse cx="25" cy="24" rx="20" ry="7" fill="#0891b2" opacity="0.4"/>
+      <ellipse cx="25" cy="37" rx="20" ry="8" fill="#0e7490"/>
+      <ellipse cx="25" cy="11" rx="17" ry="6" fill="#67e8f9"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Banco de Dados:</text>
+    <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#0e7490">PostgreSQL Neon</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">Serverless Cloud</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#0891b2">tb_pgd_inss</text>
   </g>
 
-  <!-- Card 6: Power BI & Analytics -->
-  <g filter="url(#shadow)">
-    <rect x="840" y="340" width="210" height="270" rx="14" fill="url(#grad-card)" stroke="#eab308" stroke-width="1.5"/>
-    <rect x="840" y="340" width="210" height="34" rx="14" fill="#a16207" fill-opacity="0.4"/>
-    <circle cx="862" cy="357" r="6" fill="#facc15"/>
-    <text x="876" y="361" font-size="12" font-weight="700" fill="#fef08a">ANALYTICS &amp; BI</text>
-    <text x="945" y="405" text-anchor="middle" font-size="16" font-weight="700" fill="#facc15">Microsoft Power BI</text>
-    <text x="945" y="425" text-anchor="middle" font-size="12" fill="#fef9c3">Conexão Nativa PostgreSQL</text>
-    
-    <line x1="860" y1="445" x2="1030" y2="445" stroke="#334155" stroke-width="1"/>
+  <!-- Arrow 6 -> 7 -->
+  <path d="M 1000 220 L 1024 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-    <text x="860" y="470" font-size="12" font-weight="600" fill="#ffffff">Recursos &amp; Governança:</text>
-    <text x="860" y="492" font-size="11" fill="#cbd5e1">• Filtros Dinâmicos (Modalidade)</text>
-    <text x="860" y="512" font-size="11" fill="#cbd5e1">• KPIs de Força de Trabalho</text>
-    <text x="860" y="532" font-size="11" fill="#cbd5e1">• Análise de Picos e Retenção</text>
-    <text x="860" y="552" font-size="11" fill="#cbd5e1">• Sazonalidade das Linhas</text>
-    
-    <rect x="860" y="568" width="170" height="26" rx="6" fill="#854d0e" fill-opacity="0.5"/>
-    <text x="945" y="585" text-anchor="middle" font-size="11" font-weight="600" fill="#fde047">Atualização Automática</text>
+  <!-- Card 7: Orquestração 1 (Actions) -->
+  <g transform="translate(1030, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon GitHub Actions & Docker -->
+    <g transform="translate(42, 22)">
+      <circle cx="25" cy="25" r="23" fill="#0f172a"/>
+      <!-- Actions loop icon -->
+      <path d="M 18 16 C 14 16 12 19 12 23 C 12 28 15 31 19 31 C 24 31 26 27 28 23 C 30 19 32 16 37 16 C 41 16 44 19 44 23 C 44 28 41 31 37 31" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <circle cx="15" cy="23" r="2.5" fill="#38bdf8"/>
+      <circle cx="41" cy="23" r="2.5" fill="#38bdf8"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Orquestração:</text>
+    <text x="67" y="119" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">GitHub Actions</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#2563eb">database_sync.yml</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">Cron Mensal + Auto</text>
   </g>
 
-  <!-- Connectors between Bottom Row Elements -->
-  <!-- GitHub Actions to Power Automate -->
-  <path d="M 505 570 L 542 570 L 542 420 L 574 420" stroke="#38bdf8" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-  <text x="542" y="480" font-size="10" font-weight="600" fill="#7dd3fc" text-anchor="middle" transform="rotate(-90 542 480)">Webhook POST</text>
+  <!-- Arrow 7 -> 8 -->
+  <path d="M 1165 220 L 1189 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- Power Automate to Power BI -->
-  <path d="M 780 420 L 834 420" stroke="#fbbf24" stroke-width="2" fill="none" marker-end="url(#arrow-amber)"/>
-  <text x="807" y="410" font-size="10" font-weight="600" fill="#fde047" text-anchor="middle">Refresh API</text>
+  <!-- Card 8: Power BI -->
+  <g transform="translate(1195, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#facc15" stroke-width="2"/>
+    <!-- Icon Power BI 3 Barras Amarelas -->
+    <g transform="translate(44, 22)">
+      <rect x="5" y="24" width="9" height="22" rx="2" fill="#eab308" opacity="0.8"/>
+      <rect x="18" y="14" width="9" height="32" rx="2" fill="#ca8a04"/>
+      <rect x="31" y="4" width="9" height="42" rx="2" fill="#a16207"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Visualização:</text>
+    <text x="67" y="120" text-anchor="middle" font-size="11" font-weight="800" fill="#a16207">Power BI</text>
+    <text x="67" y="136" text-anchor="middle" font-size="9" font-weight="500" fill="#713f12">Dashboard Web</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#ca8a04">8 Telas Analíticas</text>
+  </g>
 
-  <!-- Neon DB to Power BI (Direct SQL Connection) -->
-  <path d="M 980 260 L 980 334" stroke="#34d399" stroke-width="2.5" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-green)"/>
-  <text x="992" y="300" font-size="10" font-weight="600" fill="#6ee7b7">Query SQL</text>
+  <!-- ================= CONNECTING BRIDGE ================= -->
+  <!-- Direct flow arrow from Power BI down to Workflow 2 -->
+  <path d="M 1262 305 L 1262 375 L 120 375 L 120 425" stroke="#2563eb" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="680" y="367" text-anchor="middle" font-size="11" font-weight="700" fill="#2563eb" letter-spacing="0.5">DADOS &amp; DASHBOARD ATUALIZADOS ACIONAM DOCUMENTAÇÃO E INSIGHTS</text>
 
-  <!-- Trigger Link from Actions to Source -->
-  <path d="M 120 320 L 120 266" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,4" fill="none" marker-end="url(#arrow)"/>
-  <text x="130" y="295" font-size="10" font-weight="600" fill="#7dd3fc">Gatilho</text>
+  <!-- ================= SECTION 2: DOCUMENTAÇÃO & INSIGHTS ================= -->
+  <!-- Section 2 Badge -->
+  <g transform="translate(40, 395)">
+    <rect x="0" y="0" width="670" height="28" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+    <circle cx="14" cy="14" r="5" fill="#7c3aed"/>
+    <text x="26" y="18" font-size="11" font-weight="700" fill="#6b21a8">WORKFLOW 2: PRINTS DO DASHBOARD &amp; DOCUMENTAÇÃO (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)</text>
+  </g>
+
+  <!-- Card 9: Capturar Prints -->
+  <g transform="translate(40, 435)" filter="url(#card-shadow)">
+    <rect width="190" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Camera Fotografica -->
+    <g transform="translate(68, 20)">
+      <rect x="5" y="12" width="40" height="28" rx="6" fill="#0f172a"/>
+      <path d="M 16 12 L 20 6 L 30 6 L 34 12 Z" fill="#0f172a"/>
+      <circle cx="25" cy="26" r="10" fill="#38bdf8"/>
+      <circle cx="25" cy="26" r="6" fill="#0f172a"/>
+      <circle cx="27" cy="24" r="2" fill="#ffffff"/>
+      <circle cx="37" cy="18" r="2.5" fill="#ef4444"/>
+    </g>
+    <text x="95" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Prints do Dashboard:</text>
+    <text x="95" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">capturar_prints.py</text>
+    <text x="95" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">8 Telas do Power BI</text>
+    <text x="95" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">Retry com Hash SHA-256</text>
+  </g>
+
+  <!-- Arrow 9 -> 10 -->
+  <path d="M 230 520 L 264 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 10: Gerar Insights -->
+  <g transform="translate(270, 435)" filter="url(#card-shadow)">
+    <rect width="200" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Google Gemini Star -->
+    <g transform="translate(75, 18)">
+      <path d="M 25 2 C 25 15 35 25 48 25 C 35 25 25 35 25 48 C 25 35 15 25 2 25 C 15 25 25 15 25 2 Z" fill="url(#grad-gemini)"/>
+      <circle cx="39" cy="11" r="3" fill="#8ab4f8"/>
+    </g>
+    <text x="100" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Insights Executivos:</text>
+    <text x="100" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">gerar_insights.py</text>
+    <text x="100" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">Google Gemini 3.5 Flash</text>
+    <text x="100" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#4f46e5">Métricas MoM &amp; Análise IA</text>
+  </g>
+
+  <!-- Arrow 10 -> 11 -->
+  <path d="M 470 520 L 504 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 11: Testes Documentação & Insights -->
+  <g transform="translate(510, 435)" filter="url(#card-shadow)">
+    <rect width="220" height="170" rx="14" fill="url(#card-bg)" stroke="#c084fc" stroke-width="1.5"/>
+    <!-- Icon Selo Roxo Checkmark -->
+    <g transform="translate(85, 20)">
+      <circle cx="25" cy="25" r="23" fill="#7c3aed"/>
+      <path d="M 16 26 L 22 32 L 34 18" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+    </g>
+    <text x="110" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Testes QA Documentação:</text>
+    <text x="110" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">test_documentacao_insights.py</text>
+    <text x="110" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">8 Testes Pytest Isolados</text>
+    <text x="110" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#6b21a8">Unicidade SHA-256 &amp; Links</text>
+  </g>
+
+  <!-- Arrow 11 -> 12 -->
+  <path d="M 730 520 L 764 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 12: Orquestração 2 (Actions Docs) -->
+  <g transform="translate(770, 435)" filter="url(#card-shadow)">
+    <rect width="250" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon GitHub Actions Documentação -->
+    <g transform="translate(100, 20)">
+      <circle cx="25" cy="25" r="23" fill="#1e1b4b"/>
+      <path d="M 18 16 C 14 16 12 19 12 23 C 12 28 15 31 19 31 C 24 31 26 27 28 23 C 30 19 32 16 37 16 C 41 16 44 19 44 23 C 44 28 41 31 37 31" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <circle cx="15" cy="23" r="2.5" fill="#a78bfa"/>
+      <circle cx="41" cy="23" r="2.5" fill="#a78bfa"/>
+    </g>
+    <text x="125" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Orquestração Documentação:</text>
+    <text x="125" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">GitHub Actions</text>
+    <text x="125" y="135" text-anchor="middle" font-size="9" font-weight="600" fill="#7c3aed">atualizar_documentacao_prints.yml</text>
+    <text x="125" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#475569">Execução Agendada (10:30 UTC)</text>
+  </g>
+
+  <!-- Arrow 12 -> 13 -->
+  <path d="M 1020 520 L 1054 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 13: Publicação Documentação -->
+  <g transform="translate(1060, 435)" filter="url(#card-shadow)">
+    <rect width="260" height="170" rx="14" fill="url(#card-bg)" stroke="#10b981" stroke-width="1.5"/>
+    <!-- Icon Caderno / Markdown -->
+    <g transform="translate(105, 20)">
+      <rect x="5" y="5" width="40" height="40" rx="6" fill="#047857"/>
+      <path d="M 14 18 L 20 25 L 26 18 L 26 31 L 22 31 L 22 23 L 20 26 L 18 23 L 18 31 L 14 31 Z" fill="#ffffff"/>
+      <path d="M 32 25 L 35 21 L 38 25 L 36 25 L 36 31 L 34 31 L 34 25 Z" fill="#ffffff"/>
+    </g>
+    <text x="130" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">Publicação dos Artefatos:</text>
+    <text x="130" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#047857">READMEs Atualizados</text>
+    <text x="130" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• dashboard_README.md (8 Telas)</text>
+    <text x="130" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• insights_README.md (Relatório IA)</text>
+  </g>
+
+  <!-- Footer Info Line -->
+  <line x1="40" y1="675" x2="1320" y2="675" stroke="#e2e8f0" stroke-width="1"/>
+  <text x="680" y="705" text-anchor="middle" font-size="11" font-weight="500" fill="#64748b">Pipeline de Dados Automatizado — Repositório Open Source PGD SGP-INSS (2023–2026)</text>
+  <text x="680" y="725" text-anchor="middle" font-size="10" font-weight="400" fill="#94a3b8">Isolamento Completo entre Workflow Principal de Carga e Workflow de Documentação Visual</text>
 </svg>
