@@ -114,6 +114,18 @@ def capturar_todas_as_paginas():
             logging.info(f"[{idx}/{total}] Capturando '{nome}'...")
             page.wait_for_timeout(3500)  # Renderização completa dos cards e visuais
 
+            # Remove qualquer foco e afasta o cursor para evitar tooltips sobre os cards
+            page.mouse.move(0, 0)
+            page.evaluate("""() => {
+                if (document.activeElement && document.activeElement.blur) {
+                    document.activeElement.blur();
+                }
+                document.querySelectorAll('.cdk-overlay-pane, .pbi-tooltip, .tooltip-container, [role="tooltip"]').forEach(el => {
+                    el.remove();
+                });
+            }""")
+            page.wait_for_timeout(500)
+
             # Captura a tela do dashboard cortada (apenas o canvas, sem a barra inferior do Power BI)
             host = page.locator(".visualContainerHost").first
             if host.is_visible():
