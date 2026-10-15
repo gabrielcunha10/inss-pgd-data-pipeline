@@ -1,17 +1,7 @@
-"""
-Módulo de Geração Automatizada de Insights Mensais — PGD INSS
------------------------------------------------------------
-Desenvolvido com assistência de Inteligência Artificial (Google Gemini).
-
-Este script realiza a ingestão analítica da base consolidada colunar (.parquet),
-calcula os indicadores de negócio dos 6 eixos do Dashboard Power BI (incluindo
-variações MoM, métricas de duração e auditoria LGPD) e orquestra a geração de
-narrativas executivas automatizadas via Google Gemini API (com fallback local).
-"""
-
 import logging
 import os
 import re
+from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
 import numpy as np
@@ -27,13 +17,6 @@ PROJECT_DIR = Path(__file__).resolve().parent.parent
 PARQUET_PATH = PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet"
 OUTPUT_MARKDOWN = PROJECT_DIR / "dashboard" / "insights_README.md"
 
-# ==============================================================================
-# INTEGRACAO COM A API DO GOOGLE GEMINI (GOOGLE GENAI SDK)
-# ==============================================================================
-# Exemplo de utilizacao do SDK oficial google-genai:
-#   from google import genai
-#   client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
-# ==============================================================================
 try:
     from google import genai
     GENAI_DISPONIVEL = True
@@ -264,16 +247,6 @@ def formatar_tabelas_auxiliares(m: dict) -> dict:
     }
 
 
-# ==============================================================================
-# INTEGRACAO COM GOOGLE GEMINI API PARA ANALISE MENSAL DINAMICA
-# ==============================================================================
-# Exemplo de chamada utilizando o SDK oficial google-genai:
-#   client = genai.Client(api_key=api_key)
-#   response = client.models.generate_content(
-#       model="gemini-3.5-flash-lite",
-#       contents=prompt
-#   )
-# ==============================================================================
 def gerar_relatorio_com_gemini(m: dict, tabs: dict, api_key: str) -> str:
     logging.info("Solicitando análise executiva avançada ao Google Gemini...")
     client = genai.Client(api_key=api_key)
@@ -338,14 +311,14 @@ Tabela de Auditoria LGPD:
 """
 
     modelos = [
-        "gemini-3.5-flash-lite",
+        "gemini-4-argon",
         "gemini-3.8-flash",
-        "gemini-3.1-flash-lite",
-        "gemini-2.5-pro",
+        "gemini-3.1-pro",
     ]
 
     response = None
     ultimo_erro = None
+    modelo_sucesso = None
     for modelo in modelos:
         try:
             logging.info(f"Tentando gerar análise executiva com o modelo '{modelo}'...")
@@ -355,6 +328,7 @@ Tabela de Auditoria LGPD:
             )
             if response and response.text:
                 logging.info(f"Análise executiva gerada com sucesso via '{modelo}'.")
+                modelo_sucesso = modelo
                 break
         except Exception as e:
             logging.warning(f"Modelo '{modelo}' retornou erro: {e}")
@@ -366,7 +340,7 @@ Tabela de Auditoria LGPD:
     texto = response.text
     emoji_rx = re.compile(r"[\U00010000-\U0010ffff\u2600-\u26ff\u2700-\u27bf\u2300-\u23ff\ufe00-\ufe0f]")
     texto_sem_emojis = emoji_rx.sub("", texto)
-    return texto_sem_emojis
+    return texto_sem_emojis, modelo_sucesso
 
 
 def gerar_relatorio_condicional_local(m: dict, tabs: dict) -> str:
@@ -494,6 +468,22 @@ A distribuição de vínculos por servidor evidencia uma governança cadastral s
 """
 
 
+def adicionar_cabecalho_automacao(conteudo: str, motor: str) -> str:
+    agora_str = datetime.now().strftime("%d/%m/%Y às %H:%M")
+    banner = (
+        f"> **Relatório Analítico Gerado Automaticamente por Inteligência Artificial ({motor})**  \n"
+        f"> **Última Atualização:** {agora_str}  \n"
+        f"> *Diagnóstico executivo sintetizado de forma autônoma a partir dos microdados oficiais tratados do PGD/INSS.*\n\n"
+        "---\n\n"
+    )
+    linhas = conteudo.strip().split("\n")
+    if linhas and linhas[0].startswith("# "):
+        titulo = linhas[0]
+        corpo = "\n".join(linhas[1:]).lstrip()
+        return f"{titulo}\n\n{banner}{corpo}"
+    return f"{banner}{conteudo}"
+
+
 def salvar_relatorio(conteudo: str, caminho: Path) -> None:
     logging.info(f"Salvando relatório executivo atualizado em: {caminho}")
     caminho.parent.mkdir(parents=True, exist_ok=True)
@@ -509,17 +499,20 @@ def main():
 
     api_key = os.getenv("GEMINI_API_KEY")
     relatorio_gerado = None
+    motor_utilizado = "Motor Analítico Local (Python)"
 
     if GENAI_DISPONIVEL and api_key and api_key != "sua_chave_aqui":
         try:
-            relatorio_gerado = gerar_relatorio_com_gemini(metricas, tabelas, api_key)
+            relatorio_gerado, modelo_ok = gerar_relatorio_com_gemini(metricas, tabelas, api_key)
+            motor_utilizado = f"Google Gemini — {modelo_ok}"
         except Exception as e:
             logging.warning(f"Falha ao chamar a API do Gemini ({e}). Utilizando gerador local...")
 
     if not relatorio_gerado:
         relatorio_gerado = gerar_relatorio_condicional_local(metricas, tabelas)
 
-    salvar_relatorio(relatorio_gerado, OUTPUT_MARKDOWN)
+    relatorio_final = adicionar_cabecalho_automacao(relatorio_gerado, motor_utilizado)
+    salvar_relatorio(relatorio_final, OUTPUT_MARKDOWN)
 
 
 if __name__ == "__main__":
