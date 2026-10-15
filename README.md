@@ -127,11 +127,9 @@ flowchart TD
 │   ├── dashboard_README.md                        # Documentação dos componentes visuais e KPIs
 │   ├── insights_README.md                         # Análise executiva de negócio e padrões temporais
 │   └── imagens/                                   # Diretório com os recursos visuais e diagramas
-│       ├── dashboard.png                          # Prévia visual atualizada do dashboard
-│       ├── arquitetura.svg                        # Diagrama vetorial da arquitetura da solução
-│       ├── evolucao_status.svg                    # Gráfico vetorial da evolução temporal por status
-│       ├── tabela_total_designacoes.png           # Visão da tabela ordenada por volume de designações
-│       └── tabela_designacoes_mes.png             # Visão da tabela ordenada por frequência mensal
+│       ├── menu_inicial.png                       # Prévia visual da tela inicial do dashboard
+│       ├── visao_geral_dashboard.png              # Painel de evolução histórica e KPIs
+│       ├── informacoes_projeto.png                # Painel de regras de negócio e governança
 ├── data/                                          # Armazenamento local dos CSVs brutos (não versionados)
 │   └── pgd_inss_*.csv
 ├── tests/                                         # Testes automatizados e base de saída do pipeline
@@ -312,7 +310,7 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 
 Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
 
-![Preview do Dashboard](dashboard/imagens/dashboard.png)
+![Preview do Dashboard](dashboard/imagens/menu_inicial.png)
 
 > [!TIP]
 > **Formas de Acesso:** O relatório pode ser acessado de forma interativa diretamente pelo navegador via **[Power BI Service (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**, ou baixado e explorado localmente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
