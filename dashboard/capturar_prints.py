@@ -1,9 +1,14 @@
+import hashlib
 import logging
 import re
 import time
 from datetime import datetime
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+
+try:
+    from playwright.sync_api import sync_playwright
+except ImportError:
+    sync_playwright = None
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -15,7 +20,6 @@ POWERBI_URL = (
     "https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9"
 )
 
-# Sequência oficial das 8 páginas do dashboard
 PAGINAS = [
     {"ordem": 1, "nome": "Menu Inicial", "arquivo": "menu_inicial.png"},
     {"ordem": 2, "nome": "Visão Geral", "arquivo": "visao_geral_dashboard.png"},
@@ -27,8 +31,8 @@ PAGINAS = [
     {"ordem": 8, "nome": "Informações do Projeto", "arquivo": "informacoes_projeto.png"},
 ]
 
+
 def garantir_pagina_inicial(page):
-    """Garante que o dashboard esteja na Página 1 (Menu Inicial) antes de iniciar as capturas."""
     try:
         indicador = page.locator("a.middleText")
         if indicador.is_visible(timeout=3000):
@@ -45,9 +49,7 @@ def garantir_pagina_inicial(page):
 
 
 def avancar_proxima_pagina(page, idx: int) -> bool:
-    """Avança para a próxima página usando a seta (Próxima Página) com fallback no menu."""
     try:
-        # Tenta clicar na seta de próxima página
         next_btn = page.locator(
             "button[aria-label='Next Page'], "
             "button[aria-label='Próxima página'], "
@@ -59,7 +61,6 @@ def avancar_proxima_pagina(page, idx: int) -> bool:
     except Exception as e:
         logging.warning(f"Clique na seta falhou: {e}")
 
-    # Fallback: seleciona diretamente no menu central de navegação
     try:
         logging.info("Executando fallback: selecionando próxima página pelo menu...")
         indicador = page.locator("a.middleText")
@@ -75,7 +76,29 @@ def avancar_proxima_pagina(page, idx: int) -> bool:
     return False
 
 
+def navegar_para_pagina_especifica(page, nome_pagina: str) -> bool:
+    try:
+        indicador = page.locator("a.middleText")
+        if indicador.is_visible(timeout=2000):
+            indicador.click()
+            page.wait_for_timeout(800)
+            palavra_chave = nome_pagina.split()[0]
+            item = page.locator("button.sectionItem", has_text=palavra_chave).first
+            if item.is_visible(timeout=2000):
+                item.click()
+                page.wait_for_timeout(3000)
+                return True
+    except Exception as e:
+        logging.warning(f"Tentativa de navegacao direta para '{nome_pagina}' falhou: {e}")
+    return False
+
+
 def capturar_todas_as_paginas():
+    if sync_playwright is None:
+        raise ImportError(
+            "O Playwright não está instalado neste ambiente. "
+            "Instale com 'pip install playwright && playwright install chromium'."
+        )
     IMAGENS_DIR.mkdir(parents=True, exist_ok=True)
     logging.info("Iniciando captura automatizada com Playwright...")
 
@@ -92,49 +115,71 @@ def capturar_todas_as_paginas():
 
         context = browser.new_context(
             viewport={"width": 1920, "height": 1080},
-            device_scale_factor=1.25,  # Nitidez superior em alta definição
+            device_scale_factor=1.25,
         )
 
         page = context.new_page()
         logging.info(f"Navegando para o relatório no Power BI: {POWERBI_URL}")
         page.goto(POWERBI_URL, wait_until="networkidle", timeout=60000)
 
-        # Espera estabilização inicial dos gráficos e fontes
         page.wait_for_timeout(6000)
 
-        # Garante que o relatório comece na página 1
         garantir_pagina_inicial(page)
 
         total = len(PAGINAS)
+        ultimo_hash = None
+
         for idx, info in enumerate(PAGINAS, start=1):
             nome = info["nome"]
             arquivo = info["arquivo"]
             destino = IMAGENS_DIR / arquivo
 
-            logging.info(f"[{idx}/{total}] Capturando '{nome}'...")
-            page.wait_for_timeout(3500)  # Renderização completa dos cards e visuais
+            logging.info(f"[{idx}/{total}] Preparando captura de '{nome}'...")
+            sucesso_captura = False
 
-            # Remove qualquer foco e afasta o cursor para evitar tooltips sobre os cards
-            page.mouse.move(0, 0)
-            page.evaluate("""() => {
-                if (document.activeElement && document.activeElement.blur) {
-                    document.activeElement.blur();
-                }
-                document.querySelectorAll('.cdk-overlay-pane, .pbi-tooltip, .tooltip-container, [role="tooltip"]').forEach(el => {
-                    el.remove();
-                });
-            }""")
-            page.wait_for_timeout(500)
+            for tentativa in range(1, 4):
+                page.wait_for_timeout(3500)
 
-            # Captura a tela do dashboard cortada (apenas o canvas, sem a barra inferior do Power BI)
-            host = page.locator(".visualContainerHost").first
-            if host.is_visible():
-                host.screenshot(path=str(destino))
-            else:
-                page.screenshot(path=str(destino), clip={"x": 0, "y": 0, "width": 1920, "height": 1040})
-            logging.info(f"[{idx}/{total}] Imagem cortada salva em: {destino}")
+                page.mouse.move(0, 0)
+                page.evaluate("""() => {
+                    if (document.activeElement && document.activeElement.blur) {
+                        document.activeElement.blur();
+                    }
+                    document.querySelectorAll('.cdk-overlay-pane, .pbi-tooltip, .tooltip-container, [role="tooltip"]').forEach(el => {
+                        el.remove();
+                    });
+                }""")
+                page.wait_for_timeout(500)
 
-            # Se não for a última página, avança para a próxima
+                host = page.locator(".visualContainerHost").first
+                if host.is_visible():
+                    img_bytes = host.screenshot()
+                else:
+                    img_bytes = page.screenshot(clip={"x": 0, "y": 0, "width": 1920, "height": 1040})
+
+                digest = hashlib.sha256(img_bytes).hexdigest()
+
+                if idx == 1 or digest != ultimo_hash:
+                    destino.write_bytes(img_bytes)
+                    ultimo_hash = digest
+                    sucesso_captura = True
+                    logging.info(f"[{idx}/{total}] Imagem '{nome}' salva com sucesso em: {destino}")
+                    break
+                else:
+                    logging.warning(
+                        f"[{idx}/{total}] Tentativa {tentativa}/3: Print idêntico ao da página anterior. "
+                        f"Acionando recuperação direta para '{nome}'..."
+                    )
+                    navegou = navegar_para_pagina_especifica(page, nome)
+                    if not navegou:
+                        avancar_proxima_pagina(page, idx - 1)
+                    page.wait_for_timeout(3000)
+
+            if not sucesso_captura:
+                destino.write_bytes(img_bytes)
+                ultimo_hash = digest
+                logging.error(f"[{idx}/{total}] Falha de unicidade persistente após 3 tentativas para '{nome}'.")
+
             if idx < total:
                 logging.info(f"Avançando da página {idx} para a página {idx + 1}...")
                 avancou = avancar_proxima_pagina(page, idx)
