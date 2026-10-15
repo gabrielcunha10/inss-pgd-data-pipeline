@@ -195,7 +195,7 @@ A tabela final carregada no PostgreSQL via SQLAlchemy possui a seguinte estrutur
 
 ## Testes e Qualidade de Dados (Pytest)
 
-Para garantir a confiabilidade e integridade das cargas contínuas, desenvolvi uma suíte de testes automatizados construída com **`pytest`** ([`tests/test_pipeline.py`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/tests/test_pipeline.py)). Essa camada atua como uma malha fina de qualidade de dados.
+Para garantir a confiabilidade e integridade das cargas contínuas, desenvolvi uma suíte de testes automatizados construída com **`pytest`** ([`tests/test_pipeline.py`](tests/test_pipeline.py)). Essa camada atua como uma malha fina de qualidade de dados.
 
 As seguintes validações de negócio e consistência são executadas automaticamente:
 
@@ -286,7 +286,7 @@ python tratamento/load_neon.py
 
 ## Automação CI/CD no GitHub Actions
 
-O fluxo de atualização contínua está configurado em [`.github/workflows/database_sync.yml`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/.github/workflows/database_sync.yml).
+O fluxo de atualização contínua está configurado em [`.github/workflows/database_sync.yml`](.github/workflows/database_sync.yml).
 
 ### Segredos Necessários no Repositório (Settings > Secrets and variables > Actions):
 
@@ -308,12 +308,12 @@ O fluxo de atualização contínua está configurado em [`.github/workflows/data
 
 ## Visualização de Dados e Business Intelligence
 
-Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
+Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
 
 ![Preview do Dashboard](dashboard/imagens/menu_inicial.png)
 
 > [!TIP]
-> **Formas de Acesso:** O relatório pode ser acessado de forma interativa diretamente pelo navegador via **[Power BI Service (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**, ou baixado e explorado localmente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](file:///c:/Users/Ranie/OneDrive/Documents/sgp_inss/inss-pgd-data-pipeline/dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
+> **Formas de Acesso:** O relatório pode ser acessado de forma interativa diretamente pelo navegador via **[Power BI Service (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**, ou baixado e explorado localmente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
 
 ### Principais Indicadores Monitorados:
 
