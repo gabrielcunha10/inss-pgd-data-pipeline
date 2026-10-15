@@ -16,6 +16,8 @@ logging.basicConfig(
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 PARQUET_PATH = PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet"
 OUTPUT_MARKDOWN = PROJECT_DIR / "dashboard" / "insights_README.md"
+RELATORIOS_DIR = PROJECT_DIR / "dashboard" / "relatorios"
+
 
 try:
     from google import genai
@@ -484,12 +486,68 @@ def adicionar_cabecalho_automacao(conteudo: str, motor: str) -> str:
     return f"{banner}{conteudo}"
 
 
-def salvar_relatorio(conteudo: str, caminho: Path) -> None:
-    logging.info(f"Salvando relatório executivo atualizado em: {caminho}")
+def extrair_ano_mes_relatorio(conteudo: str) -> str:
+    """
+    Extrai ano e mes no formato AAAA_MM a partir do conteudo do relatorio.
+    Prioriza a secao de 'Ultima Competencia (MM/AAAA)' e fallback para 'Ultima Atualizacao'.
+    """
+    match_comp = re.search(r"Última Competência\s*\(([0-1][0-9])/([2-9][0-9]{3})", conteudo)
+    if match_comp:
+        mes, ano = match_comp.group(1), match_comp.group(2)
+        return f"{ano}_{mes}"
+
+    match_data = re.search(r"Última Atualização:\*\*\s*[0-3]?[0-9]/([0-1][0-9])/([2-9][0-9]{3})", conteudo)
+    if match_data:
+        mes, ano = match_data.group(1), match_data.group(2)
+        return f"{ano}_{mes}"
+
+    return datetime.now().strftime("%Y_%m")
+
+
+def arquivar_relatorio_anterior(caminho_atual: Path, pasta_relatorios: Path = RELATORIOS_DIR) -> Path | None:
+    """
+    Arquiva o relatorio existente na pasta relatorios antes de ser substituido.
+    Nome do arquivo gerado: insights_AAAA_MM.md (ex: insights_2026_08.md).
+    Ajusta caminhos de imagens relativas para ../imagens/ garantindo exibicao correta.
+    """
+    if not caminho_atual.exists():
+        return None
+
+    try:
+        conteudo_antigo = caminho_atual.read_text(encoding="utf-8")
+        if not conteudo_antigo.strip():
+            return None
+
+        ano_mes = extrair_ano_mes_relatorio(conteudo_antigo)
+        pasta_relatorios.mkdir(parents=True, exist_ok=True)
+        caminho_historico = pasta_relatorios / f"insights_{ano_mes}.md"
+
+        conteudo_historico = re.sub(r"\((?:\./)?imagens/", "(../imagens/", conteudo_antigo)
+
+        caminho_historico.write_text(conteudo_historico, encoding="utf-8")
+        logging.info(f"Relatorio anterior arquivado com sucesso em: {caminho_historico}")
+        return caminho_historico
+    except Exception as e:
+        logging.warning(f"Nao foi possivel arquivar relatorio anterior: {e}")
+        return None
+
+
+def salvar_relatorio(conteudo: str, caminho: Path, pasta_relatorios: Path | None = None) -> None:
+    """
+    Arquiva a versao anterior em relatorios/ antes de substitui-la e salva a versao atualizada.
+    """
+    if pasta_relatorios is None:
+        pasta_relatorios = caminho.parent / "relatorios"
+
+    arquivar_relatorio_anterior(caminho, pasta_relatorios)
+
+    logging.info(f"Salvando relatorio executivo atualizado em: {caminho}")
     caminho.parent.mkdir(parents=True, exist_ok=True)
     with open(caminho, "w", encoding="utf-8") as f:
         f.write(conteudo)
-    logging.info("Relatório salvo com sucesso!")
+    logging.info("Relatorio salvo com sucesso!")
+
+
 
 
 def main():
