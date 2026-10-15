@@ -1,7 +1,7 @@
 # Guia do Dashboard — Acompanhamento PGD / INSS
 
 > **Documentação Visual e Guia de Métricas do Painel**  
-> **Última Atualização:** 15/10/2026 às 01:25  
+> **Última Atualização:** 15/10/2026 às 01:36  
 > *Capturas de tela e documentação técnica atualizadas de acordo com o modelo publicado em produção.*
 
 Este documento apresenta a estrutura completa, os indicadores de negócio, as métricas e a documentação visual de cada página do relatório analítico do **Programa de Gestão e Desempenho (PGD)** do INSS no Power BI.
