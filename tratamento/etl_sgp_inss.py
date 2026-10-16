@@ -14,9 +14,13 @@ logging.basicConfig(
 )
 
 load_dotenv()
-HMAC_SECRET_KEY = os.getenv(
-    "HMAC_SECRET_KEY", "chave_secreta_padrao_inss_pgd"
-).encode("utf-8")
+_raw_hmac_key = os.getenv("HMAC_SECRET_KEY")
+if not _raw_hmac_key:
+    raise ValueError(
+        "A variável de ambiente 'HMAC_SECRET_KEY' é obrigatória para conformidade LGPD. "
+        "Defina-a no arquivo .env ou nos Secrets do GitHub Actions."
+    )
+HMAC_SECRET_KEY = _raw_hmac_key.encode("utf-8")
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "data"
@@ -153,6 +157,39 @@ def carregar_e_consolidar_brutos(diretorio: Path) -> pd.DataFrame:
     return df_total
 
 
+
+def normalizar_id_lotacao(
+    serie: pd.Series, codigos_6_conhecidos: set = None
+) -> pd.Series:
+    """Normaliza codigos de UORG/lotacao SIAPE do INSS.
+
+    Corrige truncamento de zeros a esquerda gerados por exportacao numerica:
+    - 4 digitos -> 5 digitos (ex: '1800' -> '01800' para Corregedoria e GEX sedes)
+    - 7 digitos -> 8 digitos (ex: '4025060' -> '04025060' para APS)
+    - 5 digitos -> 6 digitos caso coincida com subunidade conhecida do INSS
+    """
+    def _norm(val):
+        if pd.isna(val):
+            return None
+        s = str(val).strip()
+        if s.endswith(".0"):
+            s = s[:-2]
+        if not s or s.lower() in ("nan", "none", "null", "<na>"):
+            return None
+        if not s.isdigit():
+            return s
+        n = len(s)
+        if n == 4:
+            return s.zfill(5)
+        elif n == 7:
+            return s.zfill(8)
+        elif n == 5 and codigos_6_conhecidos and ("0" + s) in codigos_6_conhecidos:
+            return "0" + s
+        return s
+
+    return serie.map(_norm)
+
+
 def limpar_e_inferir_status(df: pd.DataFrame) -> pd.DataFrame:
     logging.info("Limpando strings e inferindo status funcional...")
     df = df.replace("-", np.nan)
@@ -185,6 +222,17 @@ def limpar_e_inferir_status(df: pd.DataFrame) -> pd.DataFrame:
         for val in df["lotacao"].dropna().unique()
     }
     df["lotacao"] = df["lotacao"].map(mapa_lotacao_sem_acento)
+
+    if "id_lotacao" in df.columns:
+        codigos_raw = set(
+            df["id_lotacao"]
+            .dropna()
+            .astype(str)
+            .str.strip()
+            .str.replace(r"\.0$", "", regex=True)
+        )
+        conhecidos_6 = {c for c in codigos_raw if len(c) == 6}
+        df["id_lotacao"] = normalizar_id_lotacao(df["id_lotacao"], conhecidos_6)
 
     df = df.dropna(subset=["id_matricula"]).copy()
     df["competencia"] = pd.to_datetime(
@@ -324,6 +372,29 @@ def enriquecer_cadastros_e_pontes(df: pd.DataFrame) -> pd.DataFrame:
         df["linha_trabalho"].map(mapa_linha_sigla)
     )
 
+    # Mapeamento deterministico 1-para-1 entre lotacao e id_lotacao (apenas pares univocos)
+    pares_validos = (
+        df.dropna(subset=["lotacao", "id_lotacao"])[["lotacao", "id_lotacao"]]
+        .drop_duplicates()
+    )
+    contagem_ids_por_lot = pares_validos.groupby("lotacao")["id_lotacao"].nunique()
+    lotacoes_univocas = contagem_ids_por_lot[contagem_ids_por_lot == 1].index
+    mapa_lotacao_para_id = (
+        pares_validos[pares_validos["lotacao"].isin(lotacoes_univocas)]
+        .set_index("lotacao")["id_lotacao"]
+        .to_dict()
+    )
+    df["id_lotacao"] = df["id_lotacao"].fillna(df["lotacao"].map(mapa_lotacao_para_id))
+
+    contagem_lots_por_id = pares_validos.groupby("id_lotacao")["lotacao"].nunique()
+    ids_univocos = contagem_lots_por_id[contagem_lots_por_id == 1].index
+    mapa_id_para_lotacao = (
+        pares_validos[pares_validos["id_lotacao"].isin(ids_univocos)]
+        .set_index("id_lotacao")["lotacao"]
+        .to_dict()
+    )
+    df["lotacao"] = df["lotacao"].fillna(df["id_lotacao"].map(mapa_id_para_lotacao))
+
     cols_propagar_desig = [
         "programa",
         "sigla_programa",
@@ -333,9 +404,11 @@ def enriquecer_cadastros_e_pontes(df: pd.DataFrame) -> pd.DataFrame:
         "linha_trabalho",
         "sigla_linha_trabalho",
     ]
-    df = df.sort_values(["id_designacao", "competencia"])
-    df[cols_propagar_desig] = (
-        df.groupby("id_designacao")[cols_propagar_desig].ffill().bfill()
+    # Isolamento de NaN: apenas propaga entre registros com id_designacao preenchido
+    mask_desig = df["id_designacao"].notna()
+    df_desig_sorted = df[mask_desig].sort_values(["id_designacao", "competencia"])
+    df.loc[mask_desig, cols_propagar_desig] = (
+        df_desig_sorted.groupby("id_designacao")[cols_propagar_desig].ffill().bfill()
     )
 
     cols_propagar_serv = [
@@ -345,9 +418,11 @@ def enriquecer_cadastros_e_pontes(df: pd.DataFrame) -> pd.DataFrame:
         "linha_trabalho",
         "sigla_linha_trabalho",
     ]
-    df = df.sort_values(["nome", "competencia"])
+    # Agrupamento seguro por matricula (evita colisao de homonimos com 'nome')
+    col_agrupador_serv = "id_matricula" if "id_matricula" in df.columns else "nome"
+    df = df.sort_values([col_agrupador_serv, "competencia"])
     df[cols_propagar_serv] = (
-        df.groupby("nome")[cols_propagar_serv].ffill().bfill()
+        df.groupby(col_agrupador_serv)[cols_propagar_serv].ffill().bfill()
     )
 
     mapa_pgd = {prog: "Sim" for prog in df["programa"].dropna().unique()}
@@ -357,9 +432,20 @@ def enriquecer_cadastros_e_pontes(df: pd.DataFrame) -> pd.DataFrame:
     df["flag_pgd"] = df["programa"].map(mapa_pgd)
     df.loc[df["status"] == "Não Designado", "flag_pgd"] = np.nan
 
-    df["filtro_programa"] = df["sigla_programa"] + " - " + df["programa"]
-    df["filtro_linha_trabalho"] = (
-        df["sigla_linha_trabalho"] + " - " + df["linha_trabalho"]
+    cond_prog = df["sigla_programa"].notna() & df["programa"].notna()
+    df["filtro_programa"] = np.where(
+        cond_prog,
+        df["sigla_programa"].astype(str) + " - " + df["programa"].astype(str),
+        None,
+    )
+
+    cond_linha = df["sigla_linha_trabalho"].notna() & df["linha_trabalho"].notna()
+    df["filtro_linha_trabalho"] = np.where(
+        cond_linha,
+        df["sigla_linha_trabalho"].astype(str)
+        + " - "
+        + df["linha_trabalho"].astype(str),
+        None,
     )
 
     return df
