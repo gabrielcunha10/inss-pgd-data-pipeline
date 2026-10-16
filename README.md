@@ -28,21 +28,25 @@ Desenvolvi este projeto como peça central de portfólio em Engenharia e Anális
 O estoque de requerimentos em análise varia bastante ao longo do tempo e afeta diretamente quem aguarda aposentadorias, pensões, auxílios e BPC. Alguns marcos, com datas e fontes:
 
 1. **Estoque de requerimentos**:
-  - Nos primeiros oito meses do programa de enfrentamento à fila (iniciado em jul/2023), o estoque caiu de cerca de 1,8 milhão para pouco mais de 1,3 milhão de pedidos. Voltou a subir a partir de jul/2024 e chegou a **1,985 milhão em nov/2024** (dados do MPS, [divulgados pela imprensa](https://www.dgabc.com.br/Noticia/4207591/fila-do-inss-se-aproxima-dos-2-milhoes-de-pedidos-represados)).
-  - Em 2026, a imprensa reporta, com base em dados do INSS, queda de **3,1 milhões (jan/2026) para 1,3 milhão (ago/2026)** ([Meu Tudo](https://meutudo.com.br/blog/noticias/2026/08/25/fila-do-inss-ainda-preocupa-tcu-veja-o-que-aponta-a-nova-avaliacao-do-tribunal/)).
+
+- Nos primeiros oito meses do programa de enfrentamento à fila (iniciado em jul/2023), o estoque caiu de cerca de 1,8 milhão para pouco mais de 1,3 milhão de pedidos. Voltou a subir a partir de jul/2024 e chegou a **1,985 milhão em nov/2024** (dados do MPS, [divulgados pela imprensa](https://www.dgabc.com.br/Noticia/4207591/fila-do-inss-se-aproxima-dos-2-milhoes-de-pedidos-represados)).
+- Em 2026, a imprensa reporta, com base em dados do INSS, queda de **3,1 milhões (jan/2026) para 1,3 milhão (ago/2026)** ([Meu Tudo](https://meutudo.com.br/blog/noticias/2026/08/25/fila-do-inss-ainda-preocupa-tcu-veja-o-que-aponta-a-nova-avaliacao-do-tribunal/)).
 
 2. **Tempo de análise e prazos**:
-  - Em auditoria sobre a tempestividade da análise (Acórdão 2150/2023-Plenário, TC 006.389/2022-8), o TCU apurou **média de 149,6 dias** entre jan/2017 e jun/2022, acima do máximo de 100 dias previsto na legislação ([TCU](https://portal.tcu.gov.br/imprensa/noticias/analise-de-beneficios-pelo-inss-teve-pico-de-atraso-em-maio-de-2022)).
-  - Dados do MPS mostram o tempo médio de espera caindo de quase 76 dias (jan/2023) para 47 dias (jan/2024).
-  - Em 2021, o STF homologou acordo no RE 1.171.152/SC (Tema 1.066, depois retirado da sistemática de repercussão geral) com **prazos de 30 a 90 dias conforme o benefício**: 90 dias para aposentadorias e BPC, 60 para pensão por morte, 45 para benefícios por incapacidade e 30 para salário-maternidade. A perícia médica e a avaliação social têm prazo de 45 dias. O acordo teve vigência de dois anos ([Agência Brasil](https://agenciabrasil.ebc.com.br/justica/noticia/2021-02/stf-confirma-acordo-com-novos-prazos-para-inss-analisar-beneficios)).
+
+- Em auditoria sobre a tempestividade da análise (Acórdão 2150/2023-Plenário, TC 006.389/2022-8), o TCU apurou **média de 149,6 dias** entre jan/2017 e jun/2022, acima do máximo de 100 dias previsto na legislação ([TCU](https://portal.tcu.gov.br/imprensa/noticias/analise-de-beneficios-pelo-inss-teve-pico-de-atraso-em-maio-de-2022)).
+- Dados do MPS mostram o tempo médio de espera caindo de quase 76 dias (jan/2023) para 47 dias (jan/2024).
+- Em 2021, o STF homologou acordo no RE 1.171.152/SC (Tema 1.066, depois retirado da sistemática de repercussão geral) com **prazos de 30 a 90 dias conforme o benefício**: 90 dias para aposentadorias e BPC, 60 para pensão por morte, 45 para benefícios por incapacidade e 30 para salário-maternidade. A perícia médica e a avaliação social têm prazo de 45 dias. O acordo teve vigência de dois anos ([Agência Brasil](https://agenciabrasil.ebc.com.br/justica/noticia/2021-02/stf-confirma-acordo-com-novos-prazos-para-inss-analisar-beneficios)).
 
 3. **Força de trabalho**:
-  - O quadro de servidores ativos do INSS passou de 37,5 mil (2015) para cerca de 22,2 mil (2025), segundo o Painel Estatístico de Pessoal ([valores noticiados](https://portaln10.com.br/concursos/concurso-do-inss-pedido-10-mil-vagas-mgi-349852/)). Em 2016, eram 33,9 mil ([Correio Braziliense](https://blogs.correiobraziliense.com.br/servidor/inss-numero-de-servidores-em-queda/)).
+
+- O quadro de servidores ativos do INSS passou de 37,5 mil (2015) para cerca de 22,2 mil (2025), segundo o Painel Estatístico de Pessoal ([valores noticiados](https://portaln10.com.br/concursos/concurso-do-inss-pedido-10-mil-vagas-mgi-349852/)). Em 2016, eram 33,9 mil ([Correio Braziliense](https://blogs.correiobraziliense.com.br/servidor/inss-numero-de-servidores-em-queda/)).
 
 4. **O PGD como resposta institucional**:
-  - O Programa de Gestão e Desempenho é disciplinado pelo Decreto nº 11.072/2022 e, hoje, pela Instrução Normativa Conjunta SEGES-SGPRT/MGI nº 24/2023. Antes dela, vigorava a IN SGP/SEDGG/ME nº 65/2020.
-  - No INSS, as regras gerais foram definidas pela Portaria PRES/INSS nº 1.363/2021 (alterada, entre outras, pelas Portarias nº 1.497/2022 e nº 1.593/2023) e, desde a Portaria PRES/INSS nº 1.800/2024 (alterada pela nº 1.923/2026), seguem o regime atual. Como a série analisada cobre 2023–2026, ela atravessa mais de um arcabouço normativo.
-  - O PGD substitui o controle de ponto por uma gestão orientada a metas, entregas e resultados. Nesse contexto, a alocação de servidores nas **Centrais de Análise de Benefícios (CEABs)** aparece entre as linhas de trabalho presentes na base analisada neste repositório.
+
+- O Programa de Gestão e Desempenho é disciplinado pelo Decreto nº 11.072/2022 e, hoje, pela Instrução Normativa Conjunta SEGES-SGPRT/MGI nº 24/2023. Antes dela, vigorava a IN SGP/SEDGG/ME nº 65/2020.
+- No INSS, as regras gerais foram definidas pela Portaria PRES/INSS nº 1.363/2021 (alterada, entre outras, pelas Portarias nº 1.497/2022 e nº 1.593/2023) e, desde a Portaria PRES/INSS nº 1.800/2024 (alterada pela nº 1.923/2026), seguem o regime atual. Como a série analisada cobre 2023–2026, ela atravessa mais de um arcabouço normativo.
+- O PGD substitui o controle de ponto por uma gestão orientada a metas, entregas e resultados. Nesse contexto, a alocação de servidores nas **Centrais de Análise de Benefícios (CEABs)** aparece entre as linhas de trabalho presentes na base analisada neste repositório.
 
 ### O Desafio Técnico na Engenharia de Dados
 
@@ -59,7 +63,7 @@ Projetei esta solução para conectar a complexidade real da gestão pública à
 
 ## Arquitetura da Solução
 
-![Arquitetura da Solução](dashboard/imagens/arquitetura.svg)
+![Arquitetura da Solução](dashboard/imagens/arquitetura_pipeline_completa.png)
 
 <details>
 <summary><b>Visualizar diagrama em formato de código Mermaid</b></summary>
@@ -243,28 +247,28 @@ A tabela consolidada `tb_pgd_inss` no PostgreSQL Serverless (Neon Tech) é alime
 
 Abaixo está o dicionário de dados detalhado, refletindo fielmente a ordem física, os tipos de dados no Parquet/Pandas, os tipos relacionais no PostgreSQL (Neon), o status de nulidade e a semântica de negócio de cada atributo:
 
-| Coluna | Tipo SQL (Neon) | Tipo Parquet | Nullable | Descrição e Regras de Negócio |
-| :--- | :--- | :--- | :---: | :--- |
-| `id_usuario` | `TEXT` | `string` | Não | Identificador pseudonimizado do servidor público via hash criptográfico irreversível (HMAC-SHA256 com chave privada), mascarado no formato `USR-XXXXXXXX` (8 caracteres hexadecimais) em conformidade rigorosa com a LGPD. |
-| `sigla_programa` | `TEXT` | `string` | Sim | Sigla identificadora do programa de gestão e desempenho cadastrado no SGP (ex: `CEAP`, `CEAB1`, `PG-DIRBEN`, `ATENDIMENTO`). Nulo apenas para servidores sem designação ativa. |
-| `modalidade` | `TEXT` | `string` | Sim | Modalidade de execução do trabalho regulamentada pelo PGD, padronizada canonicamente nos domínios `Remoto`, `Semipresencial` ou `Presencial`. |
-| `status` | `TEXT` | `string` | Não | Situação cadastral do servidor em relação ao PGD na competência, classificada estritamente em `Designado`, `Desligado` ou `Não Designado`. |
-| `dt_inicio_designacao` | `TIMESTAMP` | `datetime64[ns]` | Sim | Data e hora do início da vigência da designação ou plano de trabalho pactuado. |
-| `dt_fim_designacao` | `TIMESTAMP` | `datetime64[ns]` | Sim | Data e hora de encerramento da designação. Preenchimento esparso (nulo em vínculos com vigência aberta ou prazo indeterminado). |
-| `competencia` | `DATE` | `datetime64[ns]` | Não | Primeiro dia do mês de referência dos dados (série histórica de `2023-10-01` a `2026-08-01`). Atua como partição temporal de carga e garantia de idempotência (`DELETE & INSERT`). |
-| `id_designacao` | `BIGINT` | `Int64` | Sim | Código identificador numérico único do ato de designação gerado pelo Sistema de Gestão de Pessoas (SGP). |
-| `dt_criacao_designacao` | `TIMESTAMP` | `datetime64[ns]` | Sim | Carimbo de data/hora do momento em que o registro de designação foi cadastrado no sistema de origem. |
-| `dt_alteracao_designacao` | `TIMESTAMP` | `datetime64[ns]` | Sim | Carimbo de data/hora da última alteração, renovação ou repactuação cadastrada para a designação. |
-| `linha_trabalho` | `TEXT` | `string` | Não | Nome descritivo por extenso da linha de atuação institucional (ex: `Central de Análise de Benefícios de Reconhecimento de Direitos SRNE`). |
-| `sigla_linha_trabalho` | `TEXT` | `string` | Não | Sigla canônica correspondente à linha de trabalho (ex: `CEABRD_SR_NE`, `CEABMAN_SRNE`, `APS_SRNCO`), padronizada via de-para determinístico. |
-| `tipo_entrega` | `TEXT` | `string` | Não | Modelo de pactuação de resultados aplicável à designação (`Meta`, `Jornada e Meta`, `Produto` ou `Jornada`). |
-| `motivo_desligamento` | `TEXT` | `string` | Sim | Motivação administrativa registrada para o término da designação (ex: `Necessidade do serviço`, `A pedido`, `Aposentadoria`). Preenchido exclusivamente em casos de rescisão. |
-| `lotacao` | `TEXT` | `string` | Não | Descrição textual padronizada da unidade de lotação física ou administrativa do servidor (ex: agências `APS`, gerências `GEX` e superintendências `SR`). |
-| `programa` | `TEXT` | `string` | Sim | Nome por extenso do programa de gestão e desempenho associado à designação (ex: `CENTRAL ESPECIALIZADA DE ALTA PERFORMANCE`). |
-| `flag_pgd` | `TEXT` | `string` | Sim | Indicador binário (`Sim` / `Não`) atestando se a designação está formalmente enquadrada nas diretrizes normativas do PGD (IN 65/2020 e IN 24/2023). |
-| `id_lotacao` | `TEXT` | `string` | Não | Código estrutural identificador da unidade organizacional / UPAG no sistema de gestão de pessoas (SIAPE). |
-| `filtro_programa` | `TEXT` | `string` | Sim | Campo composto gerado no ETL (`sigla_programa - programa`) para enriquecer segmentações visuais, seletores analíticos e hierarquias no Power BI. |
-| `filtro_linha_trabalho` | `TEXT` | `string` | Não | Campo composto gerado no ETL (`sigla_linha_trabalho - linha_trabalho`) para otimizar pesquisas e filtros cruzados nas telas do dashboard. |
+| Coluna                      | Tipo SQL (Neon) | Tipo Parquet       | Nullable | Descrição e Regras de Negócio                                                                                                                                                                                                |
+| :-------------------------- | :-------------- | :----------------- | :------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `id_usuario`              | `TEXT`        | `string`         |   Não   | Identificador pseudonimizado do servidor público via hash criptográfico irreversível (HMAC-SHA256 com chave privada), mascarado no formato `USR-XXXXXXXX` (8 caracteres hexadecimais) em conformidade rigorosa com a LGPD. |
+| `sigla_programa`          | `TEXT`        | `string`         |   Sim   | Sigla identificadora do programa de gestão e desempenho cadastrado no SGP (ex: `CEAP`, `CEAB1`, `PG-DIRBEN`, `ATENDIMENTO`). Nulo apenas para servidores sem designação ativa.                                       |
+| `modalidade`              | `TEXT`        | `string`         |   Sim   | Modalidade de execução do trabalho regulamentada pelo PGD, padronizada canonicamente nos domínios `Remoto`, `Semipresencial` ou `Presencial`.                                                                          |
+| `status`                  | `TEXT`        | `string`         |   Não   | Situação cadastral do servidor em relação ao PGD na competência, classificada estritamente em `Designado`, `Desligado` ou `Não Designado`.                                                                          |
+| `dt_inicio_designacao`    | `TIMESTAMP`   | `datetime64[ns]` |   Sim   | Data e hora do início da vigência da designação ou plano de trabalho pactuado.                                                                                                                                              |
+| `dt_fim_designacao`       | `TIMESTAMP`   | `datetime64[ns]` |   Sim   | Data e hora de encerramento da designação. Preenchimento esparso (nulo em vínculos com vigência aberta ou prazo indeterminado).                                                                                             |
+| `competencia`             | `DATE`        | `datetime64[ns]` |   Não   | Primeiro dia do mês de referência dos dados (série histórica de `2023-10-01` a `2026-08-01`). Atua como partição temporal de carga e garantia de idempotência (`DELETE & INSERT`).                                 |
+| `id_designacao`           | `BIGINT`      | `Int64`          |   Sim   | Código identificador numérico único do ato de designação gerado pelo Sistema de Gestão de Pessoas (SGP).                                                                                                                  |
+| `dt_criacao_designacao`   | `TIMESTAMP`   | `datetime64[ns]` |   Sim   | Carimbo de data/hora do momento em que o registro de designação foi cadastrado no sistema de origem.                                                                                                                          |
+| `dt_alteracao_designacao` | `TIMESTAMP`   | `datetime64[ns]` |   Sim   | Carimbo de data/hora da última alteração, renovação ou repactuação cadastrada para a designação.                                                                                                                       |
+| `linha_trabalho`          | `TEXT`        | `string`         |   Não   | Nome descritivo por extenso da linha de atuação institucional (ex: `Central de Análise de Benefícios de Reconhecimento de Direitos SRNE`).                                                                                |
+| `sigla_linha_trabalho`    | `TEXT`        | `string`         |   Não   | Sigla canônica correspondente à linha de trabalho (ex: `CEABRD_SR_NE`, `CEABMAN_SRNE`, `APS_SRNCO`), padronizada via de-para determinístico.                                                                           |
+| `tipo_entrega`            | `TEXT`        | `string`         |   Não   | Modelo de pactuação de resultados aplicável à designação (`Meta`, `Jornada e Meta`, `Produto` ou `Jornada`).                                                                                                      |
+| `motivo_desligamento`     | `TEXT`        | `string`         |   Sim   | Motivação administrativa registrada para o término da designação (ex: `Necessidade do serviço`, `A pedido`, `Aposentadoria`). Preenchido exclusivamente em casos de rescisão.                                      |
+| `lotacao`                 | `TEXT`        | `string`         |   Não   | Descrição textual padronizada da unidade de lotação física ou administrativa do servidor (ex: agências `APS`, gerências `GEX` e superintendências `SR`).                                                          |
+| `programa`                | `TEXT`        | `string`         |   Sim   | Nome por extenso do programa de gestão e desempenho associado à designação (ex: `CENTRAL ESPECIALIZADA DE ALTA PERFORMANCE`).                                                                                             |
+| `flag_pgd`                | `TEXT`        | `string`         |   Sim   | Indicador binário (`Sim` / `Não`) atestando se a designação está formalmente enquadrada nas diretrizes normativas do PGD (IN 65/2020 e IN 24/2023).                                                                    |
+| `id_lotacao`              | `TEXT`        | `string`         |   Não   | Código estrutural identificador da unidade organizacional / UPAG no sistema de gestão de pessoas (SIAPE).                                                                                                                     |
+| `filtro_programa`         | `TEXT`        | `string`         |   Sim   | Campo composto gerado no ETL (`sigla_programa - programa`) para enriquecer segmentações visuais, seletores analíticos e hierarquias no Power BI.                                                                           |
+| `filtro_linha_trabalho`   | `TEXT`        | `string`         |   Não   | Campo composto gerado no ETL (`sigla_linha_trabalho - linha_trabalho`) para otimizar pesquisas e filtros cruzados nas telas do dashboard.                                                                                     |
 
 ---
 
@@ -346,6 +350,7 @@ POWER_AUTOMATE_WEBHOOK_URL=https://prod-xx.brazilsouth.logic.azure.com:443/workf
 
 > [!NOTE]
 > **Detalhamento das Variáveis:**
+>
 > - `DATABASE_URL` (ou `NEON_DATABASE_URL` no GitHub): **Obrigatória** para a sincronização relacional da tabela `tb_pgd_inss` via [`tratamento/load_neon.py`](tratamento/load_neon.py).
 > - `GEMINI_API_KEY`: **Opcional**. Quando fornecida, habilita o Google Gemini para redigir o diagnóstico executivo. Se não informada, o script [`tratamento/gerar_insights.py`](tratamento/gerar_insights.py) ativa automaticamente o motor analítico determinístico local, gerando o relatório Markdown sem qualquer dependência externa ou interrupção.
 > - `POWER_AUTOMATE_WEBHOOK_URL`: **Opcional**. Utilizada para enviar o gatilho HTTP cURL POST ao Power Automate para refresh no Power BI Service. Na execução local, pode ser omitida.
@@ -438,7 +443,7 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 - **45,81 Mil Designações:** Volume total acumulado de registros de designação no histórico monitorado.
 - **22,20 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
 - **15,80 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
-- **30 Programas Monitorados:** Diversidade de programas e modalidades de gestão cadastrados no PGD.
+- **29 Programas Monitorados:** Diversidade de programas e modalidades de gestão cadastrados no PGD.
 - **Retenção Temporal (Dias):** Tempo médio de permanência das designações no sistema por programa.
 - **Detalhamento Anonimizado (LGPD):** Ranking por servidor identificado via código seguro criptografado por hash (`USR-XXXXXXXX`).
 - **Sazonalidade e Curva de Status:** Identificação de picos operacionais (ex: março de 2025) e repactuação de teletrabalho.
