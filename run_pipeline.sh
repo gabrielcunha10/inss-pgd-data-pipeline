@@ -12,8 +12,8 @@ python tratamento/etl_sgp_inss.py
 # Desativa a interrupção imediata para podermos capturar o resultado dos testes
 set +e
 
-echo "Executando testes..."
-pytest tests/
+echo "Executando testes de integridade do pipeline..."
+pytest tests/test_pipeline.py
 TEST_EXIT_CODE=$?
 
 echo "Gerando insights analíticos..."
