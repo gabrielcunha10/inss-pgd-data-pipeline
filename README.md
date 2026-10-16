@@ -21,35 +21,39 @@ Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PG
 
 ### Da Preparação para a Dataprev ao Desafio Público
 
-Desenvolvi este projeto como peça central de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev** (Empresa de Tecnologia e Informações da Previdência). Durante a preparação e aprofundamento sobre a atuação da empresa pública — responsável pelo processamento mensal da folha de pagamento de mais de 39 milhões de benefícios previdenciários e assistenciais (*Fonte: Dataprev / Secretaria de Regime Geral de Previdência Social - MPS*) —, passei a pesquisar intensamente sobre o ecossistema da previdência social e me deparei com um dos temas mais críticos da administração pública brasileira: o **gargalo operacional e as filas de espera do INSS**.
+Desenvolvi este projeto como peça central de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev** (Empresa de Tecnologia e Informações da Previdência). Ao estudar a atuação da empresa pública — que, segundo a própria Dataprev, mantém e paga cerca de **39 milhões de benefícios previdenciários e assistenciais por mês** ([Dataprev, posição de agosto/2023](https://semanadeinovacao.enap.gov.br/images/patrocinadores/dataprev/dataprev.pdf)) —, passei a pesquisar o ecossistema da previdência social e me deparei com um de seus temas mais críticos: o **represamento de requerimentos e as filas de espera do INSS**.
 
-### O Cenário Real: O Desafio Estrutural das Filas do INSS
+### O Cenário Real: As Filas do INSS
 
-A fila de requerimentos represados no Instituto Nacional do Seguro Social é um desafio histórico e multifatorial com impacto direto na vida de milhões de cidadãos que aguardam a concessão de aposentadorias, pensões, auxílios e Benefício de Prestação Continuada (BPC):
+O estoque de requerimentos em análise varia bastante ao longo do tempo e afeta diretamente quem aguarda aposentadorias, pensões, auxílios e BPC. Alguns marcos, com datas e fontes:
 
-1. **Volume Expressivo da Demanda Acumulada**:
+1. **Estoque de requerimentos**:
+  - Nos primeiros oito meses do programa de enfrentamento à fila (iniciado em jul/2023), o estoque caiu de cerca de 1,8 milhão para pouco mais de 1,3 milhão de pedidos. Voltou a subir a partir de jul/2024 e chegou a **1,985 milhão em nov/2024** (dados do MPS, [divulgados pela imprensa](https://www.dgabc.com.br/Noticia/4207591/fila-do-inss-se-aproxima-dos-2-milhoes-de-pedidos-represados)).
+  - Em 2026, a imprensa reporta, com base em dados do INSS, queda de **3,1 milhões (jan/2026) para 1,3 milhão (ago/2026)** ([Meu Tudo](https://meutudo.com.br/blog/noticias/2026/08/25/fila-do-inss-ainda-preocupa-tcu-veja-o-que-aponta-a-nova-avaliacao-do-tribunal/)).
 
-   - O estoque nacional de requerimentos em análise administrativa tem oscilado historicamente na faixa de **1,3 milhão a 1,8 milhão de pedidos represados** (*Fontes: Ministério da Previdência Social — Portal da Transparência Previdenciária e Tribunal de Contas da União - TCU, Processo TC 011.026/2023-0*).
-   - O Tempo Médio de Concessão (TMC) frequentemente alcançou **60 a 85 dias** em períodos de sobrecarga, superando o prazo regulamentar pactuado (*Fontes: Boletim Estatístico da Previdência Social - BEPS/MPS e Acordo homologado pelo Supremo Tribunal Federal no RE 1.171.152/SC - Tema 1.066, que fixou meta de 45 dias para a conclusão de processos administrativos*).
-2. **Déficit Histórico da Força de Trabalho**:
+2. **Tempo de análise e prazos**:
+  - Em auditoria sobre a tempestividade da análise (Acórdão 2150/2023-Plenário, TC 006.389/2022-8), o TCU apurou **média de 149,6 dias** entre jan/2017 e jun/2022, acima do máximo de 100 dias previsto na legislação ([TCU](https://portal.tcu.gov.br/imprensa/noticias/analise-de-beneficios-pelo-inss-teve-pico-de-atraso-em-maio-de-2022)).
+  - Dados do MPS mostram o tempo médio de espera caindo de quase 76 dias (jan/2023) para 47 dias (jan/2024).
+  - Em 2021, o STF homologou acordo no RE 1.171.152/SC (Tema 1.066, depois retirado da sistemática de repercussão geral) com **prazos de 30 a 90 dias conforme o benefício**: 90 dias para aposentadorias e BPC, 60 para pensão por morte, 45 para benefícios por incapacidade e 30 para salário-maternidade. A perícia médica e a avaliação social têm prazo de 45 dias. O acordo teve vigência de dois anos ([Agência Brasil](https://agenciabrasil.ebc.com.br/justica/noticia/2021-02/stf-confirma-acordo-com-novos-prazos-para-inss-analisar-beneficios)).
 
-   - O corpo funcional efetivo do INSS, que ultrapassava 33 mil servidores em 2016, sofreu redução contínua em razão de aposentadorias em massa sem reposição proporcional, recuando para a faixa de **19 mil a 22 mil servidores ativos** (*Fontes: Painel Estatístico de Pessoal - PEP/MGI e Relatórios de Fiscalização de Pessoal do TCU*).
-3. **O PGD como Resposta Estratégica Institucional**:
+3. **Força de trabalho**:
+  - O quadro de servidores ativos do INSS passou de 37,5 mil (2015) para cerca de 22,2 mil (2025), segundo o Painel Estatístico de Pessoal ([valores noticiados](https://portaln10.com.br/concursos/concurso-do-inss-pedido-10-mil-vagas-mgi-349852/)). Em 2016, eram 33,9 mil ([Correio Braziliense](https://blogs.correiobraziliense.com.br/servidor/inss-numero-de-servidores-em-queda/)).
 
-   - Diante da impossibilidade de recomposição imediata do quadro físico, o governo federal regulamentou o **Programa de Gestão e Desempenho (PGD)** (disciplinado pelas Instruções Normativas SGP/SEDGG/ME nº 65/2020 e SGP/MGI nº 24/2023, bem como pela Portaria PRES/INSS nº 1.488/2022).
-   - O PGD estabeleceu uma mudança de paradigma: a transição do controle tradicional de ponto por horas presenciais para uma gestão orientada estritamente a **metas, entregas e resultados mensuráveis**, estipulando inclusive meta de produtividade até 30% superior para servidores em teletrabalho integral em relação à modalidade presencial (*Fonte: Art. 12, § 1º da IN SGP/ME nº 65/2020 e Portaria INSS nº 1.488/2022*).
-   - Nesse contexto, a alocação de servidores nas **Centrais de Análise de Benefícios (CEABs)** — estrutura que lidera a volumetria analisada neste repositório — representa a frente de trabalho prioritária do Estado para acelerar a análise de processos e reduzir o represamento.
+4. **O PGD como resposta institucional**:
+  - O Programa de Gestão e Desempenho é disciplinado pelo Decreto nº 11.072/2022 e, hoje, pela Instrução Normativa Conjunta SEGES-SGPRT/MGI nº 24/2023. Antes dela, vigorava a IN SGP/SEDGG/ME nº 65/2020.
+  - No INSS, as regras gerais foram definidas pela Portaria PRES/INSS nº 1.363/2021 (alterada, entre outras, pelas Portarias nº 1.497/2022 e nº 1.593/2023) e, desde a Portaria PRES/INSS nº 1.800/2024 (alterada pela nº 1.923/2026), seguem o regime atual. Como a série analisada cobre 2023–2026, ela atravessa mais de um arcabouço normativo.
+  - O PGD substitui o controle de ponto por uma gestão orientada a metas, entregas e resultados. Nesse contexto, a alocação de servidores nas **Centrais de Análise de Benefícios (CEABs)** aparece entre as linhas de trabalho presentes na base analisada neste repositório.
 
 ### O Desafio Técnico na Engenharia de Dados
 
-Para responder com transparência e precisão se essa política pública de pactuação de metas está sendo cumprida, onde os servidores estão alocados e como o teletrabalho se distribui geograficamente, é imperativo que os dados sejam contínuos, auditáveis e confiáveis. Contudo, trabalhar com os microdados abertos do governo impõe barreiras severas de engenharia:
+Para responder com transparência a perguntas como onde os servidores estão alocados, quais programas concentram as designações e como as modalidades de trabalho evoluem, é preciso que os dados sejam contínuos, auditáveis e confiáveis. Os microdados abertos do governo impõem barreiras reais de engenharia:
 
-- **Instabilidade de Esquemas**: Mudanças frequentes de layout ao longo dos anos nas extrações do Sistema de Gestão de Pessoas (SGP), totalizando cerca de 30 variantes de cabeçalhos que exigem mapeamento canônico dinâmico;
-- **Heterogeneidade de Encodings**: Arquivos mensais alternando entre codificações `utf-8` e `latin1`, gerando potenciais quebras de caracteres acentuados;
-- **Descontinuidade Temporal e Nulos**: Lacunas cadastrais geradas por migrações sistêmicas em anos anteriores, resolvidas neste pipeline pela modelagem de **pontes temporais determinísticas** entre competências adjacentes;
-- **Privacidade Rigorosa (LGPD)**: Imperativo legal de anonimizar dados pessoais sensíveis (nomes e matrículas) através de criptografia irreversível por chave secreta (**HMAC-SHA256**) antes que qualquer dado transite para a nuvem.
+- **Instabilidade de esquemas:** mudanças frequentes de layout nas extrações do SGP, com cerca de 30 variantes de cabeçalhos que exigem mapeamento canônico dinâmico;
+- **Heterogeneidade de encodings:** arquivos mensais alternando entre `utf-8` e `latin1`;
+- **Descontinuidade temporal e nulos:** lacunas cadastrais causadas por falhas de exportação e migrações de sistemas, tratadas aqui por **pontes temporais determinísticas** entre competências adjacentes;
+- **Privacidade (LGPD):** mesmo sendo dados abertos, a reutilização de dados pessoais exige finalidade e cuidado. As matrículas são **pseudonimizadas** por hash com chave secreta (**HMAC-SHA256**) ainda na etapa de ETL, antes da carga no banco em nuvem, o que reduz o risco de identificação direta.
 
-Projetei esta solução para conectar essas duas pontas: a complexidade real da gestão pública e a maturidade da engenharia de dados moderna (automação via GitHub Actions, banco em nuvem PostgreSQL Serverless no Neon Tech, testes rigorosos com Pytest e monitoramento visual no Power BI).
+Projetei esta solução para conectar a complexidade real da gestão pública à engenharia de dados moderna: automação via GitHub Actions, PostgreSQL serverless no Neon Tech, testes com Pytest e monitoramento no Power BI.
 
 ---
 
@@ -129,15 +133,15 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
    - Carga transacional em lotes (`chunksize=10.000`) na tabela `tb_pgd_inss` no PostgreSQL Serverless da Neon Tech.
    - Operação idempotente por partição de competência (`Delete & Insert`), garantindo zero duplicidades, integridade de índices e nenhuma indisponibilidade (*zero downtime*) para consultas analíticas.
    - Geração de amostra versionada (`sample.csv` com 5.000 linhas) para auditoria rápida no repositório.
-7. **Geração de Insights Executivos com IA (`gerar_insights.py`)**:
+7. **Visualização Executiva e Disparo de Atualização (Power Automate & Power BI Service)**:
+
+   - Disparo imediato de Webhook via requisição HTTP POST para o **Power Automate**, que aciona o gatilho de atualização assíncrona do modelo semântico no **Power BI Service** logo após a conclusão da carga no banco relacional.
+   - Painel executivo interativo composto por 8 telas analíticas conectadas nativamente ao banco relacional Neon.
+8. **Geração de Insights Executivos com IA (`gerar_insights.py`)**:
 
    - Processamento estatístico comparativo mês a mês (Month-over-Month - MoM) e diagnóstico dos 6 eixos de gestão.
    - Integração com a API do Google Gemini (com fallback automático para motor analítico local em Python), gerando relatório executivo autônomo.
    - Arquivamento histórico automático das versões mensais na pasta `dashboard/relatorios/` (`insights_AAAA_MM.md`) antes da substituição do relatório vigente (`insights_README.md`).
-8. **Visualização Executiva e Disparo de Atualização (Power Automate & Power BI Service)**:
-
-   - Disparo de Webhook via requisição HTTP POST para o **Power Automate**, que aciona o gatilho de atualização assíncrona do modelo semântico no **Power BI Service**.
-   - Painel executivo interativo composto por 8 telas analíticas conectadas nativamente ao banco relacional Neon.
 
 ---
 
@@ -172,7 +176,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 ```text
 ├── .github/
 │   └── workflows/
-│       ├── database_sync.yml                      # Workflow 1: Ingestão, ETL, carga no Neon, insights e webhook
+│       ├── database_sync.yml                      # Workflow 1: Ingestão, ETL, carga no Neon, webhook e insights
 │       └── atualizar_documentacao_prints.yml      # Workflow 2: Automação Playwright, QA e publicação de prints
 ├── dashboard/
 │   ├── Dash_INSS_Acompanhamento_PGD.pbix          # Relatório Power BI conectado nativamente ao PostgreSQL Neon
@@ -399,14 +403,13 @@ A automação da solução é estruturada em dois workflows independentes e agen
   - `GEMINI_API_KEY`: Chave de API do Google Gemini para geração autônoma de insights (com fallback local automático se ausente).
   - `HMAC_SECRET_KEY`: Chave secreta obrigatória para anonimização criptográfica (HMAC-SHA256) das matrículas dos servidores conforme a LGPD.
 - **Ciclo de Execução:**
-  1. Setup do ambiente Python 3.12 e instalação dos requisitos;
-  2. Execução de `download_sgp.py` (download incremental das novas competências publicadas pelo INSS);
-  3. Execução de `etl_sgp_inss.py` (saneamento, pontes temporais, mascaramento LGPD e geração do Parquet);
-  4. Execução dos testes automatizados via `pytest tests/test_pipeline.py` (guardião do banco no padrão WAP);
-  5. Execução de `load_neon.py` (carga transacional idempotente por partição no banco PostgreSQL);
-  6. Execução de `gerar_insights.py` (arquivamento do relatório anterior e geração de novos insights executivos);
-  7. Commit automático dos artefatos atualizados com `[skip ci]`;
-  8. Disparo de Webhook via cURL POST para o Power Automate iniciar a atualização assíncrona do Power BI Service.
+  1. Construção da imagem Docker do pipeline (`Dockerfile` baseado em `python:3.12-slim`);
+  2. Execução containerizada de `download_sgp.py` e `etl_sgp_inss.py` (download incremental, saneamento e pontes temporais);
+  3. Execução dos testes automatizados via `pytest tests/test_pipeline.py` dentro do container (guardião do banco no padrão WAP);
+  4. Execução containerizada de `load_neon.py` (carga transacional idempotente por partição no banco PostgreSQL Neon);
+  5. Disparo de Webhook via cURL POST para o Power Automate iniciar a atualização assíncrona do Power BI Service;
+  6. Execução containerizada de `gerar_insights.py` (arquivamento do relatório anterior e geração de novos insights executivos);
+  7. Commit automático dos artefatos atualizados com `[skip ci]`.
 
 ---
 
