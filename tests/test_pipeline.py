@@ -1,19 +1,198 @@
+import os
 import re
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 import pandas as pd
 import pytest
+import requests
+from sqlalchemy.types import BigInteger, Date, DateTime, Text
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
+os.environ.setdefault("HMAC_SECRET_KEY", "chave_secreta_padrao_inss_pgd")
+
+from tratamento.download_sgp import (
+    API_URL,
+    extrair_competencia,
+    baixar_arquivos_padronizados,
+)
 from tratamento.etl_sgp_inss import (
     enriquecer_cadastros_e_pontes,
     gerar_hash_usuario,
     limpar_e_inferir_status,
+    normalizar_id_lotacao,
     preencher_por_ponte,
 )
+from tratamento.load_neon import (
+    construir_dtype_mapping,
+    main as load_neon_main,
+)
+
+def test_ingestao_extrair_competencia_por_nome():
+    nome = "Programa de Gestão e Desempenho - PGD - Maio 2024"
+    url = "https://dadosabertos.inss.gov.br/recurso.csv"
+    resultado = extrair_competencia(nome, url, None)
+    assert resultado == "pgd_inss_202405.csv", f"Esperado pgd_inss_202405.csv, obtido: {resultado}"
+
+
+def test_ingestao_extrair_competencia_por_url():
+    nome = "recurso_generico"
+    url = "https://dadosabertos.inss.gov.br/arquivos/pgd_inss_outubro_2023.csv"
+    resultado = extrair_competencia(nome, url, None)
+    assert resultado == "pgd_inss_202310.csv", f"Esperado pgd_inss_202310.csv, obtido: {resultado}"
+
+
+def test_ingestao_extrair_competencia_por_data_criacao():
+    nome = "dados_pgd"
+    url = "https://dadosabertos.inss.gov.br/download.csv"
+    data_criacao = "2025-08-15T10:30:00"
+    resultado = extrair_competencia(nome, url, data_criacao)
+    assert resultado == "pgd_inss_202508.csv", f"Esperado pgd_inss_202508.csv, obtido: {resultado}"
+
+
+def test_ingestao_extrair_competencia_fallback_limpeza_nome():
+    nome = "Relatório Especial @ 2022 / INSS!"
+    url = "https://dadosabertos.inss.gov.br/arquivo.csv"
+    resultado = extrair_competencia(nome, url, None)
+    assert resultado == "Relat_rio_Especial___2022___INSS.csv", f"Esperado nome higienizado, obtido: {resultado}"
+
+
+def test_ingestao_extrair_competencia_variacoes_mes_marco():
+    res1 = extrair_competencia("PGD Março 2025", "", None)
+    res2 = extrair_competencia("PGD Marco 2025", "", None)
+    assert res1 == "pgd_inss_202503.csv"
+    assert res2 == "pgd_inss_202503.csv"
+
+
+def test_ingestao_baixar_arquivos_padronizados_fluxo_mock(tmp_path):
+    mock_resources = {
+        "result": {
+            "resources": [
+                {
+                    "name": "PGD Janeiro 2025",
+                    "url": "http://mock.inss.gov.br/pgd_jan_2025.csv",
+                    "format": "CSV",
+                    "created": "2025-01-10T00:00:00",
+                }
+            ]
+        }
+    }
+    mock_csv_content = b"competencia,matricula,nome\n202501,1234567,Servidor Teste\n"
+
+    def mock_requests_get(url, **kwargs):
+        resp = MagicMock()
+        if "package_show" in url:
+            resp.json.return_value = mock_resources
+            resp.raise_for_status = MagicMock()
+        else:
+            resp.iter_content.return_value = [mock_csv_content]
+            resp.raise_for_status = MagicMock()
+            resp.encoding = "utf-8"
+        return resp
+
+    with patch("requests.get", side_effect=mock_requests_get):
+        with patch("tratamento.download_sgp.os.path.abspath") as mock_abs:
+            mock_abs.return_value = str(tmp_path / "tratamento" / "download_sgp.py")
+            data_dir = tmp_path / "data"
+            data_dir.mkdir(parents=True, exist_ok=True)
+
+            with patch("tratamento.download_sgp.os.path.dirname") as mock_dir:
+                mock_dir.side_effect = lambda p: str(Path(p).parent)
+                baixar_arquivos_padronizados()
+
+    arquivo_esperado = data_dir / "pgd_inss_202501.csv"
+    assert arquivo_esperado.exists(), "O arquivo baixado deveria ter sido salvo com nome padronizado."
+    with open(arquivo_esperado, "rb") as f:
+        conteudo = f.read()
+    assert conteudo == mock_csv_content, "O conteudo salvo no arquivo deve corresponder ao stream baixado."
+
+
+def test_ingestao_baixar_arquivos_padronizados_pula_existente(tmp_path):
+    data_dir = tmp_path / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    arquivo_ja_existente = data_dir / "pgd_inss_202501.csv"
+    arquivo_ja_existente.write_text("conteudo_antigo", encoding="utf-8")
+
+    mock_resources = {
+        "result": {
+            "resources": [
+                {
+                    "name": "PGD Janeiro 2025",
+                    "url": "http://mock.inss.gov.br/pgd_jan_2025.csv",
+                    "format": "CSV",
+                    "created": "2025-01-10T00:00:00",
+                }
+            ]
+        }
+    }
+    mock_api_resp = MagicMock()
+    mock_api_resp.json.return_value = mock_resources
+    mock_api_resp.raise_for_status = MagicMock()
+
+    with patch("requests.get", return_value=mock_api_resp) as mock_get:
+        with patch("tratamento.download_sgp.os.path.abspath") as mock_abs:
+            mock_abs.return_value = str(tmp_path / "tratamento" / "download_sgp.py")
+            with patch("tratamento.download_sgp.os.path.dirname") as mock_dir:
+                mock_dir.side_effect = lambda p: str(Path(p).parent)
+                baixar_arquivos_padronizados()
+
+    assert mock_get.call_count == 1, "Arquivo existente nao deve acionar novo download via HTTP."
+    assert arquivo_ja_existente.read_text(encoding="utf-8") == "conteudo_antigo", "Conteudo original deve ser preservado."
+
+
+def test_ingestao_baixar_arquivos_padronizados_erro_api():
+    with patch("requests.get", side_effect=Exception("Erro de conexao")):
+        with pytest.raises(SystemExit) as exc_info:
+            baixar_arquivos_padronizados()
+        assert exc_info.value.code == 1, "Falha na API publica deve disparar sys.exit(1)."
+
+
+def test_ingestao_api_inss_real_disponibilidade_e_contrato():
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    try:
+        response = requests.get(API_URL, headers=headers, timeout=20)
+    except requests.exceptions.RequestException as e:
+        pytest.skip(f"Portal de dados abertos do INSS temporariamente inacessivel: {e}")
+
+    assert response.status_code == 200, f"Status code esperado 200, recebido: {response.status_code}"
+    dados = response.json()
+    assert dados.get("success") is True, "API CKAN do INSS deve retornar 'success: true'."
+
+    resultado = dados.get("result", {})
+    assert resultado.get("name") == "sistema-de-gerenciamento-de-produtividade-sgp", (
+        f"Nome do pacote incorreto: {resultado.get('name')}"
+    )
+
+
+def test_ingestao_api_inss_real_recursos_disponiveis():
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+    try:
+        response = requests.get(API_URL, headers=headers, timeout=20)
+    except requests.exceptions.RequestException as e:
+        pytest.skip(f"Portal de dados abertos do INSS temporariamente inacessivel: {e}")
+
+    dados = response.json()
+    recursos = dados.get("result", {}).get("resources", [])
+    assert len(recursos) >= 30, f"Esperado ao menos 30 recursos historicos, encontrados: {len(recursos)}"
+
+    recursos_dados = [
+        r for r in recursos
+        if (
+            r.get("format", "").upper() in ("CSV", "XLSX", "XLS")
+            or r.get("url", "").lower().endswith((".csv", ".xlsx", ".xls"))
+        )
+        and r.get("url", "").startswith("http")
+    ]
+    assert len(recursos_dados) >= 30, (
+        f"Esperados ao menos 30 recursos de dados (CSV/Excel) com URLs validas, encontrados: {len(recursos_dados)}"
+    )
+
+    primeiro_recurso = recursos_dados[0]
+    assert "name" in primeiro_recurso and len(primeiro_recurso["name"]) > 0, "Recurso deve conter atributo 'name'."
+    assert "url" in primeiro_recurso and primeiro_recurso["url"].startswith("http"), "Recurso deve conter URL valida."
 
 #%%
 @pytest.fixture(scope="module")
@@ -214,3 +393,137 @@ def test_funcao_regras_flag_pgd():
     assert flags[0] == "Sim", "Programas institucionais regulares devem receber flag_pgd = 'Sim'."
     assert flags[1] == "Não", "Programas de acordo de greve devem receber flag_pgd = 'Não'."
     assert pd.isna(flags[2]), "Status 'Não Designado' deve permanecer com flag_pgd nula."
+
+
+def test_funcao_normalizar_id_lotacao():
+    serie_teste = pd.Series([
+        "4025060",
+        "1800",
+        "1800.0",
+        "04025060",
+        "20001",
+        "12001",
+        "-",
+        None,
+        "nan",
+    ])
+    codigos_6 = {"012001", "110264"}
+    resultado = normalizar_id_lotacao(serie_teste, codigos_6_conhecidos=codigos_6)
+
+    assert resultado.iloc[0] == "04025060", "Codigo de 7 digitos deve receber padding para 8 digitos."
+    assert resultado.iloc[1] == "01800", "Codigo de 4 digitos deve receber padding para 5 digitos."
+    assert resultado.iloc[2] == "01800", "Float string de 4 digitos deve ser limpa e receber padding."
+    assert resultado.iloc[3] == "04025060", "Codigo ja com 8 digitos deve ser preservado."
+    assert resultado.iloc[4] == "20001", "Codigo de 5 digitos sem par em conhecidos_6 deve ser preservado."
+    assert resultado.iloc[5] == "012001", "Codigo de 5 digitos com par em conhecidos_6 deve receber zero a esquerda."
+    assert resultado.iloc[6] == "-", "Strings nao numericas devem ser mantidas."
+    assert pd.isna(resultado.iloc[7]), "Valores nulos devem retornar NaN/None."
+    assert pd.isna(resultado.iloc[8]), "Strings 'nan' devem retornar NaN/None."
+
+
+def test_isolamento_propagacao_designacao_nula():
+    df_teste = pd.DataFrame({
+        "competencia": [pd.Period("2025-01", freq="M"), pd.Period("2025-01", freq="M")],
+        "id_matricula": ["M_CORREG", "M_APS"],
+        "nome": ["Servidor Corregedoria", "Servidor APS"],
+        "id_designacao": [None, None],
+        "sigla_programa": [None, None],
+        "programa": [None, None],
+        "id_lotacao": ["01800", "04025060"],
+        "lotacao": ["CORREGEDORIA-GERAL", "APS FEIRA DE SANTANA"],
+        "tipo_entrega": [None, None],
+        "linha_trabalho": [None, None],
+        "sigla_linha_trabalho": [None, None],
+        "status": ["Não Designado", "Não Designado"],
+        "dt_criacao_designacao": [None, None],
+    })
+
+    res = enriquecer_cadastros_e_pontes(df_teste)
+    lotacoes = res.set_index("id_matricula")["id_lotacao"].to_dict()
+
+    assert lotacoes["M_CORREG"] == "01800", "Corregedoria deve manter seu id_lotacao."
+    assert lotacoes["M_APS"] == "04025060", "APS nao pode ter seu id_lotacao sobrescrito por Corregedoria."
+
+def test_carga_validacao_database_url_ausente(monkeypatch):
+    monkeypatch.delenv("DATABASE_URL", raising=False)
+    with pytest.raises(ValueError, match="DATABASE_URL não encontrada"):
+        load_neon_main()
+
+
+def test_carga_validacao_arquivo_parquet_ausente(monkeypatch, tmp_path):
+    monkeypatch.setenv("DATABASE_URL", "postgresql://mock:mock@localhost:5432/mock")
+    arquivo_inexistente = tmp_path / "inexistente.parquet"
+    with patch("tratamento.load_neon.PARQUET_FILE", arquivo_inexistente):
+        with pytest.raises(FileNotFoundError, match="Arquivo não encontrado"):
+            load_neon_main()
+
+
+def test_carga_construir_dtype_mapping():
+    colunas = [
+        "competencia",
+        "dt_inicio_designacao",
+        "dt_fim_designacao",
+        "dt_criacao_designacao",
+        "dt_alteracao_designacao",
+        "id_designacao",
+        "id_usuario",
+        "lotacao",
+        "status",
+    ]
+    mapping = construir_dtype_mapping(colunas)
+
+    assert isinstance(mapping["competencia"], Date)
+    assert isinstance(mapping["dt_inicio_designacao"], DateTime)
+    assert isinstance(mapping["dt_fim_designacao"], DateTime)
+    assert isinstance(mapping["dt_criacao_designacao"], DateTime)
+    assert isinstance(mapping["dt_alteracao_designacao"], DateTime)
+    assert isinstance(mapping["id_designacao"], BigInteger)
+    assert isinstance(mapping["id_usuario"], Text)
+    assert isinstance(mapping["lotacao"], Text)
+    assert isinstance(mapping["status"], Text)
+
+
+def test_carga_execucao_transacional_mock(monkeypatch, tmp_path):
+    monkeypatch.setenv("DATABASE_URL", "postgresql://mock:mock@localhost:5432/mock")
+
+    df_mock = pd.DataFrame({
+        "competencia": [pd.Timestamp("2025-01-01"), pd.Timestamp("2025-02-01")],
+        "id_usuario": ["USR-11111111", "USR-22222222"],
+        "id_designacao": [101, 102],
+        "dt_inicio_designacao": [pd.Timestamp("2025-01-01"), pd.Timestamp("2025-02-01")],
+        "dt_fim_designacao": [pd.Timestamp("2025-01-31"), pd.Timestamp("2025-02-28")],
+        "dt_criacao_designacao": [pd.Timestamp("2025-01-01"), pd.Timestamp("2025-02-01")],
+        "dt_alteracao_designacao": [pd.Timestamp("2025-01-01"), pd.Timestamp("2025-02-01")],
+        "lotacao": ["GEX CENTRAL", "APS NORTE"],
+        "status": ["Designado", "Designado"],
+    })
+    caminho_parquet = tmp_path / "mock_test.parquet"
+    df_mock.to_parquet(caminho_parquet, index=False)
+
+    mock_conn = MagicMock()
+    mock_engine = MagicMock()
+    mock_engine.begin.return_value.__enter__.return_value = mock_conn
+
+    mock_inspector = MagicMock()
+    mock_inspector.has_table.return_value = True
+
+    with patch("tratamento.load_neon.PARQUET_FILE", caminho_parquet):
+        with patch("tratamento.load_neon.create_engine", return_value=mock_engine):
+            with patch("tratamento.load_neon.inspect", return_value=mock_inspector):
+                with patch.object(pd.DataFrame, "to_sql") as mock_to_sql:
+                    load_neon_main()
+
+    assert mock_conn.execute.called, "conn.execute deveria ter sido chamado para o DELETE preventivo."
+    call_args, _ = mock_conn.execute.call_args
+    assert "DELETE FROM tb_pgd_inss" in str(call_args[0])
+    comps_executadas = call_args[1]["comps"]
+    assert "2025-01-01" in comps_executadas
+    assert "2025-02-01" in comps_executadas
+
+    assert mock_to_sql.called, "to_sql deveria ter sido chamado para inserir os dados."
+    to_sql_args, to_sql_kwargs = mock_to_sql.call_args
+    assert to_sql_args[0] == "tb_pgd_inss"
+    assert to_sql_kwargs["chunksize"] == 10000
+    assert to_sql_kwargs["if_exists"] == "append"
+
+
