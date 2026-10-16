@@ -397,6 +397,7 @@ A automação da solução é estruturada em dois workflows independentes e agen
   - `NEON_DATABASE_URL`: String de conexão ao PostgreSQL Serverless do Neon Tech.
   - `POWER_AUTOMATE_WEBHOOK_URL`: URL do gatilho HTTP do fluxo no Power Automate.
   - `GEMINI_API_KEY`: Chave de API do Google Gemini para geração autônoma de insights (com fallback local automático se ausente).
+  - `HMAC_SECRET_KEY`: Chave secreta obrigatória para anonimização criptográfica (HMAC-SHA256) das matrículas dos servidores conforme a LGPD.
 - **Ciclo de Execução:**
   1. Setup do ambiente Python 3.12 e instalação dos requisitos;
   2. Execução de `download_sgp.py` (download incremental das novas competências publicadas pelo INSS);

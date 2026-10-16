@@ -35,11 +35,15 @@ jobs:
           pip install -r requirements.txt
 
       - name: Baixar e Processar Dados (ETL)
+        env:
+          HMAC_SECRET_KEY: ${{ secrets.HMAC_SECRET_KEY }}
         run: |
           python tratamento/download_sgp.py
           python tratamento/etl_sgp_inss.py
 
       - name: Executar Testes de Integridade do Pipeline (Pytest)
+        env:
+          HMAC_SECRET_KEY: ${{ secrets.HMAC_SECRET_KEY }}
         run: |
           pytest tests/test_pipeline.py
 
