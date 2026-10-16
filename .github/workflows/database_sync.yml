@@ -24,40 +24,47 @@ jobs:
           restore-keys: |
             dados-inss-${{ runner.os }}-
 
-      - name: Configurar Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Instalar Dependências
+      - name: Construir Imagem Docker do Pipeline
         run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
+          docker build -t inss-pgd-pipeline:latest .
 
       - name: Baixar e Processar Dados (ETL)
-        env:
-          HMAC_SECRET_KEY: ${{ secrets.HMAC_SECRET_KEY }}
         run: |
-          python tratamento/download_sgp.py
-          python tratamento/etl_sgp_inss.py
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -e HMAC_SECRET_KEY="${{ secrets.HMAC_SECRET_KEY }}" \
+            inss-pgd-pipeline:latest \
+            sh -c "python tratamento/download_sgp.py && python tratamento/etl_sgp_inss.py"
 
       - name: Executar Testes de Integridade do Pipeline (Pytest)
-        env:
-          HMAC_SECRET_KEY: ${{ secrets.HMAC_SECRET_KEY }}
         run: |
-          pytest tests/test_pipeline.py
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -e HMAC_SECRET_KEY="${{ secrets.HMAC_SECRET_KEY }}" \
+            inss-pgd-pipeline:latest \
+            pytest tests/test_pipeline.py
 
       - name: Atualizar Neon DB
-        env:
-          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
         run: |
-          python tratamento/load_neon.py
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -e DATABASE_URL="${{ secrets.NEON_DATABASE_URL }}" \
+            inss-pgd-pipeline:latest \
+            python tratamento/load_neon.py
+
+      - name: Disparar Atualização do Power BI via Power Automate
+        env:
+          POWER_AUTOMATE_WEBHOOK_URL: ${{ secrets.POWER_AUTOMATE_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" "$POWER_AUTOMATE_WEBHOOK_URL"
 
       - name: Gerar Insights Executivos com Gemini
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          python tratamento/gerar_insights.py
+          docker run --rm \
+            -v ${{ github.workspace }}:/app \
+            -e GEMINI_API_KEY="${{ secrets.GEMINI_API_KEY }}" \
+            inss-pgd-pipeline:latest \
+            python tratamento/gerar_insights.py
 
       - name: Remover Parquet total (Gerado para testes)
         run: |
@@ -68,7 +75,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add .
+          git add tratamento/pgd_designacoes_inss_2023_2026_sample.csv dashboard/insights_README.md dashboard/relatorios/
           
           if [ -n "$(git status --porcelain)" ]; then
             echo "Alterações detectadas. Criando commit..."
@@ -77,9 +84,3 @@ jobs:
           else 
             echo "Nenhuma alteração nos arquivos. Pulando commit."
           fi
-
-      - name: Disparar Atualização do Power BI via Power Automate
-        env:
-          POWER_AUTOMATE_WEBHOOK_URL: ${{ secrets.POWER_AUTOMATE_WEBHOOK_URL }}
-        run: |
-          curl -X POST -H "Content-Type: application/json" "$POWER_AUTOMATE_WEBHOOK_URL"
