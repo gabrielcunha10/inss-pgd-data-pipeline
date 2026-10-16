@@ -10,6 +10,28 @@ load_dotenv()
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 PARQUET_FILE = PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet"
 
+def construir_dtype_mapping(colunas: list) -> dict:
+    colunas_data = [
+        'dt_inicio_designacao',
+        'dt_fim_designacao',
+        'dt_criacao_designacao',
+        'dt_alteracao_designacao',
+    ]
+    colunas_id = ['id_designacao']
+
+    dtype_mapping = {}
+    for col in colunas:
+        if col == 'competencia':
+            dtype_mapping[col] = Date()
+        elif col in colunas_data:
+            dtype_mapping[col] = DateTime()
+        elif col in colunas_id:
+            dtype_mapping[col] = BigInteger()
+        else:
+            dtype_mapping[col] = Text()
+    return dtype_mapping
+
+
 def main():
     print("Iniciando a carga dos dados para o Neon DB...")
     
@@ -22,25 +44,7 @@ def main():
         raise FileNotFoundError(f"Arquivo não encontrado: {PARQUET_FILE}. Rode o ETL antes.")
         
     df_total = pd.read_parquet(PARQUET_FILE)
-
-    colunas_data = [
-        'dt_inicio_designacao',
-        'dt_fim_designacao',
-        'dt_criacao_designacao',
-        'dt_alteracao_designacao',
-    ]
-    colunas_id = ['id_designacao']
-
-    dtype_mapping = {}
-    for col in df_total.columns:
-        if col == 'competencia':
-            dtype_mapping[col] = Date()
-        elif col in colunas_data:
-            dtype_mapping[col] = DateTime()
-        elif col in colunas_id:
-            dtype_mapping[col] = BigInteger()
-        else:
-            dtype_mapping[col] = Text()
+    dtype_mapping = construir_dtype_mapping(df_total.columns)
 
     engine = create_engine(db_url)
     try:
