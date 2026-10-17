@@ -398,6 +398,7 @@ def test_funcao_regras_flag_pgd():
 def test_funcao_normalizar_id_lotacao():
     serie_teste = pd.Series([
         "4025060",
+        "2315032",
         "1800",
         "1800.0",
         "04025060",
@@ -408,17 +409,23 @@ def test_funcao_normalizar_id_lotacao():
         "nan",
     ])
     codigos_6 = {"012001", "110264"}
-    resultado = normalizar_id_lotacao(serie_teste, codigos_6_conhecidos=codigos_6)
+    codigos_8 = {"04025060", "07001120"}
+    resultado = normalizar_id_lotacao(
+        serie_teste,
+        codigos_6_conhecidos=codigos_6,
+        codigos_8_conhecidos=codigos_8,
+    )
 
-    assert resultado.iloc[0] == "04025060", "Codigo de 7 digitos deve receber padding para 8 digitos."
-    assert resultado.iloc[1] == "01800", "Codigo de 4 digitos deve receber padding para 5 digitos."
-    assert resultado.iloc[2] == "01800", "Float string de 4 digitos deve ser limpa e receber padding."
-    assert resultado.iloc[3] == "04025060", "Codigo ja com 8 digitos deve ser preservado."
-    assert resultado.iloc[4] == "20001", "Codigo de 5 digitos sem par em conhecidos_6 deve ser preservado."
-    assert resultado.iloc[5] == "012001", "Codigo de 5 digitos com par em conhecidos_6 deve receber zero a esquerda."
-    assert resultado.iloc[6] == "-", "Strings nao numericas devem ser mantidas."
-    assert pd.isna(resultado.iloc[7]), "Valores nulos devem retornar NaN/None."
-    assert pd.isna(resultado.iloc[8]), "Strings 'nan' devem retornar NaN/None."
+    assert resultado.iloc[0] == "04025060", "Codigo de 7 digitos com par em conhecidos_8 deve receber padding para 8 digitos."
+    assert resultado.iloc[1] == "2315032", "Codigo de 7 digitos sem par em conhecidos_8 deve ser preservado."
+    assert resultado.iloc[2] == "01800", "Codigo de 4 digitos deve receber padding para 5 digitos."
+    assert resultado.iloc[3] == "01800", "Float string de 4 digitos deve ser limpa e receber padding."
+    assert resultado.iloc[4] == "04025060", "Codigo ja com 8 digitos deve ser preservado."
+    assert resultado.iloc[5] == "20001", "Codigo de 5 digitos sem par em conhecidos_6 deve ser preservado."
+    assert resultado.iloc[6] == "012001", "Codigo de 5 digitos com par em conhecidos_6 deve receber zero a esquerda."
+    assert resultado.iloc[7] == "-", "Strings nao numericas devem ser mantidas."
+    assert pd.isna(resultado.iloc[8]), "Valores nulos devem retornar NaN/None."
+    assert pd.isna(resultado.iloc[9]), "Strings 'nan' devem retornar NaN/None."
 
 
 def test_isolamento_propagacao_designacao_nula():

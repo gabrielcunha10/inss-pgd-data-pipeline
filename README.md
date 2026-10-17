@@ -75,7 +75,7 @@ flowchart TD
         SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
         SCRIPT_ETL["etl_sgp_inss.py<br/>(Tratamento, Pontes & Parquet)"]
         LGPD["Anonimização LGPD<br/>(HMAC-SHA256)"]
-        TESTS_DATA["test_pipeline.py<br/>(13 Testes de Integridade)"]
+        TESTS_DATA["test_pipeline.py<br/>(29 Testes de Integridade)"]
         SCRIPT_LOAD["load_neon.py<br/>(Carga em Lotes)"]
         NEON[("PostgreSQL Serverless<br/>Neon: tb_pgd_inss")]
         INSIGHTS["gerar_insights.py<br/>(Google Gemini IA + Métricas MoM)"]
@@ -92,7 +92,7 @@ flowchart TD
 
     subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)"]
         PRINTS["capturar_prints.py<br/>(Prints das 8 Telas do Dashboard Power BI)"]
-        TESTS_DOCS["test_documentacao_insights.py<br/>(8 Testes de QA)"]
+        TESTS_DOCS["test_documentacao_insights.py<br/>(11 Testes de QA)"]
         DOCS["Publicação de Artefatos & Markdown<br/>(dashboard_README.md & imagens)"]
 
         PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PRINTS
@@ -130,7 +130,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
    - Geração de pseudônimos seguros (`USR-XXXXXXXX`), impedindo o tráfego ou armazenamento de dados pessoais identificáveis (PII) no banco em nuvem e nos dashboards públicos.
 5. **Qualidade de Dados e Guardião do Banco (`test_pipeline.py`)**:
 
-   - Execução de malha fina via `pytest` com 13 testes automatizados cobrindo tipagem estrita, consistência temporal, não nulidade, regras de negócio e validação da máscara LGPD.
+   - Execução de malha fina via `pytest` com 29 testes automatizados cobrindo ingestão via API CKAN, tipagem estrita, consistência temporal, não nulidade, regras de negócio, validação da máscara LGPD e carga transacional.
    - Atuação no padrão *Write-Audit-Publish (WAP)*: a carga no banco de dados só é autorizada se 100% dos testes forem aprovados.
 6. **Carga Transacional e Armazenamento em Nuvem (`load_neon.py` e PostgreSQL Neon)**:
 
@@ -204,7 +204,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │   └── pgd_inss_*.csv                             # Arquivos mensais baixados da API CKAN do INSS
 ├── tests/                                         # Testes automatizados e base tratada de saída
 │   ├── pgd_designacoes_inss_2023_2026.parquet     # Base tratada consolidada após o ETL (não versionado)
-│   ├── test_pipeline.py                           # Suíte de 13 testes de engenharia, tipagem e regras de negócio
+│   ├── test_pipeline.py                           # Suíte de 29 testes de engenharia, ingestão, tipagem e regras de negócio
 │   └── test_documentacao_insights.py              # Suíte de 11 testes de QA de documentação, relatórios e prints
 ├── tratamento/
 │   ├── download_sgp.py                            # Ingestor automatizado via API CKAN pública do INSS
@@ -274,17 +274,18 @@ Abaixo está o dicionário de dados detalhado, refletindo fielmente a ordem fís
 
 ## Testes e Qualidade de Dados (Pytest)
 
-Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei duas suítes de testes automatizados com **`pytest`**, totalizando **24 testes unitários e de integração**:
+Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei duas suítes de testes automatizados com **`pytest`**, totalizando **40 testes unitários e de integração**:
 
-1. **Testes de Engenharia e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 13 testes):**
+1. **Testes de Engenharia, Ingestão, Carga e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 29 testes):**
 
    - Atuam como guardião do banco de dados no padrão *Write-Audit-Publish (WAP)*: a carga no PostgreSQL só ocorre se 100% dos testes forem aprovados.
-   - **Integridade de Siglas e Nomes:** Verifica a ausência de registros órfãos entre siglas e nomes de programas e linhas de trabalho.
+   - **Ingestão e Contrato da API CKAN:** Valida extração de competência, idempotência de arquivos locais, resiliência HTTP com mocks e contrato ao vivo da API de Dados Abertos do INSS.
+   - **Integridade de Siglas, Lotações e Nomes:** Verifica a ausência de registros órfãos entre siglas e nomes de programas/linhas de trabalho, normalização de códigos SIAPE (`id_lotacao`) e isolamento de propagação em designações nulas.
    - **Consistência Temporal:** Garante que nenhuma data de fim (`dt_fim_designacao`) seja anterior à data de início (`dt_inicio_designacao`).
    - **Validação de Nulos Críticos:** Impede que chaves primárias e colunas essenciais para regras de negócio (como a `modalidade` em casos de status "Designado") fiquem vazias.
    - **Checagem de Domínios Restritos:** Assegura que colunas categóricas (`status`, `modalidade`, `flag_pgd`) contenham apenas os domínios normatizados.
    - **Unicidade e Deduplicação:** Analisa chaves compostas (`id_usuario` + `competencia` + `id_designacao`) para barrar duplicações de registros transacionais.
-   - **Auditoria de Máscara LGPD:** Confere via *Regex* se todos os usuários da base foram devidamente anonimizados no padrão rigoroso `USR-XXXXXXXX`.
+   - **Auditoria de Máscara LGPD & Carga Transacional:** Confere via *Regex* se todos os usuários da base foram devidamente pseudonimizados no padrão `USR-XXXXXXXX` e testa o mapeamento de tipos SQL e a execução transacional do `load_neon.py`.
 2. **Testes de QA de Documentação e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) — 11 testes):**
 
    - **Integridade Binária dos Prints:** Valida cabeçalho mágico PNG (`\x89PNG\r\n\x1a\n`), tamanho mínimo e resolução das 8 telas capturadas.
@@ -337,12 +338,16 @@ Configure as variáveis no `.env` (para execução local) ou cadastre-as em **Se
 # No GitHub Actions: configure como secret 'NEON_DATABASE_URL'
 DATABASE_URL=postgresql://usuario:senha@ep-exemplo.us-east-2.aws.neon.tech/neondb?sslmode=require
 
-# 2. Chave da API do Google Gemini (OPCIONAL)
+# 2. Chave Secreta para Pseudonimização LGPD via HMAC-SHA256 (OBRIGATÓRIA para o ETL)
+# No GitHub Actions: configure como secret 'HMAC_SECRET_KEY'
+HMAC_SECRET_KEY=sua_chave_secreta_hmac_lgpd_aqui
+
+# 3. Chave da API do Google Gemini (OPCIONAL)
 # No GitHub Actions: configure como secret 'GEMINI_API_KEY'
 # Caso ausente, o script 'gerar_insights.py' ativa automaticamente o motor analítico local em Python
 GEMINI_API_KEY=sua_chave_do_google_ai_studio_aqui
 
-# 3. Webhook do Power Automate para Atualização do Power BI (OPCIONAL)
+# 4. Webhook do Power Automate para Atualização do Power BI (OPCIONAL)
 # No GitHub Actions: configure como secret 'POWER_AUTOMATE_WEBHOOK_URL'
 # Necessária apenas se desejar disparar o refresh automático do dataset no Power BI Service
 POWER_AUTOMATE_WEBHOOK_URL=https://prod-xx.brazilsouth.logic.azure.com:443/workflows/...
@@ -352,6 +357,7 @@ POWER_AUTOMATE_WEBHOOK_URL=https://prod-xx.brazilsouth.logic.azure.com:443/workf
 > **Detalhamento das Variáveis:**
 >
 > - `DATABASE_URL` (ou `NEON_DATABASE_URL` no GitHub): **Obrigatória** para a sincronização relacional da tabela `tb_pgd_inss` via [`tratamento/load_neon.py`](tratamento/load_neon.py).
+> - `HMAC_SECRET_KEY`: **Obrigatória** para a pseudonimização criptográfica irreversível (HMAC-SHA256) das matrículas dos servidores no [`tratamento/etl_sgp_inss.py`](tratamento/etl_sgp_inss.py), em conformidade com a LGPD.
 > - `GEMINI_API_KEY`: **Opcional**. Quando fornecida, habilita o Google Gemini para redigir o diagnóstico executivo. Se não informada, o script [`tratamento/gerar_insights.py`](tratamento/gerar_insights.py) ativa automaticamente o motor analítico determinístico local, gerando o relatório Markdown sem qualquer dependência externa ou interrupção.
 > - `POWER_AUTOMATE_WEBHOOK_URL`: **Opcional**. Utilizada para enviar o gatilho HTTP cURL POST ao Power Automate para refresh no Power BI Service. Na execução local, pode ser omitida.
 
@@ -380,7 +386,7 @@ python tratamento/download_sgp.py
 # 2. Processamento (ETL): limpa os dados e gera o arquivo Parquet e o CSV sample
 python tratamento/etl_sgp_inss.py
 
-# 3. Qualidade de Dados: roda a suíte com os 24 testes automatizados (Pytest)
+# 3. Qualidade de Dados: roda a suíte com os 40 testes automatizados (Pytest)
 pytest tests/
 
 # 4. Carga no Banco (Load): insere os dados validados na tabela tb_pgd_inss no Neon DB

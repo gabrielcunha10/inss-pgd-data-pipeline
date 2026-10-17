@@ -21,7 +21,7 @@ MESES = {
 def extrair_competencia(nome_recurso, url, data_criacao):
     texto_busca = f"{nome_recurso} {url}".lower()
     
-    ano_match = re.search(r"202[3-6]", texto_busca)
+    ano_match = re.search(r"20\d{2}", texto_busca)
     ano = ano_match.group(0) if ano_match else None
     
     mes = None
@@ -95,7 +95,7 @@ def baixar_arquivos_padronizados():
                         r = requests.get(url_download, headers=headers, timeout=60)
                         r.raise_for_status()
                         
-                        df = pd.read_excel(io.BytesIO(r.content))
+                        df = pd.read_excel(io.BytesIO(r.content), dtype=str)
                         df.to_csv(caminho_local, index=False, encoding='utf-8')
                         
                     logging.info(f"Salvo como: {nome_padronizado}")

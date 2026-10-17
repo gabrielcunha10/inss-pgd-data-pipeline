@@ -65,6 +65,4 @@ tzdata==2026.4
 urllib3==2.7.0
 wcwidth==0.8.3
 websockets==16.1.1
-playwright>=1.40.0
 pillow>=10.0.0
-google-genai>=2.0.0

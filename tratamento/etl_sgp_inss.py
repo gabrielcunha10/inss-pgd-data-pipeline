@@ -159,13 +159,15 @@ def carregar_e_consolidar_brutos(diretorio: Path) -> pd.DataFrame:
 
 
 def normalizar_id_lotacao(
-    serie: pd.Series, codigos_6_conhecidos: set = None
+    serie: pd.Series,
+    codigos_6_conhecidos: set = None,
+    codigos_8_conhecidos: set = None,
 ) -> pd.Series:
     """Normaliza codigos de UORG/lotacao SIAPE do INSS.
 
     Corrige truncamento de zeros a esquerda gerados por exportacao numerica:
     - 4 digitos -> 5 digitos (ex: '1800' -> '01800' para Corregedoria e GEX sedes)
-    - 7 digitos -> 8 digitos (ex: '4025060' -> '04025060' para APS)
+    - 7 digitos -> 8 digitos (ex: '4025060' -> '04025060' para APS conhecidas de 8 digitos)
     - 5 digitos -> 6 digitos caso coincida com subunidade conhecida do INSS
     """
     def _norm(val):
@@ -181,7 +183,7 @@ def normalizar_id_lotacao(
         n = len(s)
         if n == 4:
             return s.zfill(5)
-        elif n == 7:
+        elif n == 7 and (codigos_8_conhecidos is None or ("0" + s) in codigos_8_conhecidos):
             return s.zfill(8)
         elif n == 5 and codigos_6_conhecidos and ("0" + s) in codigos_6_conhecidos:
             return "0" + s
@@ -232,7 +234,10 @@ def limpar_e_inferir_status(df: pd.DataFrame) -> pd.DataFrame:
             .str.replace(r"\.0$", "", regex=True)
         )
         conhecidos_6 = {c for c in codigos_raw if len(c) == 6}
-        df["id_lotacao"] = normalizar_id_lotacao(df["id_lotacao"], conhecidos_6)
+        conhecidos_8 = {c for c in codigos_raw if len(c) == 8}
+        df["id_lotacao"] = normalizar_id_lotacao(
+            df["id_lotacao"], conhecidos_6, conhecidos_8
+        )
 
     df = df.dropna(subset=["id_matricula"]).copy()
     df["competencia"] = pd.to_datetime(
@@ -269,10 +274,10 @@ def limpar_e_inferir_status(df: pd.DataFrame) -> pd.DataFrame:
     )
 
     df["dt_criacao_designacao"] = pd.to_datetime(
-        df["dt_criacao_designacao"], format="mixed"
+        df["dt_criacao_designacao"], format="mixed", dayfirst=True
     )
     df["dt_alteracao_designacao"] = pd.to_datetime(
-        df["dt_alteracao_designacao"], format="mixed"
+        df["dt_alteracao_designacao"], format="mixed", dayfirst=True
     )
     df["dt_inicio_designacao"] = dt_inicio
     df["dt_fim_designacao"] = dt_fim
