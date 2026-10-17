@@ -622,27 +622,40 @@ def gerar_historico_csv_powerbi(
     caminho_csv: Path | None = OUTPUT_CSV_POWERBI,
 ) -> pd.DataFrame:
     """
-    Gera tabela historica estruturada por competencia (1 linha por mes)
-    para alimentar os Cards e Matrizes da aba de Insights IA no Power BI via Web/GitHub Raw,
-    sem consumir cota de rede do banco PostgreSQL Neon.
+    Gera/atualiza tabela historica estruturada por competencia (1 linha por mes)
+    de forma incremental e idempotente (append-only por competencia inedita),
+    preservando integralmente as competencias ja registradas no CSV.
     """
     motor_ia_formatado = (
         formatar_nome_modelo_ia(motor_ia) if motor_ia else _obter_modelo_ia_padrao()
     )
-    logging.info(
-        f"Gerando série histórica de insights por competência para o Power BI (modelo: {motor_ia_formatado})..."
-    )
+
+    df_existente = None
+    comps_existentes = set()
+    if caminho_csv is not None and caminho_csv.exists():
+        try:
+            df_existente = pd.read_csv(caminho_csv)
+            if "competencia" in df_existente.columns:
+                comps_existentes = set(df_existente["competencia"].dropna().astype(str))
+        except Exception as e:
+            logging.warning(f"Não foi possível ler CSV histórico existente ({e}). Recriando base...")
+            df_existente = None
+
     comps = sorted(df["competencia"].dropna().unique())
     registros = []
 
     for idx, comp in enumerate(comps):
+        comp_dt = pd.Timestamp(comp)
+        comp_iso = comp_dt.strftime("%Y-%m-%d")
+
+        if comp_iso in comps_existentes:
+            continue
+
         df_mes = df[df["competencia"] == comp]
         comp_ant = comps[idx - 1] if idx > 0 else comp
         df_ant = df[df["competencia"] == comp_ant]
 
-        comp_dt = pd.Timestamp(comp)
         comp_ant_dt = pd.Timestamp(comp_ant)
-        comp_iso = comp_dt.strftime("%Y-%m-%d")
         comp_label = comp_dt.strftime("%m/%Y")
         comp_ant_label = comp_ant_dt.strftime("%m/%Y")
 
@@ -817,11 +830,26 @@ def gerar_historico_csv_powerbi(
             "matriz_alertas_recomendacoes": matriz_alertas_recomendacoes,
         })
 
-    df_hist = pd.DataFrame(registros)
+    if not registros and df_existente is not None:
+        logging.info(
+            f"Nenhuma competência nova detectada. CSV histórico já está atualizado ({len(df_existente)} competências)."
+        )
+        return df_existente
+
+    df_novos = pd.DataFrame(registros)
+    if df_existente is not None and not df_existente.empty:
+        df_hist = pd.concat([df_existente, df_novos], ignore_index=True)
+        df_hist = df_hist.drop_duplicates(subset=["competencia"], keep="first").sort_values("competencia").reset_index(drop=True)
+    else:
+        df_hist = df_novos
+
     if caminho_csv is not None:
         caminho_csv.parent.mkdir(parents=True, exist_ok=True)
         df_hist.to_csv(caminho_csv, index=False, encoding="utf-8")
-        logging.info(f"Tabela histórica de insights para Power BI salva em: {caminho_csv} ({len(df_hist)} competências)")
+        logging.info(
+            f"CSV histórico atualizado com +{len(df_novos)} nova(s) competência(s) em: {caminho_csv} "
+            f"(total: {len(df_hist)} competências)"
+        )
 
     return df_hist
 

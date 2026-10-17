@@ -257,16 +257,30 @@ def test_gerar_historico_csv_powerbi(tmp_path):
     })
 
     csv_temp = tmp_path / "insights_historico_powerbi.csv"
-    df_hist = gerar_historico_csv_powerbi(df_mini, motor_ia="gemini-2.5-flash", caminho_csv=csv_temp)
+    # 1a execucao: apenas competencia 07/2026 com Flash (2.5)
+    df_jul = df_mini[df_mini["competencia"] == pd.Timestamp("2026-07-01")]
+    df_hist_1 = gerar_historico_csv_powerbi(df_jul, motor_ia="gemini-2.5-flash", caminho_csv=csv_temp)
+    assert len(df_hist_1) == 1
+    assert df_hist_1["motor_analise_ia"].iloc[0] == "Google Gemini Flash (2.5)"
+
+    # 2a execucao: base com 07/2026 e 08/2026 usando Argon (4) -> deve preservar 07/2026 intacta e criar so 08/2026
+    df_hist = gerar_historico_csv_powerbi(df_mini, motor_ia="gemini-4-argon", caminho_csv=csv_temp)
 
     assert formatar_nome_modelo_ia("gemini-4-argon") == "Google Gemini Argon (4)"
     assert formatar_nome_modelo_ia("gemini-2.5-flash") == "Google Gemini Flash (2.5)"
     assert formatar_nome_modelo_ia("gemini-2.5-pro") == "Google Gemini Pro (2.5)"
     assert formatar_nome_modelo_ia("Motor Analítico Local (Python)") == "Motor Analítico (Python)"
-    assert df_hist["motor_analise_ia"].iloc[0] == "Google Gemini Flash (2.5)"
 
     assert csv_temp.exists()
     assert len(df_hist) == 2
+    mapa_motores = df_hist.set_index("competencia")["motor_analise_ia"].to_dict()
+    assert mapa_motores["2026-07-01"] == "Google Gemini Flash (2.5)", "Competencia antiga deve ser preservada."
+    assert mapa_motores["2026-08-01"] == "Google Gemini Argon (4)", "Apenas a nova competencia recebe o novo modelo."
+
+    # 3a execucao repetida: idempotencia total (nenhuma linha duplicada)
+    df_hist_rep = gerar_historico_csv_powerbi(df_mini, motor_ia="gemini-2.5-pro", caminho_csv=csv_temp)
+    assert len(df_hist_rep) == 2
+    assert df_hist_rep.set_index("competencia")["motor_analise_ia"].to_dict() == mapa_motores
     colunas_esperadas = {
         "competencia",
         "competencia_mes_ano",
