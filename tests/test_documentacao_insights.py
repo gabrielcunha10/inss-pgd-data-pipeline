@@ -12,11 +12,14 @@ if str(PROJECT_ROOT) not in sys.path:
 from tratamento.gerar_insights import (
     calcular_metricas,
     formatar_tabelas_auxiliares,
+    formatar_nome_modelo_ia,
     gerar_relatorio_condicional_local,
+    gerar_historico_csv_powerbi,
     salvar_relatorio,
     extrair_ano_mes_relatorio,
     arquivar_relatorio_anterior,
     RELATORIOS_DIR,
+    OUTPUT_CSV_POWERBI,
 )
 from dashboard.capturar_prints import PAGINAS, IMAGENS_DIR
 
@@ -233,4 +236,52 @@ def test_unicidade_prints_dashboard():
             f"'{[k for k, v in hashes_vistos.items() if v == digest][0]}' (print duplicado)."
         )
         hashes_vistos[p["arquivo"]] = digest
+
+
+def test_gerar_historico_csv_powerbi(tmp_path):
+    df_mini = pd.DataFrame({
+        "competencia": pd.to_datetime(["2026-07-01", "2026-07-01", "2026-08-01", "2026-08-01"]),
+        "id_usuario": ["USR-01", "USR-02", "USR-01", "USR-03"],
+        "id_designacao": [1, 2, 1, 3],
+        "status": ["Designado", "Não Designado", "Designado", "Designado"],
+        "modalidade": ["Remoto", None, "Remoto", "Presencial"],
+        "flag_pgd": ["Sim", None, "Sim", "Sim"],
+        "programa": ["CEAB1", None, "CEAB1", "SR_PGD"],
+        "sigla_programa": ["CEAB1", None, "CEAB1", "SR_PGD"],
+        "lotacao": ["GEX SP", "GEX SP", "GEX SP", "GEX RJ"],
+        "linha_trabalho": ["APS_SRNE", "APS_SRNE", "APS_SRNE", "APS_SRSE"],
+        "sigla_linha_trabalho": ["APS_SRNE", "APS_SRNE", "APS_SRNE", "APS_SRSE"],
+        "tipo_entrega": ["Meta e Produto", None, "Meta e Produto", "Meta e Produto"],
+        "dt_inicio_designacao": pd.to_datetime(["2026-01-01"] * 4),
+        "dt_fim_designacao": pd.to_datetime(["2026-12-31"] * 4),
+    })
+
+    csv_temp = tmp_path / "insights_historico_powerbi.csv"
+    df_hist = gerar_historico_csv_powerbi(df_mini, motor_ia="gemini-2.5-flash", caminho_csv=csv_temp)
+
+    assert formatar_nome_modelo_ia("gemini-4-argon") == "Google Gemini Argon (4)"
+    assert formatar_nome_modelo_ia("gemini-2.5-flash") == "Google Gemini Flash (2.5)"
+    assert formatar_nome_modelo_ia("gemini-2.5-pro") == "Google Gemini Pro (2.5)"
+    assert formatar_nome_modelo_ia("Motor Analítico Local (Python)") == "Motor Analítico (Python)"
+    assert df_hist["motor_analise_ia"].iloc[0] == "Google Gemini Flash (2.5)"
+
+    assert csv_temp.exists()
+    assert len(df_hist) == 2
+    colunas_esperadas = {
+        "competencia",
+        "competencia_mes_ano",
+        "servidores_plano_ativo",
+        "servidores_plano_ativo_fmt",
+        "variacao_mensal_mom",
+        "variacao_mensal_mom_fmt",
+        "adesao_teletrabalho_pct",
+        "adesao_teletrabalho_fmt",
+        "motor_analise_ia",
+        "diagnostico_executivo",
+        "principais_movimentacoes_mom",
+        "matriz_alertas_recomendacoes",
+    }
+    assert colunas_esperadas.issubset(set(df_hist.columns))
+    assert OUTPUT_CSV_POWERBI.exists(), "O arquivo oficial dashboard/insights_historico_powerbi.csv deve existir."
+
 

@@ -16,6 +16,7 @@ logging.basicConfig(
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 PARQUET_PATH = PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet"
 OUTPUT_MARKDOWN = PROJECT_DIR / "dashboard" / "insights_README.md"
+OUTPUT_CSV_POWERBI = PROJECT_DIR / "dashboard" / "insights_historico_powerbi.csv"
 RELATORIOS_DIR = PROJECT_DIR / "dashboard" / "relatorios"
 
 
@@ -550,6 +551,281 @@ def salvar_relatorio(conteudo: str, caminho: Path, pasta_relatorios: Path | None
 
 
 
+def _fmt_int_pt(valor: int | float) -> str:
+    return f"{int(round(valor)):,}".replace(",", ".")
+
+
+def _fmt_pct_pt(valor: float, casas: int = 1, com_sinal: bool = False) -> str:
+    formato = f"{{:+.{casas}f}}%" if com_sinal else f"{{:.{casas}f}}%"
+    return formato.format(valor).replace(".", ",")
+
+
+def formatar_nome_modelo_ia(modelo_raw: str) -> str:
+    """
+    Formata o identificador tecnico do modelo de IA para exibicao visual nos Cards do Power BI.
+    Exemplos:
+      - 'gemini-4-argon'   -> 'Google Gemini Argon (4)'
+      - 'gemini-2.5-flash' -> 'Google Gemini Flash (2.5)'
+      - 'gemini-2.5-pro'   -> 'Google Gemini Pro (2.5)'
+      - 'Motor Analítico Local (Python)' -> 'Motor Analítico (Python)'
+    """
+    if not modelo_raw:
+        return "Google Gemini Flash (2.5)"
+    s = str(modelo_raw).strip()
+    if s.startswith("Google Gemini ") and "(" in s and ")" in s:
+        return s
+
+    s_lower = s.lower()
+    if "python" in s_lower or "local" in s_lower:
+        return "Motor Analítico (Python)"
+
+    # Captura padrao 'gemini-<versao>-<variante>' (ex: gemini-4-argon, gemini-2.5-flash, gemini-2.5-pro)
+    m = re.search(r"gemini[-_\s]*([0-9]+(?:\.[0-9]+)?)[-_\s]*([a-zA-Z][a-zA-Z0-9\-_]*)", s_lower)
+    if m:
+        versao = m.group(1)
+        variante = " ".join(
+            parte.capitalize()
+            for parte in re.split(r"[-_\s]+", m.group(2))
+            if parte
+        )
+        return f"Google Gemini {variante} ({versao})"
+
+    # Captura padrao 'gemini-<variante>' sem versao numerica (ex: gemini-argon)
+    m_sem_ver = re.search(r"gemini[-_\s]+([a-zA-Z][a-zA-Z0-9\-_]*)", s_lower)
+    if m_sem_ver:
+        variante = " ".join(
+            parte.capitalize()
+            for parte in re.split(r"[-_\s]+", m_sem_ver.group(1))
+            if parte
+        )
+        return f"Google Gemini {variante}"
+
+    return f"Google Gemini ({s})"
+
+
+def _obter_modelo_ia_padrao(caminho_md: Path = OUTPUT_MARKDOWN) -> str:
+    """Extrai o identificador do modelo Gemini registrado no relatorio vigente e formata para exibicao."""
+    if caminho_md and caminho_md.exists():
+        try:
+            texto = caminho_md.read_text(encoding="utf-8")
+            m = re.search(r"Google Gemini\s*[—\-]\s*([a-zA-Z0-9\.\-]+)", texto)
+            if m:
+                return formatar_nome_modelo_ia(m.group(1).strip())
+        except Exception:
+            pass
+    return formatar_nome_modelo_ia("gemini-2.5-flash")
+
+
+def gerar_historico_csv_powerbi(
+    df: pd.DataFrame,
+    motor_ia: str | None = None,
+    caminho_csv: Path | None = OUTPUT_CSV_POWERBI,
+) -> pd.DataFrame:
+    """
+    Gera tabela historica estruturada por competencia (1 linha por mes)
+    para alimentar os Cards e Matrizes da aba de Insights IA no Power BI via Web/GitHub Raw,
+    sem consumir cota de rede do banco PostgreSQL Neon.
+    """
+    motor_ia_formatado = (
+        formatar_nome_modelo_ia(motor_ia) if motor_ia else _obter_modelo_ia_padrao()
+    )
+    logging.info(
+        f"Gerando série histórica de insights por competência para o Power BI (modelo: {motor_ia_formatado})..."
+    )
+    comps = sorted(df["competencia"].dropna().unique())
+    registros = []
+
+    for idx, comp in enumerate(comps):
+        df_mes = df[df["competencia"] == comp]
+        comp_ant = comps[idx - 1] if idx > 0 else comp
+        df_ant = df[df["competencia"] == comp_ant]
+
+        comp_dt = pd.Timestamp(comp)
+        comp_ant_dt = pd.Timestamp(comp_ant)
+        comp_iso = comp_dt.strftime("%Y-%m-%d")
+        comp_label = comp_dt.strftime("%m/%Y")
+        comp_ant_label = comp_ant_dt.strftime("%m/%Y")
+
+        # Card 1: Servidores em Plano Ativo (Designados)
+        df_desig_mes = df_mes[df_mes["status"] == "Designado"]
+        df_desig_ant = df_ant[df_ant["status"] == "Designado"]
+
+        serv_ativo = int(df_desig_mes["id_usuario"].nunique())
+        serv_ativo_ant = int(df_desig_ant["id_usuario"].nunique())
+
+        # Card 2: Variacao Mensal MoM (%)
+        if idx > 0 and serv_ativo_ant > 0:
+            var_mom = ((serv_ativo - serv_ativo_ant) / serv_ativo_ant) * 100.0
+        else:
+            var_mom = 0.0
+
+        # Card 3: Adesao ao Teletrabalho (%)
+        serv_teletrab = int(
+            df_mes[df_mes["modalidade"].isin(["Remoto", "Semipresencial"])]["id_usuario"].nunique()
+        )
+        serv_teletrab_ant = int(
+            df_ant[df_ant["modalidade"].isin(["Remoto", "Semipresencial"])]["id_usuario"].nunique()
+        )
+        serv_presenc = int(
+            df_mes[df_mes["modalidade"] == "Presencial"]["id_usuario"].nunique()
+        )
+        serv_remoto = int(
+            df_mes[df_mes["modalidade"] == "Remoto"]["id_usuario"].nunique()
+        )
+        total_mod = serv_teletrab + serv_presenc
+        pct_teletrab = (serv_teletrab / total_mod * 100.0) if total_mod > 0 else 0.0
+        pct_remoto = (serv_remoto / total_mod * 100.0) if total_mod > 0 else 0.0
+        pct_presenc = (serv_presenc / total_mod * 100.0) if total_mod > 0 else 0.0
+
+        if idx > 0 and serv_teletrab_ant > 0:
+            var_teletrab_mom = ((serv_teletrab - serv_teletrab_ant) / serv_teletrab_ant) * 100.0
+        else:
+            var_teletrab_mom = 0.0
+
+        # Nao designados e desligados no mes
+        serv_nao_desig = int(df_mes[df_mes["status"] == "Não Designado"]["id_usuario"].nunique())
+        serv_nao_desig_ant = int(df_ant[df_ant["status"] == "Não Designado"]["id_usuario"].nunique())
+        var_nao_desig = (
+            ((serv_nao_desig - serv_nao_desig_ant) / serv_nao_desig_ant * 100.0)
+            if idx > 0 and serv_nao_desig_ant > 0
+            else 0.0
+        )
+        serv_deslig = int(df_mes[df_mes["status"] == "Desligado"]["id_usuario"].nunique())
+
+        # Top Programas, Lotacoes e Linhas no mes
+        top_progs = (
+            df_mes.dropna(subset=["sigla_programa"])
+            .groupby("sigla_programa")["id_usuario"]
+            .nunique()
+            .sort_values(ascending=False)
+        )
+        prog1_nome = top_progs.index[0] if len(top_progs) > 0 else "PG-DIRBEN"
+        prog1_val = int(top_progs.iloc[0]) if len(top_progs) > 0 else 0
+        prog2_nome = top_progs.index[1] if len(top_progs) > 1 else "ATENDIMENTO"
+        prog2_val = int(top_progs.iloc[1]) if len(top_progs) > 1 else 0
+
+        top_lots = (
+            df_mes.dropna(subset=["lotacao"])
+            .groupby("lotacao")["id_usuario"]
+            .nunique()
+            .sort_values(ascending=False)
+        )
+        lot1_nome = top_lots.index[0] if len(top_lots) > 0 else "DIRETORIA DE BENEFICIOS"
+        lot1_val = int(top_lots.iloc[0]) if len(top_lots) > 0 else 0
+
+        top_linhas = (
+            df_mes.dropna(subset=["sigla_linha_trabalho"])
+            .groupby("sigla_linha_trabalho")["id_usuario"]
+            .nunique()
+            .sort_values(ascending=False)
+        )
+        lin1_nome = top_linhas.index[0] if len(top_linhas) > 0 else "APS"
+        lin1_val = int(top_linhas.iloc[0]) if len(top_linhas) > 0 else 0
+
+        # Formatacoes PT-BR para exibicao direta nos Cards
+        serv_ativo_fmt = _fmt_int_pt(serv_ativo)
+        var_mom_fmt = _fmt_pct_pt(var_mom, casas=2, com_sinal=True)
+        pct_teletrab_fmt = _fmt_pct_pt(pct_teletrab, casas=1, com_sinal=False)
+        pct_remoto_fmt = _fmt_pct_pt(pct_remoto, casas=1, com_sinal=False)
+
+        if idx == 0:
+            tendencia_txt = "estabelecendo a linha de base inicial da série monitorada"
+        elif var_mom > 0.5:
+            tendencia_txt = (
+                f"registrando expansão de {var_mom_fmt} em relação a {comp_ant_label} "
+                f"(saldo líquido de {serv_ativo - serv_ativo_ant:+d} servidores ativos)"
+            )
+        elif var_mom < -0.5:
+            tendencia_txt = (
+                f"apresentando retração de {var_mom_fmt} frente a {comp_ant_label}, "
+                "Associada ao ciclo de encerramento e repactuação de planos de trabalho"
+            )
+        else:
+            tendencia_txt = (
+                f"mantendo estabilidade operacional ({var_mom_fmt} ante {comp_ant_label}) "
+                "na sustentação da força de trabalho pactuada"
+            )
+
+        # Bloco 1: Diagnostico Executivo da Competencia (2 paragrafos)
+        paragrafo_1 = (
+            f"Na competência {comp_label}, o Programa de Gestão e Desempenho (PGD) do INSS contabilizou "
+            f"{serv_ativo_fmt} servidores em plano ativo, {tendencia_txt}. "
+            f"A composição das modalidades evidencia {pct_teletrab_fmt} de adesão ao teletrabalho "
+            f"({_fmt_int_pt(serv_teletrab)} servidores em regime remoto ou semipresencial, sendo {pct_remoto_fmt} "
+            f"em regime remoto integral) contra {_fmt_pct_pt(pct_presenc, 1)} em modalidade presencial "
+            f"({_fmt_int_pt(serv_presenc)} servidores)."
+        )
+        paragrafo_2 = (
+            f"A alocação funcional na competência manteve forte concentração nos programas estruturantes, "
+            f"liderados por {prog1_nome} ({_fmt_int_pt(prog1_val)} servidores) e {prog2_nome} "
+            f"({_fmt_int_pt(prog2_val)} servidores). No recorte organizacional, a unidade {lot1_nome} "
+            f"concentrou {_fmt_int_pt(lot1_val)} servidores ativos, com destaque operacional para a linha "
+            f"de trabalho {lin1_nome} ({_fmt_int_pt(lin1_val)} profissionais pactuados sob metas de entrega)."
+        )
+        diagnostico_executivo = f"{paragrafo_1}\n\n{paragrafo_2}"
+
+        # Bloco 2: Principais Movimentacoes MoM (4 bullets)
+        principais_movimentacoes_mom = "\n".join([
+            f"• Efetivo em Plano Ativo: {serv_ativo_fmt} servidores ({var_mom_fmt} ante {comp_ant_label})",
+            f"• Adesão ao Teletrabalho: {pct_teletrab_fmt} ({_fmt_int_pt(serv_teletrab)} servidores, {_fmt_pct_pt(var_teletrab_mom, 2, True)} MoM)",
+            f"• Regime Remoto Integral: {pct_remoto_fmt} do efetivo modal ({_fmt_int_pt(serv_remoto)} servidores no mês)",
+            f"• Não Designados e Desligamentos: {_fmt_int_pt(serv_nao_desig)} não designados ({_fmt_pct_pt(var_nao_desig, 1, True)} MoM) e {_fmt_int_pt(serv_deslig)} desligados",
+        ])
+
+        # Bloco 3: Matriz de Alertas & Recomendacoes (2 paragrafos)
+        if serv_deslig > 500 or var_mom < -2.0:
+            alerta_p1 = (
+                f"Alerta de Transição Contratual: A competência {comp_label} registrou {_fmt_int_pt(serv_deslig)} "
+                f"desligamentos e variação de {var_mom_fmt} no efetivo ativo. Recomenda-se auditar as filas de "
+                f"renovação de planos de trabalho em {lot1_nome} para evitar hiatos de cobertura na análise de benefícios."
+            )
+        elif serv_nao_desig > 1200:
+            alerta_p1 = (
+                f"Alerta de Capacidade Ociosa no PGD: Foram identificados {_fmt_int_pt(serv_nao_desig)} servidores "
+                f"com status Não Designado na competência {comp_label} ({_fmt_pct_pt(var_nao_desig, 1, True)} MoM). "
+                f"Priorizar a conversão e repactuação desse contingente nas centrais de análise ({prog1_nome})."
+            )
+        else:
+            alerta_p1 = (
+                f"Estabilidade de Ciclo: Baixo volume de desligamentos ({_fmt_int_pt(serv_deslig)} registros) e "
+                f"manutenção da taxa de adesão em {serv_ativo_fmt} servidores ativos em {comp_label}, confirmando "
+                "alta retenção e aderência às metas pactuadas no período."
+            )
+
+        alerta_p2 = (
+            f"Recomendação Estratégica: Concentrar o monitoramento gerencial no programa {prog1_nome} "
+            f"({_fmt_int_pt(prog1_val)} servidores) e na linha {lin1_nome}, equilibrando a proporção entre "
+            f"teletrabalho ({pct_teletrab_fmt}) e atendimento presencial ({_fmt_pct_pt(pct_presenc, 1)}) "
+            "para cumprimento dos prazos normativos do INSS."
+        )
+        matriz_alertas_recomendacoes = f"{alerta_p1}\n\n{alerta_p2}"
+
+        registros.append({
+            "competencia": comp_iso,
+            "competencia_mes_ano": comp_label,
+            "servidores_plano_ativo": serv_ativo,
+            "servidores_plano_ativo_fmt": serv_ativo_fmt,
+            "variacao_mensal_mom": round(var_mom, 2),
+            "variacao_mensal_mom_fmt": var_mom_fmt,
+            "adesao_teletrabalho_pct": round(pct_teletrab, 1),
+            "adesao_teletrabalho_fmt": pct_teletrab_fmt,
+            "adesao_remoto_pct": round(pct_remoto, 1),
+            "adesao_remoto_fmt": pct_remoto_fmt,
+            "motor_analise_ia": motor_ia_formatado,
+            "diagnostico_executivo": diagnostico_executivo,
+            "principais_movimentacoes_mom": principais_movimentacoes_mom,
+            "matriz_alertas_recomendacoes": matriz_alertas_recomendacoes,
+        })
+
+    df_hist = pd.DataFrame(registros)
+    if caminho_csv is not None:
+        caminho_csv.parent.mkdir(parents=True, exist_ok=True)
+        df_hist.to_csv(caminho_csv, index=False, encoding="utf-8")
+        logging.info(f"Tabela histórica de insights para Power BI salva em: {caminho_csv} ({len(df_hist)} competências)")
+
+    return df_hist
+
+
 def main():
     df = carregar_dados(PARQUET_PATH)
     metricas = calcular_metricas(df)
@@ -558,11 +834,13 @@ def main():
     api_key = os.getenv("GEMINI_API_KEY")
     relatorio_gerado = None
     motor_utilizado = "Motor Analítico Local (Python)"
+    motor_card_curto = _obter_modelo_ia_padrao()
 
     if GENAI_DISPONIVEL and api_key and api_key != "sua_chave_aqui":
         try:
             relatorio_gerado, modelo_ok = gerar_relatorio_com_gemini(metricas, tabelas, api_key)
             motor_utilizado = f"Google Gemini — {modelo_ok}"
+            motor_card_curto = modelo_ok
         except Exception as e:
             logging.warning(f"Falha ao chamar a API do Gemini ({e}). Utilizando gerador local...")
 
@@ -571,6 +849,7 @@ def main():
 
     relatorio_final = adicionar_cabecalho_automacao(relatorio_gerado, motor_utilizado)
     salvar_relatorio(relatorio_final, OUTPUT_MARKDOWN)
+    gerar_historico_csv_powerbi(df, motor_ia=motor_card_curto, caminho_csv=OUTPUT_CSV_POWERBI)
 
 
 if __name__ == "__main__":

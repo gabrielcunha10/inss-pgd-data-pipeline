@@ -52,12 +52,6 @@ jobs:
             inss-pgd-pipeline:latest \
             python tratamento/load_neon.py
 
-      - name: Disparar Atualização do Power BI via Power Automate
-        env:
-          POWER_AUTOMATE_WEBHOOK_URL: ${{ secrets.POWER_AUTOMATE_WEBHOOK_URL }}
-        run: |
-          curl -X POST -H "Content-Type: application/json" "$POWER_AUTOMATE_WEBHOOK_URL"
-
       - name: Gerar Insights Executivos com Gemini
         run: |
           docker run --rm \
@@ -75,7 +69,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
-          git add tratamento/pgd_designacoes_inss_2023_2026_sample.csv dashboard/insights_README.md dashboard/relatorios/
+          git add tratamento/pgd_designacoes_inss_2023_2026_sample.csv dashboard/insights_README.md dashboard/insights_historico_powerbi.csv dashboard/relatorios/
           
           if [ -n "$(git status --porcelain)" ]; then
             echo "Alterações detectadas. Criando commit..."
@@ -84,3 +78,9 @@ jobs:
           else 
             echo "Nenhuma alteração nos arquivos. Pulando commit."
           fi
+
+      - name: Disparar Atualização do Power BI via Power Automate
+        env:
+          POWER_AUTOMATE_WEBHOOK_URL: ${{ secrets.POWER_AUTOMATE_WEBHOOK_URL }}
+        run: |
+          curl -X POST -H "Content-Type: application/json" "$POWER_AUTOMATE_WEBHOOK_URL"
