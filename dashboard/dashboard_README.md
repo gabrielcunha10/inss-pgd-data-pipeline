@@ -1,7 +1,7 @@
 # Guia do Dashboard — Acompanhamento PGD / INSS
 
 > **Documentação Visual e Guia de Métricas do Painel**  
-> **Última Atualização:** 15/10/2026 às 01:36  
+> **Última Atualização:** 17/10/2026 às 23:03  
 > *Capturas de tela e documentação técnica atualizadas de acordo com o modelo publicado em produção.*
 
 Este documento apresenta a estrutura completa, os indicadores de negócio, as métricas e a documentação visual de cada página do relatório analítico do **Programa de Gestão e Desempenho (PGD)** do INSS no Power BI.
@@ -12,7 +12,7 @@ Este documento apresenta a estrutura completa, os indicadores de negócio, as m�
 
 ## Estrutura de Navegação e Páginas do Painel
 
-O dashboard foi projetado com uma barra lateral retrátil e moderna, dividindo a análise estratégica do PGD em **6 eixos temáticos**, além de páginas institucionais de apoio:
+O dashboard foi projetado com uma barra lateral retrátil e moderna, dividindo a análise estratégica do PGD em **7 eixos temáticos**, além de páginas institucionais de apoio:
 
 ```
 ├── Menu Inicial (Página de boas-vindas e acesso rápido)
@@ -22,6 +22,7 @@ O dashboard foi projetado com uma barra lateral retrátil e moderna, dividindo a
 ├── 4. Modalidades (Remoto, Semipresencial e Presencial)
 ├── 5. Lotações (Distribuição por Gerências Executivas, APS e Diretorias)
 ├── 6. Transparência & LGPD (Auditoria de vínculos por servidor anonimizado)
+├── 7. Insights & Diagnóstico IA (Diagnóstico executivo automatizado via LLM e KPIs MoM)
 └── Informações do Projeto (Arquitetura, glossário e governança)
 ```
 
@@ -134,6 +135,32 @@ Painel dedicado à auditoria cadastral e governança de dados, garantindo máxim
   * **Pseudonimização via HMAC-SHA256:** Matrículas originais são substituídas na origem por um hash irreversível de 8 dígitos com chave secreta, em estrito cumprimento à Lei nº 13.709/2018 (LGPD).
 * **Total de Designações por Servidor:** Identifica a regularidade histórica dos servidores mais ativos. O teto histórico verificado na base é de **12 designações em 34 meses** (indicando renovações trimestrais regulares, sem super-concentração anômala).
 * **Taxa de Designações / Mês:** Métrica de frequência mensal (`Total Designações / Meses Observados`). Permite auditar que taxas aparentemente elevadas em servidores recentes são causadas por amostras reduzidas (ex: 3 designações em 5 meses), evitando conclusões precipitadas de produtividade.
+
+---
+
+### 7. Página: SGP – Insights & Diagnóstico IA
+
+Painel executivo integrado que disponibiliza o diagnóstico analítico gerado de forma autônoma por Inteligência Artificial (Google Gemini) diretamente na interface do Power BI. A página interpreta as oscilações mensais (MoM), adesão ao teletrabalho, concentração funcional e matriz de riscos operacionais.
+
+![Insights & Diagnóstico IA](imagens/insights_ia_dashboard.png)
+
+#### Indicadores e Componentes Explicados:
+* **Filtro de Competência:** Seletor suspenso no cabeçalho para consultar qualquer competência mensal histórica (ex: `08/2026`).
+* **Timestamp de Atualização:** Indica a data e o horário exatos do processamento e geração do diagnóstico em produção.
+* **Servidores Ativos (KPI Card):** Total consolidado de servidores públicos federais com plano ativo formalizado na competência (ex: `17.585`).
+* **Variação Mensal MoM (KPI Card):** Taxa percentual de crescimento ou retração da força de trabalho pactuada em relação à competência imediatamente anterior (ex: `+0,23%`).
+* **Adesão ao Teletrabalho (KPI Card):** Percentual da força de trabalho alocada em modalidades não estritamente presenciais (soma de teletrabalho integral e regime semipresencial, ex: `52,9%`).
+* **Motor de Análise (Card Informativo):** Especificação técnica do modelo de inteligência artificial generativa utilizado na geração autônoma dos insights (ex: `Google Gemini Flash (3.8)`).
+* **Diagnóstico Executivo da Competência (Card Textual Principal):** Síntese contextualizada destacando a sustentação do efetivo, proporção entre trabalho presencial e remoto, e unidades organizacionais com maior tração de análise de direitos.
+* **Principais Movimentações MoM (Painel Lateral de Variações):**
+  * Efetivo em plano ativo e taxa MoM;
+  * Variação absoluta e relativa da adesão ao teletrabalho;
+  * Regime remoto integral como regime modal da categoria remota (45,9% do efetivo total);
+  * Contagem de servidores com status "Não Designado" e desligamentos do ciclo.
+* **Matriz de Alertas & Recomendações (Painel Estratégico):**
+  * **Alerta de Ociosidade/Repactuação:** Mapeamento de servidores não designados com potencial de repactuação imediata nas Centrais de Análise de Benefícios (CEAB1);
+  * **Recomendação Estratégica:** Equilíbrio da força de trabalho entre presencial e teletrabalho para cumprimento de prazos normativos e metas acordadas.
+* **Ação Direta — "Ver Relatório de Insights Completo (GitHub)":** Botão interativo com direcionamento para a documentação técnica detalhada no repositório GitHub.
 
 ---
 

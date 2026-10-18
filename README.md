@@ -91,8 +91,8 @@ flowchart TD
     end
 
     subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)"]
-        PRINTS["capturar_prints.py<br/>(Prints das 8 Telas do Dashboard Power BI)"]
-        TESTS_DOCS["test_documentacao_insights.py<br/>(11 Testes de QA)"]
+        PRINTS["capturar_prints.py<br/>(Prints das 9 Telas do Dashboard Power BI)"]
+        TESTS_DOCS["test_documentacao_insights.py<br/>(12 Testes de QA)"]
         DOCS["Publicação de Artefatos & Markdown<br/>(dashboard_README.md & imagens)"]
 
         PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PRINTS
@@ -140,7 +140,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 7. **Visualização Executiva e Disparo de Atualização (Power Automate & Power BI Service)**:
 
    - Disparo imediato de Webhook via requisição HTTP POST para o **Power Automate**, que aciona o gatilho de atualização assíncrona do modelo semântico no **Power BI Service** logo após a conclusão da carga no banco relacional.
-   - Painel executivo interativo composto por 8 telas analíticas conectadas nativamente ao banco relacional Neon.
+   - Painel executivo interativo composto por 9 telas analíticas conectadas nativamente ao banco relacional Neon.
 8. **Geração de Insights Executivos com IA (`gerar_insights.py`)**:
 
    - Processamento estatístico comparativo mês a mês (Month-over-Month - MoM) e diagnóstico dos 6 eixos de gestão.
@@ -159,11 +159,11 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 
 1. **Captura Automatizada das Telas do Dashboard (`capturar_prints.py`)**:
 
-   - Automação headless via **Playwright** que navega pelo relatório público do Power BI Service, estabiliza os seletores visuais e captura as 8 telas analíticas em alta resolução na pasta `dashboard/imagens/`.
+   - Automação headless via **Playwright** que navega pelo relatório público do Power BI Service, estabiliza os seletores visuais e captura as 9 telas analíticas em alta resolução na pasta `dashboard/imagens/`.
    - Mecanismo de auto-recuperação com validação de hash criptográfico SHA-256 e até 3 tentativas de retry, prevenindo telas duplicadas ou capturas incompletas.
 2. **Testes de Qualidade de Documentação & QA (`test_documentacao_insights.py`)**:
 
-   - Suíte isolada de 11 testes automatizados via `pytest` que verifica a integridade binária dos prints (cabeçalho mágico PNG, tamanho mínimo e unicidade visual por SHA-256).
+   - Suíte isolada de 12 testes automatizados via `pytest` que verifica a integridade binária dos prints (cabeçalho mágico PNG, tamanho mínimo e unicidade visual por SHA-256).
    - Validação da integridade de todos os links de imagens nos arquivos Markdown e consistência dos relatórios históricos arquivados em `dashboard/relatorios/`.
 3. **Orquestração de Documentação (GitHub Actions)**:
 
@@ -184,12 +184,12 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │       └── atualizar_documentacao_prints.yml      # Workflow 2: Automação Playwright, QA e publicação de prints
 ├── dashboard/
 │   ├── Dash_INSS_Acompanhamento_PGD.pbix          # Relatório Power BI conectado nativamente ao PostgreSQL Neon
-│   ├── capturar_prints.py                         # Automação Playwright para captura de prints das 8 telas
-│   ├── dashboard_README.md                        # Documentação detalhada das 8 telas analíticas e catálogo de KPIs
+│   ├── capturar_prints.py                         # Automação Playwright para captura de prints das 9 telas
+│   ├── dashboard_README.md                        # Documentação detalhada das 9 telas analíticas e catálogo de KPIs
 │   ├── insights_README.md                         # Relatório executivo de negócio e padrões temporais (versão vigente)
 │   ├── relatorios/                                # Histórico mensal dos relatórios de insights (projeto vivo)
 │   │   └── insights_AAAA_MM.md                    # Versões mensais arquivadas automaticamente a cada ciclo
-│   └── imagens/                                   # Recursos visuais, diagramas e capturas do painel (8 telas)
+│   └── imagens/                                   # Recursos visuais, diagramas e capturas do painel (9 telas)
 │       ├── arquitetura.svg                        # Diagrama vetorial da arquitetura da solução
 │       ├── arquitetura_pipeline_completa.png      # Diagrama visual consolidado dos workflows
 │       ├── menu_inicial.png                       # Prévia visual da tela inicial de navegação
@@ -198,14 +198,15 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │       ├── programas_dashboard.png                # Painel de análise por programas de gestão
 │       ├── linhas_trabalho_dashboard.png          # Painel de análise por linhas de trabalho
 │       ├── lotacoes_dashboard.png                 # Painel de análise por unidades de lotação
-│       ├── informacoes_projeto.png                # Painel de regras de negócio e governança
-│       └── lgpd_dashboard.png                     # Painel de privacidade e conformidade LGPD
+│       ├── lgpd_dashboard.png                     # Painel de privacidade e conformidade LGPD
+│       ├── insights_ia_dashboard.png              # Painel de insights e diagnóstico executivo por IA
+│       └── informacoes_projeto.png                # Painel de regras de negócio e governança
 ├── data/                                          # Armazenamento local dos CSVs brutos (não versionados)
 │   └── pgd_inss_*.csv                             # Arquivos mensais baixados da API CKAN do INSS
 ├── tests/                                         # Testes automatizados e base tratada de saída
 │   ├── pgd_designacoes_inss_2023_2026.parquet     # Base tratada consolidada após o ETL (não versionado)
 │   ├── test_pipeline.py                           # Suíte de 29 testes de engenharia, ingestão, tipagem e regras de negócio
-│   └── test_documentacao_insights.py              # Suíte de 11 testes de QA de documentação, relatórios e prints
+│   └── test_documentacao_insights.py              # Suíte de 12 testes de QA de documentação, relatórios e prints
 ├── tratamento/
 │   ├── download_sgp.py                            # Ingestor automatizado via API CKAN pública do INSS
 │   ├── etl_sgp_inss.py                            # Transformação de dados, pontes temporais e anonimização LGPD
@@ -286,9 +287,9 @@ Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelida
    - **Checagem de Domínios Restritos:** Assegura que colunas categóricas (`status`, `modalidade`, `flag_pgd`) contenham apenas os domínios normatizados.
    - **Unicidade e Deduplicação:** Analisa chaves compostas (`id_usuario` + `competencia` + `id_designacao`) para barrar duplicações de registros transacionais.
    - **Auditoria de Máscara LGPD & Carga Transacional:** Confere via *Regex* se todos os usuários da base foram devidamente pseudonimizados no padrão `USR-XXXXXXXX` e testa o mapeamento de tipos SQL e a execução transacional do `load_neon.py`.
-2. **Testes de QA de Documentação e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) — 11 testes):**
+2. **Testes de QA de Documentação e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) — 12 testes):**
 
-   - **Integridade Binária dos Prints:** Valida cabeçalho mágico PNG (`\x89PNG\r\n\x1a\n`), tamanho mínimo e resolução das 8 telas capturadas.
+   - **Integridade Binária dos Prints:** Valida cabeçalho mágico PNG (`\x89PNG\r\n\x1a\n`), tamanho mínimo e resolução das 9 telas capturadas.
    - **Unicidade Visual por Hash SHA-256:** Assegura que cada tela capturada possui hash criptográfico único, prevenindo falhas de navegação e prints duplicados.
    - **Links e Referências de Imagens:** Percorre todos os arquivos Markdown (`dashboard_README.md`, `insights_README.md` e relatórios arquivados) certificando que todas as imagens apontadas existem no disco.
    - **Motor de Insights e Arquivamento:** Testa o cálculo matemático Month-over-Month (MoM), extração de competências e o versionamento histórico de relatórios em `dashboard/relatorios/`.
@@ -395,7 +396,7 @@ python tratamento/load_neon.py
 # 5. Geração de Insights (Opcional): arquiva a versão anterior e gera relatório executivo
 python tratamento/gerar_insights.py
 
-# 6. Captura de Prints (Opcional): executa o Playwright headless para capturar as 8 telas
+# 6. Captura de Prints (Opcional): executa o Playwright headless para capturar as 9 telas
 python dashboard/capturar_prints.py
 ```
 
@@ -429,7 +430,7 @@ A automação da solução é estruturada em dois workflows independentes e agen
 - **Agendamento:** Todo dia 01 de cada mês às 07:30 BRT (`30 10 1 * *` — intervalo de +1h30 para conclusão do refresh no Power BI Service) ou sob demanda.
 - **Ciclo de Execução:**
   1. Setup do ambiente Python 3.12 e instalação do Chromium headless via Playwright;
-  2. Execução de `dashboard/capturar_prints.py` (captura automatizada das 8 telas do relatório online);
+  2. Execução de `dashboard/capturar_prints.py` (captura automatizada das 9 telas do relatório online);
   3. Execução da suíte de QA via `pytest tests/test_documentacao_insights.py` (validação de hash SHA-256 e integridade de links);
   4. Commit automatizado dos novos prints na pasta `dashboard/imagens/`, mantendo a documentação viva e auditável.
 

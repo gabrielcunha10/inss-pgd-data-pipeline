@@ -199,7 +199,7 @@
     <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Visualização:</text>
     <text x="67" y="120" text-anchor="middle" font-size="11" font-weight="800" fill="#a16207">Power BI</text>
     <text x="67" y="136" text-anchor="middle" font-size="9" font-weight="500" fill="#713f12">Dashboard Web</text>
-    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#ca8a04">8 Telas Analíticas</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#ca8a04">9 Telas Analíticas</text>
   </g>
 
   <!-- ================= CONNECTING BRIDGE ================= -->
@@ -229,7 +229,7 @@
     </g>
     <text x="95" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Prints do Dashboard:</text>
     <text x="95" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">capturar_prints.py</text>
-    <text x="95" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">8 Telas do Power BI</text>
+    <text x="95" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">9 Telas do Power BI</text>
     <text x="95" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">Retry com Hash SHA-256</text>
   </g>
 
@@ -263,7 +263,7 @@
     </g>
     <text x="110" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Testes QA Documentação:</text>
     <text x="110" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">test_documentacao_insights.py</text>
-    <text x="110" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">8 Testes Pytest Isolados</text>
+    <text x="110" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">12 Testes Pytest Isolados</text>
     <text x="110" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#6b21a8">Unicidade SHA-256 &amp; Links</text>
   </g>
 
@@ -300,7 +300,7 @@
     </g>
     <text x="130" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">Publicação dos Artefatos:</text>
     <text x="130" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#047857">READMEs Atualizados</text>
-    <text x="130" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• dashboard_README.md (8 Telas)</text>
+    <text x="130" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• dashboard_README.md (9 Telas)</text>
     <text x="130" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• insights_README.md (Relatório IA)</text>
   </g>
 
