@@ -145,9 +145,9 @@ def test_funcao_salvar_relatorio(tmp_path):
 
 
 def test_configuracao_paginas_prints():
-    assert len(PAGINAS) == 8, f"Esperava 8 páginas cadastradas no dashboard, mas foram encontradas {len(PAGINAS)}."
+    assert len(PAGINAS) == 9, f"Esperava 9 páginas cadastradas no dashboard, mas foram encontradas {len(PAGINAS)}."
     ordens = [p["ordem"] for p in PAGINAS]
-    assert ordens == list(range(1, 9)), f"A numeração de ordem das páginas deve ser estritamente de 1 a 8: {ordens}"
+    assert ordens == list(range(1, 10)), f"A numeração de ordem das páginas deve ser estritamente de 1 a 9: {ordens}"
 
     arquivos = [p["arquivo"] for p in PAGINAS]
     assert len(arquivos) == len(set(arquivos)), "Existem nomes de arquivo duplicados no mapeamento de páginas."
