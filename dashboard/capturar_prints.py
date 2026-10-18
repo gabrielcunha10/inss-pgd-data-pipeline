@@ -28,7 +28,8 @@ PAGINAS = [
     {"ordem": 5, "nome": "Modalidades", "arquivo": "modalidades_dashboard.png"},
     {"ordem": 6, "nome": "Lotações", "arquivo": "lotacoes_dashboard.png"},
     {"ordem": 7, "nome": "Transparência & LGPD", "arquivo": "lgpd_dashboard.png"},
-    {"ordem": 8, "nome": "Informações do Projeto", "arquivo": "informacoes_projeto.png"},
+    {"ordem": 8, "nome": "Insights & Diagnóstico IA", "arquivo": "insights_ia_dashboard.png"},
+    {"ordem": 9, "nome": "Informações do Projeto", "arquivo": "informacoes_projeto.png"},
 ]
 
 
@@ -48,48 +49,50 @@ def garantir_pagina_inicial(page):
         logging.warning(f"Tentativa de validação da página inicial: {e}")
 
 
-def avancar_proxima_pagina(page, idx: int) -> bool:
-    try:
-        next_btn = page.locator(
-            "button[aria-label='Next Page'], "
-            "button[aria-label='Próxima página'], "
-            "button[aria-label='Página seguinte']"
-        ).first
-        if next_btn.is_visible(timeout=2000) and not next_btn.is_disabled():
-            next_btn.click()
-            return True
-    except Exception as e:
-        logging.warning(f"Clique na seta falhou: {e}")
-
-    try:
-        logging.info("Executando fallback: selecionando próxima página pelo menu...")
-        indicador = page.locator("a.middleText")
-        if indicador.is_visible(timeout=2000):
-            indicador.click()
-            page.wait_for_timeout(1000)
-            nome_alvo = PAGINAS[idx]["nome"].split()[0]
-            page.locator(f"button.sectionItem:has-text('{nome_alvo}')").click()
-            return True
-    except Exception as e:
-        logging.error(f"Fallback pelo menu falhou: {e}")
-
-    return False
-
-
-def navegar_para_pagina_especifica(page, nome_pagina: str) -> bool:
+def navegar_para_pagina(page, nome_pagina: str) -> bool:
+    """Navega diretamente para a página desejada através do menu seletor do Power BI."""
     try:
         indicador = page.locator("a.middleText")
         if indicador.is_visible(timeout=2000):
             indicador.click()
             page.wait_for_timeout(800)
-            palavra_chave = nome_pagina.split()[0]
-            item = page.locator("button.sectionItem", has_text=palavra_chave).first
+
+            # Mapeamento do termo de busca no menu
+            nome_lower = nome_pagina.lower()
+            if "insights" in nome_lower or "diagn" in nome_lower:
+                palavra = "Insights"
+            elif "informa" in nome_lower or "projeto" in nome_lower:
+                palavra = "Informa"
+            elif "lgpd" in nome_lower or "transpar" in nome_lower:
+                palavra = "Transpar"
+            elif "lota" in nome_lower:
+                palavra = "Lota"
+            elif "modal" in nome_lower:
+                palavra = "Modal"
+            elif "linhas" in nome_lower:
+                palavra = "Linhas"
+            elif "programas" in nome_lower:
+                palavra = "Programas"
+            elif "vis" in nome_lower:
+                palavra = "Vis"
+            else:
+                palavra = "Menu"
+
+            item = page.locator("button.sectionItem", has_text=palavra).first
             if item.is_visible(timeout=2000):
                 item.click()
-                page.wait_for_timeout(3000)
+                page.wait_for_timeout(3500)
                 return True
     except Exception as e:
-        logging.warning(f"Tentativa de navegacao direta para '{nome_pagina}' falhou: {e}")
+        logging.warning(f"Navegação para '{nome_pagina}' falhou: {e}")
+    return False
+
+
+def avancar_proxima_pagina(page, idx: int) -> bool:
+    """Avança para a página de índice especificado (1-based no array PAGINAS)."""
+    if idx < len(PAGINAS):
+        proxima = PAGINAS[idx]["nome"]
+        return navegar_para_pagina(page, proxima)
     return False
 
 
@@ -170,7 +173,7 @@ def capturar_todas_as_paginas():
                         f"[{idx}/{total}] Tentativa {tentativa}/3: Print idêntico ao da página anterior. "
                         f"Acionando recuperação direta para '{nome}'..."
                     )
-                    navegou = navegar_para_pagina_especifica(page, nome)
+                    navegou = navegar_para_pagina(page, nome)
                     if not navegou:
                         avancar_proxima_pagina(page, idx - 1)
                     page.wait_for_timeout(3000)
