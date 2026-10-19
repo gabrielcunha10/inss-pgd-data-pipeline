@@ -29,7 +29,7 @@ jobs:
           pip install playwright
           playwright install --with-deps chromium
 
-      - name: Capturar Prints em Alta Resolução (8 Páginas)
+      - name: Capturar Prints em Alta Resolução (9 Páginas)
         run: |
           python dashboard/capturar_prints.py
 
