@@ -51,3 +51,12 @@ jobs:
           else 
             echo "Nenhuma alteração nos prints ou documentação. Pulando commit."
           fi
+
+      - name: Publicar Log do Pipeline como Artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-log-prints-${{ github.run_id }}
+          path: logs/pipeline.log
+          retention-days: 90
+          if-no-files-found: warn
