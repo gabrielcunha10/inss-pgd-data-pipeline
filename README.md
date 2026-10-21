@@ -13,7 +13,7 @@
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
-Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PGD)** aplicado ao quadro de atendimento do INSS (ACSINSS), cobrindo de **outubro/2023 em diante** (mais de 500 mil registros consolidados).
+Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PGD)** aplicado ao quadro de atendimento do INSS (ACSINSS), cobrindo de **outubro/2023 em diante** (mais de 650 mil registros consolidados).
 
 ---
 
