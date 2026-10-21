@@ -29,13 +29,9 @@ jobs:
           pip install playwright
           playwright install --with-deps chromium
 
-      - name: Capturar Prints em Alta Resolução (9 Páginas)
+      - name: Executar Fluxo de Captura e Validação de Prints (Prefect)
         run: |
-          python dashboard/capturar_prints.py
-
-      - name: Executar Testes de Documentação e Insights (Pytest)
-        run: |
-          pytest tests/test_documentacao_insights.py
+          python dashboard/prints_flow.py
 
       - name: Commitar e Subir Imagens e Documentação
         run: |
