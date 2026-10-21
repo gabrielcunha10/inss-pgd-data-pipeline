@@ -9,8 +9,18 @@ from dotenv import load_dotenv
 import numpy as np
 import pandas as pd
 
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+LOGS_DIR = PROJECT_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+LOG_FILE = LOGS_DIR / "pipeline.log"
+
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - [%(filename)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+    ],
 )
 
 load_dotenv()
@@ -21,8 +31,6 @@ if not _raw_hmac_key:
         "Defina-a no arquivo .env ou nos Secrets do GitHub Actions."
     )
 HMAC_SECRET_KEY = _raw_hmac_key.encode("utf-8")
-
-PROJECT_DIR = Path(__file__).resolve().parent.parent
 DATA_DIR = PROJECT_DIR / "data"
 OUTPUT_CSV = PROJECT_DIR / "tratamento" / "pgd_designacoes_inss_2023_2026.csv"
 OUTPUT_SAMPLE = (

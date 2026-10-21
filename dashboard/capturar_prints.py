@@ -10,11 +10,20 @@ try:
 except ImportError:
     sync_playwright = None
 
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+LOGS_DIR = PROJECT_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+LOG_FILE = LOGS_DIR / "pipeline.log"
+
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - [%(filename)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+    ],
 )
 
-PROJECT_DIR = Path(__file__).resolve().parent.parent
 IMAGENS_DIR = PROJECT_DIR / "dashboard" / "imagens"
 POWERBI_URL = (
     "https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9"

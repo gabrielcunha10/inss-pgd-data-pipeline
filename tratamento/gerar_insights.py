@@ -9,11 +9,20 @@ import pandas as pd
 
 load_dotenv()
 
+PROJECT_DIR = Path(__file__).resolve().parent.parent
+LOGS_DIR = PROJECT_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+LOG_FILE = LOGS_DIR / "pipeline.log"
+
 logging.basicConfig(
-    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - [%(filename)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+    ],
 )
 
-PROJECT_DIR = Path(__file__).resolve().parent.parent
 PARQUET_PATH = PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet"
 OUTPUT_MARKDOWN = PROJECT_DIR / "dashboard" / "insights_README.md"
 OUTPUT_CSV_POWERBI = PROJECT_DIR / "dashboard" / "insights_historico_powerbi.csv"
