@@ -451,9 +451,10 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado n
 - **22,20 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
 - **15,80 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
 - **29 Programas Monitorados:** Diversidade de programas e modalidades de gestão cadastrados no PGD.
+- **Evolução de Servidores Ativos:** Acompanhamento temporal da recomposição da força de trabalho ativa e estabilidade operacional.
+- **Divisão Teletrabalho vs. Presencial:** Monitoramento de 23,31 mil designações em teletrabalho (11,28 mil servidores) e 21,31 mil designações presenciais (12,17 mil servidores).
 - **Retenção Temporal (Dias):** Tempo médio de permanência das designações no sistema por programa.
 - **Detalhamento Anonimizado (LGPD):** Ranking por servidor identificado via código seguro criptografado por hash (`USR-XXXXXXXX`).
-- **Sazonalidade e Curva de Status:** Identificação de picos operacionais (ex: março de 2025) e repactuação de teletrabalho.
 
 Para mais detalhes sobre a modelagem e os achados de negócio, consulte a documentação específica:
 
