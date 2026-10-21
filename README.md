@@ -57,7 +57,7 @@ Para responder com transparência a perguntas como onde os servidores estão alo
 - **Descontinuidade temporal e nulos:** lacunas cadastrais causadas por falhas de exportação e migrações de sistemas, tratadas aqui por **pontes temporais determinísticas** entre competências adjacentes;
 - **Privacidade (LGPD):** mesmo sendo dados abertos, a reutilização de dados pessoais exige finalidade e cuidado. As matrículas são **pseudonimizadas** por hash com chave secreta (**HMAC-SHA256**) ainda na etapa de ETL, antes da carga no banco em nuvem, o que reduz o risco de identificação direta.
 
-Projetei esta solução para conectar a complexidade real da gestão pública à engenharia de dados moderna: automação via GitHub Actions, PostgreSQL serverless no Neon Tech, testes com Pytest e monitoramento no Power BI.
+Projetei esta solução para conectar a complexidade real da gestão pública à engenharia de dados moderna: orquestração resiliente com Prefect, automação via GitHub Actions, PostgreSQL serverless no Neon Tech, testes com Pytest e monitoramento no Power BI.
 
 ---
 
@@ -72,6 +72,7 @@ Projetei esta solução para conectar a complexidade real da gestão pública à
 flowchart TD
     subgraph WF1 ["Workflow 1: Pipeline Principal (database_sync.yml — Mensalmente, todo dia 01 às 06:00 BRT)"]
         API["Portal de Dados Abertos INSS<br/>(API CKAN Pública)"]
+        PREFECT_P1["pipeline_flow.py<br/>(Orquestrador Prefect 3)"]
         SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
         SCRIPT_ETL["etl_sgp_inss.py<br/>(Tratamento, Pontes & Parquet)"]
         LGPD["Anonimização LGPD<br/>(HMAC-SHA256)"]
@@ -83,7 +84,8 @@ flowchart TD
         POWER_AUTO["Power Automate<br/>(Gatilho HTTP)"]
         PBI["Power BI Service<br/>(Painel Executivo)"]
 
-        API --> SCRIPT_IN --> SCRIPT_ETL --> LGPD --> TESTS_DATA
+        API --> PREFECT_P1
+        PREFECT_P1 --> SCRIPT_IN --> SCRIPT_ETL --> LGPD --> TESTS_DATA
         TESTS_DATA -->|"Aprovação"| SCRIPT_LOAD --> NEON
         NEON --> INSIGHTS
         NEON -->|"Conexão Nativa SQL"| PBI
@@ -91,12 +93,13 @@ flowchart TD
     end
 
     subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)"]
-        PRINTS["capturar_prints.py<br/>(Prints das 9 Telas do Dashboard Power BI)"]
-        TESTS_DOCS["test_documentacao_insights.py<br/>(12 Testes de QA)"]
+        PREFECT_P2["prints_flow.py<br/>(Orquestrador Prefect 3)"]
+        PRINTS["capturar_prints.py<br/>(Playwright Headless: 9 Telas)"]
+        TESTS_DOCS["test_documentacao_insights.py<br/>(12 Testes de Integridade Visual)"]
         DOCS["Publicação de Artefatos & Markdown<br/>(dashboard_README.md & imagens)"]
 
-        PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PRINTS
-        PRINTS --> TESTS_DOCS
+        PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PREFECT_P2
+        PREFECT_P2 --> PRINTS --> TESTS_DOCS
         TESTS_DOCS -->|"Aprovação"| DOCS
     end
 ```
@@ -165,9 +168,10 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 
    - Suíte isolada de 12 testes automatizados via `pytest` que verifica a integridade binária dos prints (cabeçalho mágico PNG, tamanho mínimo e unicidade visual por SHA-256).
    - Validação da integridade de todos os links de imagens nos arquivos Markdown e consistência dos relatórios históricos arquivados em `dashboard/relatorios/`.
-3. **Orquestração de Documentação (GitHub Actions)**:
+3. **Orquestração de Governança Visual com Prefect (`prints_flow.py`)**:
 
-   - Execução isolada em container Ubuntu com setup de navegadores Playwright.
+   - Orquestração das tarefas de captura visual (`Playwright`) e verificação de integridade (`Pytest`) sob um fluxo unificado do **Prefect 3**.
+   - Políticas automáticas de *retry* em caso de latência na renderização dos *iframes* do Power BI e bloqueio do *commit* no Git se qualquer print falhar nos testes de qualidade.
    - Desacoplamento arquitetural: eventuais instabilidades na renderização visual do Power BI jamais travam a sincronização da base de dados no Neon nem interrompem o pipeline principal.
 4. **Publicação Contínua de Artefatos no Git (`dashboard_README.md`, `README.md` e `dashboard/relatorios/`)**:
 
@@ -484,7 +488,7 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 | **Engenharia de Banco de Dados**      | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB)                          |
 | **Inteligência Artificial & GenAI**  | Google Gemini API (google-genai SDK), Script Automatizado de Insights                |
 | **Ambiente & Containerização**      | Docker, Docker Compose                                                               |
-| **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                                                 |
+| **Orquestração & CI/CD**            | Prefect 3, GitHub Actions, Git, Cron Scheduling                                      |
 | **Integração & Webhooks**           | cURL, Microsoft Power Automate                                                       |
 | **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX                                            |
 | **Governança & Qualidade**           | Pytest, Conformidade LGPD (HMAC, Hashlib), Type Casting Estrito, Tratamento de Nulos |
