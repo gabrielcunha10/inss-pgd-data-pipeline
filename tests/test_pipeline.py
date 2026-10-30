@@ -25,6 +25,11 @@ from tratamento.etl_sgp_inss import (
     limpar_e_inferir_status,
     normalizar_id_lotacao,
     preencher_por_ponte,
+    ler_csv,
+    carregar_e_consolidar_brutos,
+    anonimizar_e_tipar,
+    salvar_artefatos,
+    main as etl_main,
 )
 from tratamento.load_neon import (
     construir_dtype_mapping,
@@ -532,5 +537,60 @@ def test_carga_execucao_transacional_mock(monkeypatch, tmp_path):
     assert to_sql_args[0] == "tb_pgd_inss"
     assert to_sql_kwargs["chunksize"] == 10000
     assert to_sql_kwargs["if_exists"] == "append"
+
+
+def test_etl_ler_csv_encodings(tmp_path):
+    f_utf8 = tmp_path / "teste_utf8.csv"
+    f_utf8.write_text("col1;col2\nvalor1;Atenção", encoding="utf-8")
+    df_u = ler_csv(f_utf8)
+    assert len(df_u) == 1
+
+    f_latin = tmp_path / "teste_latin1.csv"
+    f_latin.write_bytes("col1;col2\nvalor1;Atenção".encode("latin1"))
+    df_l = ler_csv(f_latin)
+    assert len(df_l) == 1
+
+
+def test_etl_carregar_e_consolidar_brutos(tmp_path):
+    pasta_data = tmp_path / "data"
+    pasta_data.mkdir(parents=True, exist_ok=True)
+    f1 = pasta_data / "pgd_inss_202501.csv"
+    f1.write_text("Código UO;Lotação;Modalidade\n1234;GEX SP;Integral", encoding="utf-8")
+    f2 = pasta_data / "pgd_inss_202502.csv"
+    f2.write_text("Código UO;Lotação;Modalidade\n5678;GEX RJ;Parcial", encoding="utf-8")
+
+    df_total = carregar_e_consolidar_brutos(pasta_data)
+    assert len(df_total) == 2
+    assert "competencia" in df_total.columns
+    assert set(df_total["modalidade"]) == {"Remoto", "Semipresencial"}
+
+
+def test_etl_salvar_artefatos(tmp_path, monkeypatch):
+    df_mini = pd.DataFrame({
+        "competencia": [pd.Timestamp("2025-01-01")],
+        "id_usuario": ["USR-12345678"],
+        "id_designacao": [101],
+        "status": ["Designado"],
+    })
+    p_parquet = tmp_path / "out.parquet"
+    p_csv = tmp_path / "out.csv"
+    p_sample = tmp_path / "out_sample.csv"
+    monkeypatch.setattr("tratamento.etl_sgp_inss.OUTPUT_PARQUET", p_parquet)
+    monkeypatch.setattr("tratamento.etl_sgp_inss.OUTPUT_CSV", p_csv)
+    monkeypatch.setattr("tratamento.etl_sgp_inss.OUTPUT_SAMPLE", p_sample)
+
+    salvar_artefatos(df_mini)
+    assert p_parquet.exists()
+    assert p_csv.exists()
+    assert p_sample.exists()
+
+
+def test_etl_main_mock(monkeypatch):
+    mock_df = MagicMock()
+    mock_df.pipe.return_value = mock_df
+    monkeypatch.setattr("tratamento.etl_sgp_inss.carregar_e_consolidar_brutos", lambda d: mock_df)
+    monkeypatch.setattr("tratamento.etl_sgp_inss.salvar_artefatos", MagicMock())
+    etl_main()
+
 
 
