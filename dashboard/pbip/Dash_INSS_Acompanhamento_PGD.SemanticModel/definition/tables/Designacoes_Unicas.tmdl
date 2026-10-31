@@ -1,0 +1,138 @@
+table Designacoes_Unicas
+	lineageTag: c2590aae-f4fe-4279-b5b5-1bdfec2c2e24
+
+	measure 'Qtd Status Linha' = ```
+			
+			VAR _MesTemDados = 
+			    CALCULATE(
+			        COUNTROWS('public tb_pgd_inss'), 
+			        ALL('public tb_pgd_inss'[status])
+			    )
+			VAR _QtdStatus = COUNTROWS('public tb_pgd_inss')
+			
+			RETURN
+			    IF(
+			        NOT(ISBLANK(_MesTemDados)),
+			        COALESCE(_QtdStatus, 0)
+			    )
+			```
+		formatString: 0
+		lineageTag: 7b3dadcc-04b0-4c1b-b3aa-5f5039eb6b85
+
+	measure 'Designacoes Por Status' = ```
+			
+			VAR _MesTemDados = 
+			    CALCULATE(
+			        COUNTROWS('public tb_pgd_inss'), 
+			        ALL('public tb_pgd_inss'[status])
+			    )
+			VAR _StatusAtual = SELECTEDVALUE('public tb_pgd_inss'[status])
+			VAR _Qtd = 
+			    SWITCH(
+			        _StatusAtual,
+			        "Desligado", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Desligado"),
+			        "Ativo", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Ativo"),
+			        "Concluído", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Concluído"),
+			        "Cancelado", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Cancelado"),
+			        COUNTROWS('public tb_pgd_inss')
+			    )
+			RETURN
+			    IF(
+			        NOT(ISBLANK(_MesTemDados)), 
+			        COALESCE(_Qtd, 0)
+			    )
+			```
+		formatString: 0
+		lineageTag: a3c3a01e-020c-4780-a0f6-5e5ef35c178a
+
+	column 'Data Fim' =
+			
+			CALCULATE(
+			    MAX('public tb_pgd_inss'[dt_fim_designacao]),
+			    FILTER(
+			        'public tb_pgd_inss',
+			        'public tb_pgd_inss'[id_designacao]
+			            = Designacoes_Unicas[id_designacao]
+			    )
+			)
+		formatString: General Date
+		lineageTag: 4d03fc06-5e5e-4367-90dc-0ada13e3e2f8
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 3804eea1-8a65-47b7-830a-6f5349a559a4
+			defaultHierarchy: LocalDateTable_b49bec38-849f-4b7e-9bdc-9149b94f0095.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data Início' =
+			
+			CALCULATE(
+			    MIN('public tb_pgd_inss'[dt_inicio_designacao]),
+			    FILTER(
+			        'public tb_pgd_inss',
+			        'public tb_pgd_inss'[id_designacao]
+			            = Designacoes_Unicas[id_designacao]
+			    )
+			)
+		formatString: General Date
+		lineageTag: 6221c05e-8554-4f21-b57a-1b14b272d68a
+		summarizeBy: none
+
+		variation Variation
+			isDefault
+			relationship: 65e3e52d-2ea2-4f47-885b-86891def9902
+			defaultHierarchy: LocalDateTable_1fc3bb5a-c8f1-4035-b881-320f86d65afd.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tempo de Designação' =
+			
+			IF(
+			    ISBLANK(Designacoes_Unicas[Data Início]),
+			    BLANK(),
+			    DATEDIFF(
+			        Designacoes_Unicas[Data Início],
+			        COALESCE(
+			            Designacoes_Unicas[Data Fim],
+			            DATE(2026,1,31)
+			        ),
+			        DAY
+			    )
+			)
+		formatString: 0
+		lineageTag: 5a4c1b3c-bba2-44aa-960e-5d98289c1445
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_designacao
+		formatString: 0
+		lineageTag: ea412bd6-4834-4c5c-8b1e-f8959a7c3f83
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: public tb_pgd_inss[id_designacao]
+
+		annotation SummarizationSetBy = Automatic
+
+	column sigla_programa
+		lineageTag: 54b5863c-e9ae-443d-ac2a-07d4f2aec8ce
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: public tb_pgd_inss[sigla_programa]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Designacoes_Unicas = calculated
+		mode: import
+		source =
+				
+				SUMMARIZE(
+				    'public tb_pgd_inss',
+				    'public tb_pgd_inss'[id_designacao],
+				    'public tb_pgd_inss'[sigla_programa]
+				)
+
+	annotation PBI_Id = 7abdbc30a87e4ce884b99e538a2e8668
+

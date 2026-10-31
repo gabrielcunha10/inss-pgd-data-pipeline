@@ -1,0 +1,168 @@
+table insights_historico_powerbi
+	lineageTag: 5366961c-fd58-4e5f-972a-00cb4e09c568
+
+	column competencia
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 6b8ea4cc-698c-4dae-9ac6-6e3081fd2db7
+		summarizeBy: none
+		sourceColumn: competencia
+
+		variation Variation
+			isDefault
+			relationship: 87ae5a46-4099-4b0b-a717-33eba543289b
+			defaultHierarchy: LocalDateTable_ef0c5e8c-dd64-45b5-93e4-0d43c5be9224.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column competencia_mes_ano
+		dataType: dateTime
+		formatString: MM/yyyy
+		lineageTag: 2d5c1c50-2943-4642-b1dc-1d91bbfa3847
+		summarizeBy: none
+		sourceColumn: competencia_mes_ano
+		sortByColumn: competencia
+
+		variation Variation
+			isDefault
+			relationship: e556e21a-50e3-41cf-9f9c-a9c05e428a41
+			defaultHierarchy: LocalDateTable_a89fac74-1c86-4cfc-9996-ca5c8705f556.'Hierarquia de datas'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isCustom":true}
+
+	column servidores_plano_ativo
+		dataType: int64
+		formatString: 0
+		lineageTag: d9cf0530-5a02-4ac0-aa4f-23cd4ae6cf47
+		summarizeBy: sum
+		sourceColumn: servidores_plano_ativo
+
+		annotation SummarizationSetBy = Automatic
+
+	column servidores_plano_ativo_fmt
+		dataType: int64
+		formatString: 0
+		lineageTag: f2830777-7988-400f-9796-f3437d7b2d9d
+		summarizeBy: sum
+		sourceColumn: servidores_plano_ativo_fmt
+
+		annotation SummarizationSetBy = Automatic
+
+	column variacao_mensal_mom
+		dataType: int64
+		formatString: 0
+		lineageTag: 658407f3-8310-4f4b-b260-576ef8d7f1a3
+		summarizeBy: sum
+		sourceColumn: variacao_mensal_mom
+
+		annotation SummarizationSetBy = Automatic
+
+	column variacao_mensal_mom_fmt
+		dataType: double
+		lineageTag: cc6b4c69-d85f-429e-9b52-e648e312f7a8
+		summarizeBy: sum
+		sourceColumn: variacao_mensal_mom_fmt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column adesao_teletrabalho_pct
+		dataType: int64
+		formatString: 0
+		lineageTag: 53510935-0da9-44e2-95e5-df4eb56ff3bd
+		summarizeBy: sum
+		sourceColumn: adesao_teletrabalho_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column adesao_teletrabalho_fmt
+		dataType: double
+		lineageTag: 1b35a4eb-c240-401a-a196-11d2da049923
+		summarizeBy: sum
+		sourceColumn: adesao_teletrabalho_fmt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column adesao_remoto_pct
+		dataType: int64
+		formatString: 0
+		lineageTag: 730c069a-dc6d-4d8e-9ac8-79098bc20bed
+		summarizeBy: sum
+		sourceColumn: adesao_remoto_pct
+
+		annotation SummarizationSetBy = Automatic
+
+	column adesao_remoto_fmt
+		dataType: double
+		lineageTag: 20515ac6-0839-485f-a70d-220a49cdedbb
+		summarizeBy: sum
+		sourceColumn: adesao_remoto_fmt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column motor_analise_ia
+		dataType: string
+		lineageTag: 98324355-c795-43c1-9d56-7ae5034556d0
+		summarizeBy: none
+		sourceColumn: motor_analise_ia
+
+		annotation SummarizationSetBy = Automatic
+
+	column diagnostico_executivo
+		dataType: string
+		lineageTag: fccdcc78-1c88-4bbb-96e3-6aefeeb3e969
+		summarizeBy: none
+		sourceColumn: diagnostico_executivo
+
+		annotation SummarizationSetBy = Automatic
+
+	column principais_movimentacoes_mom
+		dataType: string
+		lineageTag: 17009d34-768b-4d92-8e64-7b6d5e39354e
+		summarizeBy: none
+		sourceColumn: principais_movimentacoes_mom
+
+		annotation SummarizationSetBy = Automatic
+
+	column matriz_alertas_recomendacoes
+		dataType: string
+		lineageTag: b940d312-1b0b-4c58-8038-c2048daed54e
+		summarizeBy: none
+		sourceColumn: matriz_alertas_recomendacoes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Competencia_Exibicao = "Competência: " & FORMAT(insights_historico_powerbi[competencia], "mm/yyyy")
+		lineageTag: 9744bf07-1ee5-451b-b56e-49bff1c3439a
+		summarizeBy: none
+		sortByColumn: competencia
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	partition insights_historico_powerbi = m
+		mode: import
+		source =
+				let
+				    Fonte = Csv.Document(Web.Contents("https://raw.githubusercontent.com/gabrielcunha10/inss-pgd-data-pipeline/main/dashboard/insights_historico_powerbi.csv"),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"competencia", type date}, {"competencia_mes_ano", type date}, {"servidores_plano_ativo", Int64.Type}, {"servidores_plano_ativo_fmt", Int64.Type}, {"variacao_mensal_mom", Int64.Type}, {"variacao_mensal_mom_fmt", Percentage.Type}, {"adesao_teletrabalho_pct", Int64.Type}, {"adesao_teletrabalho_fmt", Percentage.Type}, {"adesao_remoto_pct", Int64.Type}, {"adesao_remoto_fmt", Percentage.Type}, {"motor_analise_ia", type text}, {"diagnostico_executivo", type text}, {"principais_movimentacoes_mom", type text}, {"matriz_alertas_recomendacoes", type text}})
+				in
+				    #"Tipo Alterado"
+
+	annotation PBI_ResultType = Table
+

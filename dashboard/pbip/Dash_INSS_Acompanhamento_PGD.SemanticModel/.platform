@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "Dash_INSS_Acompanhamento_PGD"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "21fd104f-58d9-480d-97ea-92035c8b2c56"
+  }
+}

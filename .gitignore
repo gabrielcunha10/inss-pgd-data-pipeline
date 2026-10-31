@@ -224,3 +224,9 @@ tests/*.parquet
 
 # CSV total limpo (gerado pelo ETL, apenas local)
 tratamento/pgd_designacoes_inss_2023_2026.csv
+
+# Power BI Project (PBIP) — ignora caches locais e configurações de usuário
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
+

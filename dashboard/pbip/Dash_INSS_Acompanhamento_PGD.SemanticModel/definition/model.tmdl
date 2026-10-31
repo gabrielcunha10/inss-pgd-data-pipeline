@@ -1,0 +1,32 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["CaminhoAutomatico","public tb_pgd_inss","_Medidas","_Medidas (2)","insights_historico_powerbi"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DateTableTemplate_a8c6b438-2145-477f-a35e-043bf7d9dead
+ref table Designacoes_Unicas
+ref table LocalDateTable_b49bec38-849f-4b7e-9bdc-9149b94f0095
+ref table LocalDateTable_1fc3bb5a-c8f1-4035-b881-320f86d65afd
+ref table '_Medidas (2)'
+ref table 'public tb_pgd_inss'
+ref table LocalDateTable_d02ee100-2402-423d-a99a-9bc01fc87423
+ref table LocalDateTable_92401043-d257-4411-8acd-1c16cfba3e34
+ref table LocalDateTable_5623ca4c-5e69-4085-9cef-a62460ad174a
+ref table LocalDateTable_a99bdc61-a0a8-4d41-98d6-da00488b72b1
+ref table insights_historico_powerbi
+ref table LocalDateTable_ef0c5e8c-dd64-45b5-93e4-0d43c5be9224
+ref table LocalDateTable_a89fac74-1c86-4cfc-9996-ca5c8705f556
+
+ref cultureInfo pt-BR
+

@@ -1,0 +1,277 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/report/3.3.0/schema.json",
+  "themeCollection": {
+    "baseTheme": {
+      "name": "CY26SU07",
+      "reportVersionAtImport": {
+        "visual": "2.11.0",
+        "report": "3.4.0",
+        "page": "2.3.1"
+      },
+      "type": "SharedResources"
+    }
+  },
+  "objects": {
+    "section": [
+      {
+        "properties": {
+          "verticalAlignment": {
+            "expr": {
+              "Literal": {
+                "Value": "'Top'"
+              }
+            }
+          }
+        }
+      }
+    ],
+    "outspacePane": [
+      {
+        "properties": {
+          "expanded": {
+            "expr": {
+              "Literal": {
+                "Value": "true"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "publicCustomVisuals": [
+    "RiskHeatmapA1E4D7191E504BBA9F44FE76C254B319"
+  ],
+  "resourcePackages": [
+    {
+      "name": "SharedResources",
+      "type": "SharedResources",
+      "items": [
+        {
+          "name": "CY26SU07",
+          "path": "BaseThemes/CY26SU07.json",
+          "type": "BaseTheme"
+        }
+      ]
+    },
+    {
+      "name": "RegisteredResources",
+      "type": "RegisteredResources",
+      "items": [
+        {
+          "name": "arquitetura_pipeline_completa10201168416950368.png",
+          "path": "arquitetura_pipeline_completa10201168416950368.png",
+          "type": "Image"
+        },
+        {
+          "name": "gestao_produtividade8042291580500687.PNG",
+          "path": "gestao_produtividade8042291580500687.PNG",
+          "type": "Image"
+        },
+        {
+          "name": "git6192311880685502.png",
+          "path": "git6192311880685502.png",
+          "type": "Image"
+        },
+        {
+          "name": "icone_limpar_filtro721207783354384.png",
+          "path": "icone_limpar_filtro721207783354384.png",
+          "type": "Image"
+        },
+        {
+          "name": "info_icon_E6E6E65737765232281269.png",
+          "path": "info_icon_E6E6E65737765232281269.png",
+          "type": "Image"
+        },
+        {
+          "name": "info_icon_E6E6E68606079573831539.png",
+          "path": "info_icon_E6E6E68606079573831539.png",
+          "type": "Image"
+        },
+        {
+          "name": "info_projeto2619354044234341.PNG",
+          "path": "info_projeto2619354044234341.PNG",
+          "type": "Image"
+        },
+        {
+          "name": "insights_azul38157574701507213.svg",
+          "path": "insights_azul38157574701507213.svg",
+          "type": "Image"
+        },
+        {
+          "name": "insights_azul47470986548316985.svg",
+          "path": "insights_azul47470986548316985.svg",
+          "type": "Image"
+        },
+        {
+          "name": "insights_azul7914279284070176.svg",
+          "path": "insights_azul7914279284070176.svg",
+          "type": "Image"
+        },
+        {
+          "name": "insights08627222069861673.svg",
+          "path": "insights08627222069861673.svg",
+          "type": "Image"
+        },
+        {
+          "name": "insights4044194025422322.svg",
+          "path": "insights4044194025422322.svg",
+          "type": "Image"
+        },
+        {
+          "name": "lgpd_branco32357470678830225.svg",
+          "path": "lgpd_branco32357470678830225.svg",
+          "type": "Image"
+        },
+        {
+          "name": "lgpd_branco7767894840376567.svg",
+          "path": "lgpd_branco7767894840376567.svg",
+          "type": "Image"
+        },
+        {
+          "name": "lgpd6448502906609948.svg",
+          "path": "lgpd6448502906609948.svg",
+          "type": "Image"
+        },
+        {
+          "name": "linha_trabalho_branco3891351163040162.svg",
+          "path": "linha_trabalho_branco3891351163040162.svg",
+          "type": "Image"
+        },
+        {
+          "name": "linha_trabalho_branco3987795818176514.svg",
+          "path": "linha_trabalho_branco3987795818176514.svg",
+          "type": "Image"
+        },
+        {
+          "name": "linha_trabalho38408543052981337.svg",
+          "path": "linha_trabalho38408543052981337.svg",
+          "type": "Image"
+        },
+        {
+          "name": "linhas_trabalho33824693810892503.PNG",
+          "path": "linhas_trabalho33824693810892503.PNG",
+          "type": "Image"
+        },
+        {
+          "name": "logo3686495486330037.png",
+          "path": "logo3686495486330037.png",
+          "type": "Image"
+        },
+        {
+          "name": "lotacoes_branco16619329593741639.svg",
+          "path": "lotacoes_branco16619329593741639.svg",
+          "type": "Image"
+        },
+        {
+          "name": "lotacoes_branco48006535554180774.svg",
+          "path": "lotacoes_branco48006535554180774.svg",
+          "type": "Image"
+        },
+        {
+          "name": "lotacoes17305768503120023.svg",
+          "path": "lotacoes17305768503120023.svg",
+          "type": "Image"
+        },
+        {
+          "name": "lotacoes9416100221935232.PNG",
+          "path": "lotacoes9416100221935232.PNG",
+          "type": "Image"
+        },
+        {
+          "name": "menu_inicial13114272064797317.svg",
+          "path": "menu_inicial13114272064797317.svg",
+          "type": "Image"
+        },
+        {
+          "name": "menu_inicial4464705737077259.svg",
+          "path": "menu_inicial4464705737077259.svg",
+          "type": "Image"
+        },
+        {
+          "name": "modalidades_branco6295038756324598.svg",
+          "path": "modalidades_branco6295038756324598.svg",
+          "type": "Image"
+        },
+        {
+          "name": "modalidades_branco7390586032912043.svg",
+          "path": "modalidades_branco7390586032912043.svg",
+          "type": "Image"
+        },
+        {
+          "name": "modalidades6871747936008152.svg",
+          "path": "modalidades6871747936008152.svg",
+          "type": "Image"
+        },
+        {
+          "name": "modalidades7086163586062256.PNG",
+          "path": "modalidades7086163586062256.PNG",
+          "type": "Image"
+        },
+        {
+          "name": "Presentation37464542227402664.png",
+          "path": "Presentation37464542227402664.png",
+          "type": "Image"
+        },
+        {
+          "name": "Presentation44720706302633705.png",
+          "path": "Presentation44720706302633705.png",
+          "type": "Image"
+        },
+        {
+          "name": "programa_branco3211692106059082.svg",
+          "path": "programa_branco3211692106059082.svg",
+          "type": "Image"
+        },
+        {
+          "name": "programa_branco918237970307396.svg",
+          "path": "programa_branco918237970307396.svg",
+          "type": "Image"
+        },
+        {
+          "name": "programa_branco9468638692340701.svg",
+          "path": "programa_branco9468638692340701.svg",
+          "type": "Image"
+        },
+        {
+          "name": "programa9305234452891812.svg",
+          "path": "programa9305234452891812.svg",
+          "type": "Image"
+        },
+        {
+          "name": "programas4379252126930936.PNG",
+          "path": "programas4379252126930936.PNG",
+          "type": "Image"
+        },
+        {
+          "name": "visao_geral_branco1257359782379477.svg",
+          "path": "visao_geral_branco1257359782379477.svg",
+          "type": "Image"
+        },
+        {
+          "name": "visao_geral_branco2979087200445065.svg",
+          "path": "visao_geral_branco2979087200445065.svg",
+          "type": "Image"
+        },
+        {
+          "name": "visao_geral24020041076678843.svg",
+          "path": "visao_geral24020041076678843.svg",
+          "type": "Image"
+        },
+        {
+          "name": "visao_geral28622551874196867.PNG",
+          "path": "visao_geral28622551874196867.PNG",
+          "type": "Image"
+        }
+      ]
+    }
+  ],
+  "settings": {
+    "useStylableVisualContainerHeader": true,
+    "exportDataMode": "AllowSummarized",
+    "defaultDrillFilterOtherVisuals": true,
+    "allowChangeFilterTypes": true,
+    "useEnhancedTooltips": true,
+    "useDefaultAggregateDisplayName": true
+  }
+}

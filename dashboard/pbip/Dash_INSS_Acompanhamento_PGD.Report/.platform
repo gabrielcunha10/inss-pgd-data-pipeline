@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "Dash_INSS_Acompanhamento_PGD"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "393e126f-ab94-44fa-9bb7-8ca08cd94f37"
+  }
+}

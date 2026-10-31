@@ -195,14 +195,14 @@ Reúne a governança técnica, os conceitos fundamentais do PGD e os links ofici
 
 Você pode explorar o arquivo do projeto diretamente na sua máquina:
 
-### Conexão Nativa com o Neon PostgreSQL (Recomendado)
-O arquivo `.pbix` já está configurado com a cadeia de conexão para o banco relacional em nuvem:
+### Conexão Nativa com o Neon PostgreSQL (Formato PBIP)
+O projeto Power BI (`.pbip`) está estruturado em formato de código-fonte legível (**TMDL** e JSON) dentro de `dashboard/pbip/` e já possui a cadeia de conexão configurada para o banco relacional em nuvem:
 
-1. Abra o arquivo no **Power BI Desktop**:
+1. Abra o arquivo de projeto no **Power BI Desktop**:
    ```text
-   dashboard/Dash_INSS_Acompanhamento_PGD.pbix
+   dashboard/pbip/Dash_INSS_Acompanhamento_PGD.pbip
    ```
-2. O relatório se conectará à tabela `tb_pgd_inss` no Neon Tech via Direct/Import.
+2. O modelo semântico (`Dash_INSS_Acompanhamento_PGD.SemanticModel`) e o relatório (`Dash_INSS_Acompanhamento_PGD.Report`) serão carregados automaticamente conectados à tabela `tb_pgd_inss` no Neon Tech.
 3. Para puxar os dados atualizados gerados pelo ETL, clique no botão **"Atualizar"** na guia *Página Inicial*.
 
 ---

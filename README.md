@@ -183,7 +183,10 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │       ├── database_sync.yml                      # Workflow 1: Ingestão, ETL, carga no Neon, webhook e insights
 │       └── atualizar_documentacao_prints.yml      # Workflow 2: Automação Playwright, QA e publicação de prints
 ├── dashboard/
-│   ├── Dash_INSS_Acompanhamento_PGD.pbix          # Relatório Power BI conectado nativamente ao PostgreSQL Neon
+│   ├── pbip/                                      # Projeto Power BI (PBIP) versionado em formato texto/TMDL
+│   │   ├── Dash_INSS_Acompanhamento_PGD.pbip      # Arquivo principal de abertura no Power BI Desktop
+│   │   ├── Dash_INSS_Acompanhamento_PGD.Report/   # Definições visuais, páginas e temas do relatório
+│   │   └── Dash_INSS_Acompanhamento_PGD.SemanticModel/ # Modelo semântico (tabelas, relacionamentos e medidas DAX em TMDL)
 │   ├── capturar_prints.py                         # Automação Playwright para captura de prints das 9 telas
 │   ├── dashboard_README.md                        # Documentação detalhada das 9 telas analíticas e catálogo de KPIs
 │   ├── insights_README.md                         # Relatório executivo de negócio e padrões temporais (versão vigente)
@@ -438,12 +441,12 @@ A automação da solução é estruturada em dois workflows independentes e agen
 
 ## Visualização de Dados e Business Intelligence
 
-Desenvolvi todo o modelo analítico no **Power BI Desktop** e está armazenado no arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](dashboard/Dash_INSS_Acompanhamento_PGD.pbix).
+Desenvolvi todo o modelo analítico no **Power BI Desktop** no formato **PBIP (Power BI Project / TMDL)** para permitir controle de versão em texto (Git-friendly) das medidas DAX, relacionamentos e visuais, armazenado em [`dashboard/pbip/Dash_INSS_Acompanhamento_PGD.pbip`](dashboard/pbip/Dash_INSS_Acompanhamento_PGD.pbip).
 
 ![Preview do Dashboard](dashboard/imagens/menu_inicial.png)
 
 > [!TIP]
-> **Formas de Acesso:** O relatório pode ser acessado de forma interativa diretamente pelo navegador via **[Power BI Service (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**, ou baixado e explorado localmente pelo arquivo [`dashboard/Dash_INSS_Acompanhamento_PGD.pbix`](dashboard/Dash_INSS_Acompanhamento_PGD.pbix) (já conectado nativamente ao PostgreSQL Neon). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
+> **Formas de Acesso:** O relatório pode ser acessado de forma interativa diretamente pelo navegador via **[Power BI Service (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**, ou aberto e explorado localmente pelo projeto [`dashboard/pbip/Dash_INSS_Acompanhamento_PGD.pbip`](dashboard/pbip/Dash_INSS_Acompanhamento_PGD.pbip) (já conectado nativamente ao PostgreSQL Neon). Consulte o [Guia do Dashboard](dashboard/dashboard_README.md) para detalhes.
 
 ### Principais Indicadores Monitorados:
 

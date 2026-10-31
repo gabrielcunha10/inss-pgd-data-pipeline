@@ -1,0 +1,45 @@
+expression _Medidas =
+		let
+		    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+		    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+		    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+		in
+		    #"Colunas Removidas"
+	lineageTag: a4c1d154-375f-462a-8feb-62c3acbf114a
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+
+expression CaminhoAutomatico = ```
+		let
+		    // 1. Busca o conteúdo de C:\Users
+		    ConteudoUsers = Folder.Contents("C:\Users\"),
+		    
+		    // 2. Mantém APENAS pastas (descarta arquivos como desktop.ini)
+		    ApenasPastas = Table.SelectRows(ConteudoUsers, each ([Attributes]?[Kind]? = "Folder")),
+		    
+		    // 3. Remove pastas padrão de sistema
+		    PastasFiltradas = Table.SelectRows(ApenasPastas, each 
+		        ([Name] <> "Public" and 
+		         [Name] <> "Público" and 
+		         [Name] <> "Default" and 
+		         [Name] <> "Default User" and 
+		         [Name] <> "All Users")
+		    ),
+		    
+		    // 4. Pega o nome do seu usuário real
+		    NomeUsuario = PastasFiltradas{0}[Name],
+		    
+		    // 5. Monta o caminho dinâmico correto
+		    CaminhoFinal = "C:\Users\" & NomeUsuario & "\Downloads\archive\dataset\processed\pgd_designacoes_inss_2023_2026.csv",
+		    #"Colunas Removidas" = Table.RemoveColumns(CaminhoFinal,{"CaminhoAutomatico"})
+		in
+		    #"Colunas Removidas"
+		```
+	lineageTag: ffe39f46-79b5-4382-a759-5a3dc28f7c6d
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Text
+

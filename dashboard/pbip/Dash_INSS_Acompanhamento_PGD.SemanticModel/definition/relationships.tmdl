@@ -1,0 +1,45 @@
+relationship 3804eea1-8a65-47b7-830a-6f5349a559a4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Designacoes_Unicas.'Data Fim'
+	toColumn: LocalDateTable_b49bec38-849f-4b7e-9bdc-9149b94f0095.Date
+
+relationship 65e3e52d-2ea2-4f47-885b-86891def9902
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Designacoes_Unicas.'Data Início'
+	toColumn: LocalDateTable_1fc3bb5a-c8f1-4035-b881-320f86d65afd.Date
+
+relationship 3b43b145-4b42-4beb-aa30-43f972464534
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public tb_pgd_inss'.dt_inicio_designacao
+	toColumn: LocalDateTable_d02ee100-2402-423d-a99a-9bc01fc87423.Date
+
+relationship 9599d9c4-c42d-4dd8-a9c7-050016a2723c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public tb_pgd_inss'.dt_fim_designacao
+	toColumn: LocalDateTable_92401043-d257-4411-8acd-1c16cfba3e34.Date
+
+relationship 91123009-75ce-464a-b1e4-ef0497bc1fb8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public tb_pgd_inss'.dt_criacao_designacao
+	toColumn: LocalDateTable_5623ca4c-5e69-4085-9cef-a62460ad174a.Date
+
+relationship 6d28489c-d297-40b9-91ac-b42c5942e668
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'public tb_pgd_inss'.dt_alteracao_designacao
+	toColumn: LocalDateTable_a99bdc61-a0a8-4d41-98d6-da00488b72b1.Date
+
+relationship 87ae5a46-4099-4b0b-a717-33eba543289b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: insights_historico_powerbi.competencia
+	toColumn: LocalDateTable_ef0c5e8c-dd64-45b5-93e4-0d43c5be9224.Date
+
+relationship e556e21a-50e3-41cf-9f9c-a9c05e428a41
+	joinOnDateBehavior: datePartOnly
+	fromColumn: insights_historico_powerbi.competencia_mes_ano
+	toColumn: LocalDateTable_a89fac74-1c86-4cfc-9996-ca5c8705f556.Date
+
+relationship cb9d4ff7-73b1-08d2-2db8-dfad39a3c3e7
+	crossFilteringBehavior: bothDirections
+	fromColumn: 'public tb_pgd_inss'.competencia
+	toColumn: insights_historico_powerbi.competencia
+

@@ -1,0 +1,73 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 284,
+            "y": 50
+          },
+          "nodeIndex": "Designacoes_Unicas",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 582,
+            "y": 0
+          },
+          "nodeIndex": "public tb_pgd_inss",
+          "nodeLineageTag": "0ff3585e-6b21-4216-8b61-137b246c94bb",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 836,
+            "y": 344
+          },
+          "nodeIndex": "_Medidas (2)",
+          "nodeLineageTag": "733f3efc-7e16-4f9b-ad73-24c50e111bba",
+          "size": {
+            "height": 324,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 855,
+            "y": 0
+          },
+          "nodeIndex": "insights_historico_powerbi",
+          "nodeLineageTag": "5366961c-fd58-4e5f-972a-00cb4e09c568",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "Todas as tabelas",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas as tabelas",
+  "defaultDiagram": "Todas as tabelas"
+}

@@ -1,0 +1,395 @@
+table '_Medidas (2)'
+	lineageTag: 733f3efc-7e16-4f9b-ad73-24c50e111bba
+
+	measure Designações =
+			
+			DISTINCTCOUNT('public tb_pgd_inss'[id_designacao])
+		formatString: 0
+		lineageTag: 65d0874e-58d1-4bb2-b8e5-7889a96bed7b
+
+	measure 'Designações por Mês' =
+			
+			DIVIDE(
+			    [Total de Designações],
+			    [Meses Observados]
+			)
+		formatString: 0.00
+		lineageTag: b4be2eae-b3f2-44ad-b05e-f9a0e6147797
+
+	measure 'Designações por Status' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]),
+			    'public tb_pgd_inss'[id_designacao] <> BLANK()
+			)
+		formatString: 0
+		lineageTag: 7bd9ab8e-b897-4f38-b9c3-4aab85463ef2
+
+	measure 'Média de Designações' =
+			
+			AVERAGEX(
+			    VALUES('public tb_pgd_inss'[competencia]),
+			    [Designações]
+			)
+		lineageTag: 1b15661a-f301-4a4c-a40e-3de8028b5123
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Média de Designações por Mês' =
+			
+			AVERAGEX(
+			    VALUES('public tb_pgd_inss'[competencia]),
+			    CALCULATE(
+			        DISTINCTCOUNT(
+			            'public tb_pgd_inss'[id_designacao]
+			        )
+			    )
+			)
+		lineageTag: 3eb0f503-4bf2-4f1f-951f-4644851f098b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Meses Observados' =
+			
+			DISTINCTCOUNT(
+			    'public tb_pgd_inss'[competencia]
+			)
+		formatString: 0
+		lineageTag: 8b6f26e8-e258-4ccc-9672-0984b873c5e7
+
+	measure 'Total de Designações' =
+			
+			DISTINCTCOUNT('public tb_pgd_inss'[id_designacao])
+		formatString: 0
+		lineageTag: 33fe3015-40b5-4534-9d6c-5d7ab4a13c2d
+
+	measure 'Matrículas Ativas' =
+			
+			COUNTROWS(
+			    FILTER(
+			        VALUES('public tb_pgd_inss'[id_matricula]),
+			        VAR UltimaCompetencia =
+			            CALCULATE(
+			                MAX('public tb_pgd_inss'[competencia])
+			            )
+			        VAR UltimoStatus =
+			            CALCULATE(
+			                MAX('public tb_pgd_inss'[status]),
+			                'public tb_pgd_inss'[competencia] = UltimaCompetencia
+			            )
+			        RETURN
+			            UltimoStatus <> "Desligado"
+			    )
+			)
+		formatString: 0
+		lineageTag: cb9328b9-4b93-4626-8a4a-ce776bd64a90
+
+	measure 'Média de Tempo de Designação' =
+			
+			AVERAGE(
+			    Designacoes_Unicas[Tempo de Designação]
+			)
+		lineageTag: 2a05d1a8-d8b5-428f-b601-f851be41c2ce
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Média Dias Designação' = ```
+			
+			AVERAGEX(
+			    'public tb_pgd_inss',
+			    VAR dt_ini = 'public tb_pgd_inss'[dt_inicio_designacao]
+			    VAR dt_fim = 'public tb_pgd_inss'[dt_fim_designacao]
+			    RETURN
+			    IF(
+			        NOT(ISBLANK(dt_ini)) && NOT(ISBLANK(dt_fim)) && dt_fim >= dt_ini,
+			        DATEDIFF(dt_ini, dt_fim, DAY),
+			        BLANK()
+			    )
+			)
+			
+			```
+		lineageTag: 66a5c059-bb00-41f7-982b-cd5685c89e17
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Teletrabalho' = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]), 
+			    'public tb_pgd_inss'[modalidade] IN {"Remoto", "Semipresencial"},
+			    'public tb_pgd_inss'[status] = "Designado"
+			)
+			
+			
+			```
+		formatString: 0
+		lineageTag: b139bc11-569f-4c54-8110-984bd9cf3df8
+
+	measure 'Teletrabalho Usuarios' = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]), 
+			    'public tb_pgd_inss'[modalidade] IN {"Remoto", "Semipresencial"},
+			    'public tb_pgd_inss'[status] = "Designado"
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 31ca1404-a5c9-4bf9-934f-560c0f7246c2
+
+	measure 'Total Designacoes Presencial' = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]), 
+			    'public tb_pgd_inss'[modalidade] = "Presencial",
+			    'public tb_pgd_inss'[status] = "Designado"
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 652ee638-6ed7-4f44-b8d8-1363f563a096
+
+	measure 'Total Usuarios Presencial' = ```
+			
+			CALCULATE(
+			    DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]), 
+			    'public tb_pgd_inss'[modalidade] = "Presencial",
+			    'public tb_pgd_inss'[status] = "Designado"
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 0d9cea87-932d-4ece-a0dc-fbd39507269d
+
+	measure 'Média Servidores Lotação'
+		lineageTag: 79ec3c09-c4a6-4090-9e73-deefc1d7684f
+
+	measure 'Média de Servidores' = ```
+			
+			DIVIDE (
+			    DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]), 
+			    DISTINCTCOUNT('public tb_pgd_inss'[lotacao]),
+			    0
+			)
+			
+			```
+		lineageTag: 50c5f7e8-0af6-46fc-842d-54f11a7e7875
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Servidores no Maior Polo' = ```
+			
+			MAXX(
+			    VALUES('public tb_pgd_inss'[lotacao]), 
+			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			)
+			```
+		formatString: 0
+		lineageTag: ea520964-c763-460a-91be-f87bb7a196e6
+
+	measure 'Servidores no Maior Programa' = ```
+			
+			MAXX(
+			    VALUES('public tb_pgd_inss'[sigla_programa]), 
+			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 17318026-a29e-40ba-b420-d9f686e1f6d0
+
+	measure 'Média de Servidores por Programa' = ```
+			
+			AVERAGEX(
+			    VALUES('public tb_pgd_inss'[sigla_programa]), 
+			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			)
+			
+			```
+		lineageTag: 5ce95a4a-daf7-48f9-b024-3d3aead525cc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Maior Linha (Servidores)' = ```
+			
+			MAXX(
+			    VALUES('public tb_pgd_inss'[linha_trabalho]),
+			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 12cd6858-a503-4b25-acf7-b8499307e709
+
+	measure 'Média Servidores por Linha' = ```
+			
+			AVERAGEX(
+			    VALUES('public tb_pgd_inss'[linha_trabalho]),
+			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			)
+			
+			```
+		lineageTag: 9251b8b9-3408-4a56-b880-51275bc5f371
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Média Vínculos por Servidor' = ```
+			
+			VAR TotalDesignacoes = DISTINCTCOUNT('public tb_pgd_inss'[id_designacao])
+			VAR TotalServidores = DISTINCTCOUNT('public tb_pgd_inss'[id_usuario])
+			RETURN
+			DIVIDE(TotalDesignacoes, TotalServidores, 0)
+			
+			```
+		lineageTag: 89a32b88-b8d0-45e9-9333-1ff0d0018412
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Maior Volume de Vínculos' = ```
+			
+			MAXX(
+			    VALUES('public tb_pgd_inss'[id_usuario]),
+			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]))
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 0969ff80-b828-4a6f-b835-c8e82175f184
+
+	measure Cor_Card1_Servidores_Ativos = ```
+			
+			VAR VarNum = SELECTEDVALUE(insights_historico_powerbi[variacao_mensal_mom])
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    VarNum > 0, "#16A34A", -- Verde
+			    VarNum < 0, "#DC2626", -- Vermelho
+			    "#64748B"             -- Cinza para estabilidade
+			)
+			
+			```
+		lineageTag: 4bc9e165-0a09-4261-a3f9-bb55946b5a8a
+
+	measure Card1_Servidores_Ativos = ```
+			
+			VAR VarNum = SELECTEDVALUE(insights_historico_powerbi[variacao_mensal_mom])
+			VAR ValorNum = SELECTEDVALUE(insights_historico_powerbi[servidores_plano_ativo])
+			VAR ValorFormatado = FORMAT(ValorNum, "#,##0", "pt-BR")
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    VarNum > 0, "▲ " & ValorFormatado,
+			    VarNum < 0, "▼ " & ValorFormatado,
+			    "— " & ValorFormatado
+			)
+			
+			```
+		lineageTag: d2e5c94c-b2a6-4fdd-87bd-8b78431d2574
+
+	measure Card2_Variacao_MoM = ```
+			
+			VAR VarNum = SELECTEDVALUE(insights_historico_powerbi[variacao_mensal_mom_fmt])
+			VAR VarFormatado = FORMAT(VarNum, "+0.00%;-0.00%;0.00%")
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    VarNum > 0, "▲ " & VarFormatado,
+			    VarNum < 0, "▼ " & VarFormatado,
+			    "— " & VarFormatado
+			)
+			
+			```
+		lineageTag: d91d6e1a-28d2-46f4-a5cc-fb763919d89b
+
+	measure Cor_Card2_Variacao_MoM = ```
+			
+			VAR VarNum = SELECTEDVALUE(insights_historico_powerbi[variacao_mensal_mom_fmt])
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    VarNum > 0, "#16A34A",
+			    VarNum < 0, "#DC2626",
+			    "#64748B"
+			)
+			
+			```
+		lineageTag: c62ad046-feb0-4939-8233-70d60e112044
+
+	measure Card3_Adesao_Teletrabalho = ```
+			
+			VAR CompAtual = SELECTEDVALUE(insights_historico_powerbi[competencia])
+			VAR CompAnterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[competencia]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] < CompAtual
+			    )
+			VAR Atual = SELECTEDVALUE(insights_historico_powerbi[adesao_teletrabalho_fmt])
+			VAR Anterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[adesao_teletrabalho_fmt]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] = CompAnterior
+			    )
+			VAR Dif = Atual - Anterior
+			VAR ValorFormatado = FORMAT(Atual, "0.0%")
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(CompAnterior), "— " & ValorFormatado,
+			    Dif > 0, "▲ " & ValorFormatado,
+			    Dif < 0, "▼ " & ValorFormatado,
+			    "— " & ValorFormatado
+			)
+			
+			```
+		lineageTag: bde7c4f8-d0d3-473e-9f62-02618b9a3bd6
+
+	measure Cor_Card3_Adesao_Teletrabalho = ```
+			
+			VAR CompAtual = SELECTEDVALUE(insights_historico_powerbi[competencia])
+			VAR CompAnterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[competencia]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] < CompAtual
+			    )
+			VAR Atual = SELECTEDVALUE(insights_historico_powerbi[adesao_teletrabalho_fmt])
+			VAR Anterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[adesao_teletrabalho_fmt]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] = CompAnterior
+			    )
+			VAR Dif = Atual - Anterior
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(CompAnterior), "#64748B",
+			    Dif > 0, "#16A34A",
+			    Dif < 0, "#DC2626",
+			    "#64748B"
+			)
+			
+			```
+		lineageTag: c9845a9e-72d6-484a-88a9-17ab47cd0279
+
+	measure Texto_Ultima_Atualizacao = ```
+			
+			"Última Atualização: " & FORMAT(UTCNOW() - TIME(3, 0, 0), "dd/MM/yyyy HH:mm")
+			
+			```
+		lineageTag: b25bb64d-9d6e-4aa4-ba75-d9c8ea162ed1
+
+	partition '_Medidas (2)' = m
+		mode: import
+		source =
+				let
+				    Fonte = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [#"Coluna 1" = _t]),
+				    #"Tipo Alterado" = Table.TransformColumnTypes(Fonte,{{"Coluna 1", type text}}),
+				    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Coluna 1"})
+				in
+				    #"Colunas Removidas"
+
+	annotation PBI_ResultType = Table
+
