@@ -13,7 +13,7 @@
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
-Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PGD)** aplicado ao quadro de atendimento do INSS (ACSINSS), cobrindo de **outubro/2023 em diante** (mais de 500 mil registros consolidados).
+Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PGD)** aplicado ao quadro de atendimento do INSS (ACSINSS), cobrindo de **outubro/2023 em diante** (mais de 650 mil registros consolidados).
 
 ---
 
@@ -57,7 +57,7 @@ Para responder com transparência a perguntas como onde os servidores estão alo
 - **Descontinuidade temporal e nulos:** lacunas cadastrais causadas por falhas de exportação e migrações de sistemas, tratadas aqui por **pontes temporais determinísticas** entre competências adjacentes;
 - **Privacidade (LGPD):** mesmo sendo dados abertos, a reutilização de dados pessoais exige finalidade e cuidado. As matrículas são **pseudonimizadas** por hash com chave secreta (**HMAC-SHA256**) ainda na etapa de ETL, antes da carga no banco em nuvem, o que reduz o risco de identificação direta.
 
-Projetei esta solução para conectar a complexidade real da gestão pública à engenharia de dados moderna: automação via GitHub Actions, PostgreSQL serverless no Neon Tech, testes com Pytest e monitoramento no Power BI.
+Projetei esta solução para conectar a complexidade real da gestão pública à engenharia de dados moderna: orquestração resiliente com Prefect, automação via GitHub Actions, PostgreSQL serverless no Neon Tech, testes com Pytest e monitoramento no Power BI.
 
 ---
 
@@ -72,10 +72,11 @@ Projetei esta solução para conectar a complexidade real da gestão pública à
 flowchart TD
     subgraph WF1 ["Workflow 1: Pipeline Principal (database_sync.yml — Mensalmente, todo dia 01 às 06:00 BRT)"]
         API["Portal de Dados Abertos INSS<br/>(API CKAN Pública)"]
+        PREFECT_P1["pipeline_flow.py<br/>(Orquestrador Prefect 3)"]
         SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
         SCRIPT_ETL["etl_sgp_inss.py<br/>(Tratamento, Pontes & Parquet)"]
         LGPD["Anonimização LGPD<br/>(HMAC-SHA256)"]
-        TESTS_DATA["test_pipeline.py<br/>(29 Testes de Integridade)"]
+        TESTS_DATA["test_pipeline.py<br/>(33 Testes de Integridade & ETL)"]
         SCRIPT_LOAD["load_neon.py<br/>(Carga em Lotes)"]
         NEON[("PostgreSQL Serverless<br/>Neon: tb_pgd_inss")]
         INSIGHTS["gerar_insights.py<br/>(Google Gemini IA + Métricas MoM)"]
@@ -83,7 +84,8 @@ flowchart TD
         POWER_AUTO["Power Automate<br/>(Gatilho HTTP)"]
         PBI["Power BI Service<br/>(Painel Executivo)"]
 
-        API --> SCRIPT_IN --> SCRIPT_ETL --> LGPD --> TESTS_DATA
+        API --> PREFECT_P1
+        PREFECT_P1 --> SCRIPT_IN --> SCRIPT_ETL --> LGPD --> TESTS_DATA
         TESTS_DATA -->|"Aprovação"| SCRIPT_LOAD --> NEON
         NEON --> INSIGHTS
         NEON -->|"Conexão Nativa SQL"| PBI
@@ -91,12 +93,13 @@ flowchart TD
     end
 
     subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)"]
-        PRINTS["capturar_prints.py<br/>(Prints das 9 Telas do Dashboard Power BI)"]
-        TESTS_DOCS["test_documentacao_insights.py<br/>(12 Testes de QA)"]
+        PREFECT_P2["prints_flow.py<br/>(Orquestrador Prefect 3)"]
+        PRINTS["capturar_prints.py<br/>(Playwright Headless: 9 Telas)"]
+        TESTS_DOCS["test_documentacao_insights.py<br/>(21 Testes de QA & Visual)"]
         DOCS["Publicação de Artefatos & Markdown<br/>(dashboard_README.md & imagens)"]
 
-        PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PRINTS
-        PRINTS --> TESTS_DOCS
+        PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PREFECT_P2
+        PREFECT_P2 --> PRINTS --> TESTS_DOCS
         TESTS_DOCS -->|"Aprovação"| DOCS
     end
 ```
@@ -130,7 +133,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
    - Geração de pseudônimos seguros (`USR-XXXXXXXX`), impedindo o tráfego ou armazenamento de dados pessoais identificáveis (PII) no banco em nuvem e nos dashboards públicos.
 5. **Qualidade de Dados e Guardião do Banco (`test_pipeline.py`)**:
 
-   - Execução de malha fina via `pytest` com 29 testes automatizados cobrindo ingestão via API CKAN, tipagem estrita, consistência temporal, não nulidade, regras de negócio, validação da máscara LGPD e carga transacional.
+   - Execução de malha fina via `pytest` com 33 testes automatizados cobrindo ingestão via API CKAN, detecção de múltiplos encodings, consolidação do ETL, tipagem estrita, consistência temporal, não nulidade, regras de negócio, validação da máscara LGPD e carga transacional.
    - Atuação no padrão *Write-Audit-Publish (WAP)*: a carga no banco de dados só é autorizada se 100% dos testes forem aprovados.
 6. **Carga Transacional e Armazenamento em Nuvem (`load_neon.py` e PostgreSQL Neon)**:
 
@@ -163,11 +166,12 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
    - Mecanismo de auto-recuperação com validação de hash criptográfico SHA-256 e até 3 tentativas de retry, prevenindo telas duplicadas ou capturas incompletas.
 2. **Testes de Qualidade de Documentação & QA (`test_documentacao_insights.py`)**:
 
-   - Suíte isolada de 12 testes automatizados via `pytest` que verifica a integridade binária dos prints (cabeçalho mágico PNG, tamanho mínimo e unicidade visual por SHA-256).
+   - Suíte isolada de 21 testes automatizados via `pytest` que verifica a integridade binária dos prints (cabeçalho mágico PNG, tamanho mínimo e unicidade visual por SHA-256), a lógica de navegação do Playwright, atualização de timestamps e a integração com fallback da API do Gemini.
    - Validação da integridade de todos os links de imagens nos arquivos Markdown e consistência dos relatórios históricos arquivados em `dashboard/relatorios/`.
-3. **Orquestração de Documentação (GitHub Actions)**:
+3. **Orquestração de Governança Visual com Prefect (`prints_flow.py`)**:
 
-   - Execução isolada em container Ubuntu com setup de navegadores Playwright.
+   - Orquestração das tarefas de captura visual (`Playwright`) e verificação de integridade (`Pytest`) sob um fluxo unificado do **Prefect 3**.
+   - Políticas automáticas de *retry* em caso de latência na renderização dos *iframes* do Power BI e bloqueio do *commit* no Git se qualquer print falhar nos testes de qualidade.
    - Desacoplamento arquitetural: eventuais instabilidades na renderização visual do Power BI jamais travam a sincronização da base de dados no Neon nem interrompem o pipeline principal.
 4. **Publicação Contínua de Artefatos no Git (`dashboard_README.md`, `README.md` e `dashboard/relatorios/`)**:
 
@@ -188,6 +192,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │   │   ├── Dash_INSS_Acompanhamento_PGD.Report/   # Definições visuais, páginas e temas do relatório
 │   │   └── Dash_INSS_Acompanhamento_PGD.SemanticModel/ # Modelo semântico (tabelas, relacionamentos e medidas DAX em TMDL)
 │   ├── capturar_prints.py                         # Automação Playwright para captura de prints das 9 telas
+│   ├── prints_flow.py                             # Orquestração Prefect 3 do fluxo de captura visual e QA
 │   ├── dashboard_README.md                        # Documentação detalhada das 9 telas analíticas e catálogo de KPIs
 │   ├── insights_README.md                         # Relatório executivo de negócio e padrões temporais (versão vigente)
 │   ├── relatorios/                                # Histórico mensal dos relatórios de insights (projeto vivo)
@@ -208,8 +213,9 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │   └── pgd_inss_*.csv                             # Arquivos mensais baixados da API CKAN do INSS
 ├── tests/                                         # Testes automatizados e base tratada de saída
 │   ├── pgd_designacoes_inss_2023_2026.parquet     # Base tratada consolidada após o ETL (não versionado)
-│   ├── test_pipeline.py                           # Suíte de 29 testes de engenharia, ingestão, tipagem e regras de negócio
-│   └── test_documentacao_insights.py              # Suíte de 12 testes de QA de documentação, relatórios e prints
+│   ├── test_pipeline.py                           # Suíte de 33 testes de engenharia, ingestão, ETL e regras de negócio
+│   ├── test_documentacao_insights.py              # Suíte de 21 testes de QA de documentação, relatórios, Gemini e prints
+│   └── test_prefect_flow.py                       # Suíte de 9 testes de orquestração, DAGs e resiliência do Prefect 3
 ├── tratamento/
 │   ├── download_sgp.py                            # Ingestor automatizado via API CKAN pública do INSS
 │   ├── etl_sgp_inss.py                            # Transformação de dados, pontes temporais e anonimização LGPD
@@ -218,6 +224,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │   └── pgd_designacoes_inss_2023_2026_sample.csv  # Amostra tratada (5.000 linhas) para consulta e auditoria
 ├── Dockerfile                                     # Configuração de container para execução isolada do pipeline
 ├── docker-compose.yml                             # Orquestração de serviços do ambiente containerizado
+├── pipeline_flow.py                               # Orquestração Prefect 3 do pipeline principal (DAG, retries e WAP)
 ├── run_pipeline.sh                                # Script utilitário em shell para execução local do pipeline
 ├── .env.example                                   # Modelo de variáveis de ambiente
 ├── requirements.txt                               # Dependências Python do projeto
@@ -278,24 +285,49 @@ Abaixo está o dicionário de dados detalhado, refletindo fielmente a ordem fís
 
 ## Testes e Qualidade de Dados (Pytest)
 
-Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei duas suítes de testes automatizados com **`pytest`**, totalizando **40 testes unitários e de integração**:
+Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei três suítes de testes automatizados com **`pytest`**, totalizando **63 testes unitários e de integração (100% de aprovação)** e atingindo **88% de cobertura de código** via `pytest-cov`:
 
-1. **Testes de Engenharia, Ingestão, Carga e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 29 testes):**
+1. **Testes de Engenharia, Ingestão, ETL e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 33 testes):**
 
    - Atuam como guardião do banco de dados no padrão *Write-Audit-Publish (WAP)*: a carga no PostgreSQL só ocorre se 100% dos testes forem aprovados.
    - **Ingestão e Contrato da API CKAN:** Valida extração de competência, idempotência de arquivos locais, resiliência HTTP com mocks e contrato ao vivo da API de Dados Abertos do INSS.
+   - **Tratamento e Múltiplos Encodings:** Testa a leitura automática de CSVs com encodings heterogêneos (`utf-8` e `latin1`), consolidação de esquemas e exportação de artefatos (`.parquet` e `.csv`).
    - **Integridade de Siglas, Lotações e Nomes:** Verifica a ausência de registros órfãos entre siglas e nomes de programas/linhas de trabalho, normalização de códigos SIAPE (`id_lotacao`) e isolamento de propagação em designações nulas.
    - **Consistência Temporal:** Garante que nenhuma data de fim (`dt_fim_designacao`) seja anterior à data de início (`dt_inicio_designacao`).
    - **Validação de Nulos Críticos:** Impede que chaves primárias e colunas essenciais para regras de negócio (como a `modalidade` em casos de status "Designado") fiquem vazias.
    - **Checagem de Domínios Restritos:** Assegura que colunas categóricas (`status`, `modalidade`, `flag_pgd`) contenham apenas os domínios normatizados.
    - **Unicidade e Deduplicação:** Analisa chaves compostas (`id_usuario` + `competencia` + `id_designacao`) para barrar duplicações de registros transacionais.
    - **Auditoria de Máscara LGPD & Carga Transacional:** Confere via *Regex* se todos os usuários da base foram devidamente pseudonimizados no padrão `USR-XXXXXXXX` e testa o mapeamento de tipos SQL e a execução transacional do `load_neon.py`.
-2. **Testes de QA de Documentação e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) — 12 testes):**
+2. **Testes de QA de Documentação, IA e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) — 21 testes):**
 
    - **Integridade Binária dos Prints:** Valida cabeçalho mágico PNG (`\x89PNG\r\n\x1a\n`), tamanho mínimo e resolução das 9 telas capturadas.
    - **Unicidade Visual por Hash SHA-256:** Assegura que cada tela capturada possui hash criptográfico único, prevenindo falhas de navegação e prints duplicados.
    - **Links e Referências de Imagens:** Percorre todos os arquivos Markdown (`dashboard_README.md`, `insights_README.md` e relatórios arquivados) certificando que todas as imagens apontadas existem no disco.
-   - **Motor de Insights e Arquivamento:** Testa o cálculo matemático Month-over-Month (MoM), extração de competências e o versionamento histórico de relatórios em `dashboard/relatorios/`.
+   - **Motor de Insights e Arquivamento:** Testa o cálculo matemático Month-over-Month (MoM), a integração mockada com a Google Gemini API e o acionamento de fallback para o motor analítico local em Python.
+   - **Navegação do Playwright & Timestamps:** Valida a máquina de estados de navegação entre páginas do Power BI e a atualização dinâmica de timestamps no `dashboard_README.md`.
+
+3. **Testes de Orquestração e Resiliência do Prefect ([`tests/test_prefect_flow.py`](tests/test_prefect_flow.py) — 9 testes):**
+
+   - **Contrato e Definição de Tasks:** Valida que todas as tarefas decoradas no `pipeline_flow.py` e `prints_flow.py` mantêm chamabilidade direta (`.fn`).
+   - **Branching e Isolamento:** Garante o pulo de carga seguro quando `DATABASE_URL` não está configurada e o correto funcionamento da flag `--sem-banco`.
+   - **Simulação Ponta a Ponta de Fluxos:** Valida a ordem de despacho das etapas e o bloqueio de execução caso o gate de qualidade seja reprovado.
+
+### Relatório de Cobertura de Código (`pytest --cov`)
+
+```text
+Name                           Stmts   Miss  Cover
+--------------------------------------------------
+dashboard/prints_flow.py          40      2    95%
+pipeline_flow.py                  74      6    92%
+dashboard/capturar_prints.py     135     14    90%
+tratamento/load_neon.py           57      6    89%
+tratamento/gerar_insights.py     334     36    89%
+tratamento/download_sgp.py        86     13    85%
+tratamento/etl_sgp_inss.py       195     32    84%
+--------------------------------------------------
+TOTAL                            921    109    88%
+====================== 63 passed in ~20s =======================
+```
 
 ---
 
@@ -390,7 +422,7 @@ python tratamento/download_sgp.py
 # 2. Processamento (ETL): limpa os dados e gera o arquivo Parquet e o CSV sample
 python tratamento/etl_sgp_inss.py
 
-# 3. Qualidade de Dados: roda a suíte com os 40 testes automatizados (Pytest)
+# 3. Qualidade de Dados: roda a suíte com os 63 testes automatizados e relatório de cobertura (Pytest)
 pytest tests/
 
 # 4. Carga no Banco (Load): insere os dados validados na tabela tb_pgd_inss no Neon DB
@@ -454,9 +486,10 @@ Desenvolvi todo o modelo analítico no **Power BI Desktop** no formato **PBIP (P
 - **22,20 Mil Matrículas Ativas:** Total da força de trabalho e servidores ativos mapeados no sistema.
 - **15,80 Mil Média Mensal:** Volume médio de designações ativas mantidas a cada mês.
 - **29 Programas Monitorados:** Diversidade de programas e modalidades de gestão cadastrados no PGD.
+- **Evolução de Servidores Ativos:** Acompanhamento temporal da recomposição da força de trabalho ativa e estabilidade operacional.
+- **Divisão Teletrabalho vs. Presencial:** Monitoramento de 23,31 mil designações em teletrabalho (11,28 mil servidores) e 21,31 mil designações presenciais (12,17 mil servidores).
 - **Retenção Temporal (Dias):** Tempo médio de permanência das designações no sistema por programa.
 - **Detalhamento Anonimizado (LGPD):** Ranking por servidor identificado via código seguro criptografado por hash (`USR-XXXXXXXX`).
-- **Sazonalidade e Curva de Status:** Identificação de picos operacionais (ex: março de 2025) e repactuação de teletrabalho.
 
 Para mais detalhes sobre a modelagem e os achados de negócio, consulte a documentação específica:
 
@@ -486,10 +519,10 @@ Considerando que os dados de origem envolvem nomes e matrículas de servidores p
 | **Engenharia de Banco de Dados**      | PostgreSQL, SQLAlchemy, Psycopg2, Neon Tech (Serverless DB)                          |
 | **Inteligência Artificial & GenAI**  | Google Gemini API (google-genai SDK), Script Automatizado de Insights                |
 | **Ambiente & Containerização**      | Docker, Docker Compose                                                               |
-| **Orquestração & CI/CD**            | GitHub Actions, Git, Cron Scheduling                                                 |
+| **Orquestração & CI/CD**            | Prefect 3, GitHub Actions, Git, Cron Scheduling                                      |
 | **Integração & Webhooks**           | cURL, Microsoft Power Automate                                                       |
 | **Business Intelligence & Analytics** | Microsoft Power BI Desktop & Service, DAX                                            |
-| **Governança & Qualidade**           | Pytest, Conformidade LGPD (HMAC, Hashlib), Type Casting Estrito, Tratamento de Nulos |
+| **Governança & Qualidade**           | Pytest (63 testes, 88% de cobertura via pytest-cov), Conformidade LGPD (HMAC-SHA256), Type Casting Estrito |
 
 ---
 

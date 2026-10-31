@@ -48,6 +48,7 @@ pydantic_core==2.50.1
 pyee==14.0.0
 Pygments==2.21.0
 pytest==9.1.1
+pytest-cov>=6.0.0
 python-dateutil==2.9.0.post0
 python-dotenv==1.2.3
 pyzmq==27.2.0
@@ -66,3 +67,4 @@ urllib3==2.7.0
 wcwidth==0.8.3
 websockets==16.1.1
 pillow>=10.0.0
+prefect>=3.0.0

@@ -16,12 +16,25 @@ from tratamento.gerar_insights import (
     gerar_relatorio_condicional_local,
     gerar_historico_csv_powerbi,
     salvar_relatorio,
+    gerar_relatorio_com_gemini,
+    adicionar_cabecalho_automacao,
+    carregar_dados,
+    main as gerar_insights_main,
     extrair_ano_mes_relatorio,
     arquivar_relatorio_anterior,
     RELATORIOS_DIR,
     OUTPUT_CSV_POWERBI,
 )
-from dashboard.capturar_prints import PAGINAS, IMAGENS_DIR
+from unittest.mock import MagicMock, patch
+from dashboard.capturar_prints import (
+    PAGINAS,
+    IMAGENS_DIR,
+    garantir_pagina_inicial,
+    navegar_para_pagina,
+    avancar_proxima_pagina,
+    capturar_todas_as_paginas,
+    atualizar_timestamp_dashboard_readme,
+)
 
 
 
@@ -113,6 +126,7 @@ def test_funcao_gerar_relatorio_condicional_local():
         "sigla_programa": ["DIRBEN", "CEAB1"],
         "lotacao": ["GEX BRASILIA", "GEX SP"],
         "linha_trabalho": ["LINHA 1", "LINHA 2"],
+        "sigla_linha_trabalho": ["LINHA 1", "LINHA 2"],
         "tipo_entrega": ["Meta e Produto", "Meta e Produto"],
         "dt_inicio_designacao": pd.to_datetime(["2026-01-01"] * 2),
         "dt_fim_designacao": pd.to_datetime(["2026-12-31"] * 2),
@@ -297,5 +311,230 @@ def test_gerar_historico_csv_powerbi(tmp_path):
     }
     assert colunas_esperadas.issubset(set(df_hist.columns))
     assert OUTPUT_CSV_POWERBI.exists(), "O arquivo oficial dashboard/insights_historico_powerbi.csv deve existir."
+
+
+def test_garantir_pagina_inicial():
+    page = MagicMock()
+    indicador = MagicMock()
+    indicador.is_visible.return_value = True
+    indicador.inner_text.return_value = "3 de 9"
+    page.locator.side_effect = lambda sel, **kwargs: indicador if "middleText" in sel else MagicMock()
+    garantir_pagina_inicial(page)
+    assert indicador.click.called
+
+    indicador.reset_mock()
+    indicador.inner_text.return_value = "1 de 9"
+    garantir_pagina_inicial(page)
+    assert not indicador.click.called
+
+    page.locator.side_effect = Exception("erro locator")
+    garantir_pagina_inicial(page)
+
+
+def test_navegar_para_pagina():
+    page = MagicMock()
+    indicador = MagicMock()
+    indicador.is_visible.return_value = True
+    item = MagicMock()
+    item.is_visible.return_value = True
+
+    def mock_locator(sel, **kwargs):
+        if "middleText" in sel:
+            return indicador
+        return MagicMock(first=item)
+
+    page.locator = mock_locator
+    for nome in [
+        "Insights & Diagnóstico IA",
+        "Lotações",
+        "Modalidades",
+        "Linhas de Trabalho",
+        "Programas",
+        "Visão Geral",
+        "Menu",
+        "Transparência & LGPD",
+        "Informações do Projeto",
+    ]:
+        res = navegar_para_pagina(page, nome)
+        assert res is True
+
+    indicador.is_visible.return_value = False
+    assert navegar_para_pagina(page, "Menu") is False
+
+    page.locator = MagicMock(side_effect=Exception("erro"))
+    assert navegar_para_pagina(page, "Menu") is False
+
+
+def test_avancar_proxima_pagina():
+    page = MagicMock()
+    with patch("dashboard.capturar_prints.navegar_para_pagina", return_value=True):
+        assert avancar_proxima_pagina(page, 1) is True
+        assert avancar_proxima_pagina(page, len(PAGINAS) + 1) is False
+
+
+def test_atualizar_timestamp_dashboard_readme(tmp_path, monkeypatch):
+    dash_dir = tmp_path / "dashboard"
+    dash_dir.mkdir(parents=True, exist_ok=True)
+    readme_real = dash_dir / "dashboard_README.md"
+    readme_real.write_text("> **Última Atualização:** 01/01/2026 às 12:00  \nTexto", encoding="utf-8")
+    monkeypatch.setattr("dashboard.capturar_prints.PROJECT_DIR", tmp_path)
+    atualizar_timestamp_dashboard_readme()
+    conteudo = readme_real.read_text(encoding="utf-8")
+    assert "01/01/2026" not in conteudo
+
+
+def test_capturar_todas_as_paginas_sem_playwright(monkeypatch):
+    monkeypatch.setattr("dashboard.capturar_prints.sync_playwright", None)
+    with pytest.raises(ImportError, match="Playwright não está instalado"):
+        capturar_todas_as_paginas()
+
+
+def test_capturar_todas_as_paginas_mock(tmp_path, monkeypatch):
+    mock_p = MagicMock()
+    mock_browser = MagicMock()
+    mock_ctx = MagicMock()
+    mock_page = MagicMock()
+
+    mock_p.chromium.launch.return_value = mock_browser
+    mock_browser.new_context.return_value = mock_ctx
+    mock_ctx.new_page.return_value = mock_page
+
+    mock_host = MagicMock()
+    mock_host.is_visible.return_value = True
+    mock_host.screenshot.side_effect = [f"img_page_{i}".encode("utf-8") for i in range(50)]
+    mock_page.locator.return_value = MagicMock(first=mock_host, is_visible=MagicMock(return_value=True))
+
+    mock_cm = MagicMock()
+    mock_cm.__enter__.return_value = mock_p
+    mock_cm.__exit__.return_value = None
+
+    monkeypatch.setattr("dashboard.capturar_prints.sync_playwright", lambda: mock_cm)
+    monkeypatch.setattr("dashboard.capturar_prints.IMAGENS_DIR", tmp_path / "imagens")
+    monkeypatch.setattr("dashboard.capturar_prints.atualizar_timestamp_dashboard_readme", MagicMock())
+
+    capturar_todas_as_paginas()
+
+    imagens_salvas = list((tmp_path / "imagens").glob("*.png"))
+    assert len(imagens_salvas) == len(PAGINAS)
+
+
+def test_gerar_relatorio_com_gemini_mock():
+    mock_client = MagicMock()
+    mock_resp = MagicMock()
+    mock_resp.text = "# Relatório Executivo Gemini\nAnálise técnica completa sem emojis."
+    mock_client.models.generate_content.return_value = mock_resp
+
+    with patch("tratamento.gerar_insights.genai.Client", return_value=mock_client):
+        metricas_teste = {
+            "periodo_inicio": "10/2023",
+            "periodo_fim": "08/2026",
+            "total_meses": 35,
+            "total_servidores": 1000,
+            "total_registros": 5000,
+            "media_desig_mes": 150,
+            "programas_ativos_geral": 10,
+            "media_vinc": 1.2,
+            "max_vinc": 5,
+            "comp_atual_str": "08/2026",
+            "comp_ant_str": "07/2026",
+            "serv_desig_ult": 800,
+            "serv_desig_ant": 750,
+            "var_serv_desig": 6.67,
+            "serv_nao_desig_ult": 150,
+            "serv_nao_desig_ant": 160,
+            "var_nao_desig": -6.25,
+            "serv_deslig_ult": 50,
+            "serv_deslig_ant": 40,
+            "var_deslig": 25.0,
+            "teletrab_serv_ult": 600,
+            "pct_teletrab_serv": 75.0,
+            "var_teletrab": 5.0,
+            "presenc_serv_ult": 200,
+            "pct_presenc_serv": 25.0,
+        }
+        tabs_teste = {
+            "tabela_mod": "| Mod |",
+            "tabela_duracao": "| Dur |",
+            "tabela_top_prog": "| Prog |",
+            "tabela_top_lot": "| Lot |",
+            "tabela_top_lin": "| Lin |",
+            "tabela_serv_vinc": "| Vinc |",
+        }
+        texto, modelo = gerar_relatorio_com_gemini(metricas_teste, tabs_teste, "fake_key")
+        assert "Relatório Executivo Gemini" in texto
+        assert modelo == "gemini-4-argon"
+
+
+def test_gerar_relatorio_com_gemini_falha_todos_modelos():
+    mock_client = MagicMock()
+    mock_client.models.generate_content.side_effect = Exception("Erro de cota na API")
+
+    with patch("tratamento.gerar_insights.genai.Client", return_value=mock_client):
+        metricas_teste = {
+            "periodo_inicio": "10/2023",
+            "periodo_fim": "08/2026",
+            "total_meses": 35,
+            "total_servidores": 1000,
+            "total_registros": 5000,
+            "media_desig_mes": 150,
+            "programas_ativos_geral": 10,
+            "media_vinc": 1.2,
+            "max_vinc": 5,
+            "comp_atual_str": "08/2026",
+            "comp_ant_str": "07/2026",
+            "serv_desig_ult": 800,
+            "serv_desig_ant": 750,
+            "var_serv_desig": 6.67,
+            "serv_nao_desig_ult": 150,
+            "serv_nao_desig_ant": 160,
+            "var_nao_desig": -6.25,
+            "serv_deslig_ult": 50,
+            "serv_deslig_ant": 40,
+            "var_deslig": 25.0,
+            "teletrab_serv_ult": 600,
+            "pct_teletrab_serv": 75.0,
+            "var_teletrab": 5.0,
+            "presenc_serv_ult": 200,
+            "pct_presenc_serv": 25.0,
+        }
+        tabs_teste = {
+            "tabela_mod": "| Mod |",
+            "tabela_duracao": "| Dur |",
+            "tabela_top_prog": "| Prog |",
+            "tabela_top_lot": "| Lot |",
+            "tabela_top_lin": "| Lin |",
+            "tabela_serv_vinc": "| Vinc |",
+        }
+        with pytest.raises(RuntimeError, match="Nenhum modelo Gemini respondeu com sucesso"):
+            gerar_relatorio_com_gemini(metricas_teste, tabs_teste, "fake_key")
+
+
+def test_insights_main_execucao_mock(tmp_path, monkeypatch):
+    df_fake = pd.DataFrame({
+        "competencia": pd.to_datetime(["2026-07-01", "2026-08-01"]),
+        "id_usuario": ["USR-01", "USR-02"],
+        "id_designacao": [1, 2],
+        "status": ["Designado", "Designado"],
+        "modalidade": ["Remoto", "Presencial"],
+        "flag_pgd": ["Sim", "Sim"],
+        "programa": ["PG-DIRBEN", "CEAB1"],
+        "sigla_programa": ["DIRBEN", "CEAB1"],
+        "lotacao": ["GEX BRASILIA", "GEX SP"],
+        "linha_trabalho": ["LINHA 1", "LINHA 2"],
+        "sigla_linha_trabalho": ["LINHA 1", "LINHA 2"],
+        "tipo_entrega": ["Meta e Produto", "Meta e Produto"],
+        "dt_inicio_designacao": pd.to_datetime(["2026-01-01"] * 2),
+        "dt_fim_designacao": pd.to_datetime(["2026-12-31"] * 2),
+    })
+    monkeypatch.setattr("tratamento.gerar_insights.carregar_dados", lambda path: df_fake)
+    monkeypatch.setattr("tratamento.gerar_insights.OUTPUT_MARKDOWN", tmp_path / "insights_README.md")
+    monkeypatch.setattr("tratamento.gerar_insights.OUTPUT_CSV_POWERBI", tmp_path / "insights_hist.csv")
+    monkeypatch.setenv("GEMINI_API_KEY", "fake_key_para_teste")
+
+    with patch("tratamento.gerar_insights.gerar_relatorio_com_gemini") as mock_gem:
+        mock_gem.return_value = ("# Relatório Gemini Mock", "gemini-3.8-flash")
+        gerar_insights_main()
+        assert (tmp_path / "insights_README.md").exists()
+        assert (tmp_path / "insights_hist.csv").exists()
 
 

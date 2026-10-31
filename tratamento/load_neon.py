@@ -1,3 +1,4 @@
+import logging
 import os
 from pathlib import Path
 import pandas as pd
@@ -9,6 +10,18 @@ load_dotenv()
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
 PARQUET_FILE = PROJECT_DIR / "tests" / "pgd_designacoes_inss_2023_2026.parquet"
+LOGS_DIR = PROJECT_DIR / "logs"
+LOGS_DIR.mkdir(parents=True, exist_ok=True)
+LOG_FILE = LOGS_DIR / "pipeline.log"
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - [%(filename)s] %(message)s",
+    handlers=[
+        logging.StreamHandler(),
+        logging.FileHandler(LOG_FILE, encoding="utf-8"),
+    ],
+)
 
 def construir_dtype_mapping(colunas: list) -> dict:
     colunas_data = [
@@ -33,13 +46,13 @@ def construir_dtype_mapping(colunas: list) -> dict:
 
 
 def main():
-    print("Iniciando a carga dos dados para o Neon DB...")
+    logging.info("Iniciando a carga dos dados para o Neon DB...")
     
     db_url = os.getenv('DATABASE_URL')
     if not db_url:
         raise ValueError("Variável de ambiente DATABASE_URL não encontrada.")
 
-    print(f"Lendo dados do arquivo: {PARQUET_FILE}")
+    logging.info(f"Lendo dados do arquivo: {PARQUET_FILE}")
     if not PARQUET_FILE.exists():
         raise FileNotFoundError(f"Arquivo não encontrado: {PARQUET_FILE}. Rode o ETL antes.")
         
@@ -58,7 +71,7 @@ def main():
             tabela_existe = inspector.has_table('tb_pgd_inss')
 
             if not tabela_existe:
-                print("Tabela 'tb_pgd_inss' não existe. Criando estrutura inicial no banco...")
+                logging.info("Tabela 'tb_pgd_inss' não existe. Criando estrutura inicial no banco...")
                 df_total.head(0).to_sql(
                     'tb_pgd_inss',
                     con=conn,
@@ -67,13 +80,13 @@ def main():
                     dtype=dtype_mapping,
                 )
             elif competencias_datas:
-                print(f"Executando exclusão preventiva de {len(competencias_datas)} competência(s) para carga idempotente...")
+                logging.info(f"Executando exclusão preventiva de {len(competencias_datas)} competência(s) para carga idempotente...")
                 conn.execute(
                     text("DELETE FROM tb_pgd_inss WHERE competencia = ANY(CAST(:comps AS date[]))"),
                     {"comps": list(competencias_datas)}
                 )
 
-            print(f"Inserindo {len(df_total)} registros na tabela 'tb_pgd_inss' em lotes (chunksize=10.000)...")
+            logging.info(f"Inserindo {len(df_total)} registros na tabela 'tb_pgd_inss' em lotes (chunksize=10.000)...")
             df_total.to_sql(
                 'tb_pgd_inss',
                 con=conn,
@@ -83,12 +96,12 @@ def main():
                 chunksize=10000,
             )
 
-        print(
-            f"[SUCCESS] Carga incremental concluída: {len(df_total)} linhas sincronizadas "
+        logging.info(
+            f"Carga incremental concluída com sucesso: {len(df_total)} linhas sincronizadas "
             f"({len(competencias_datas)} competência(s)) na tabela 'tb_pgd_inss' no Neon Tech."
         )
     except Exception as e:
-        print(f"Erro ao enviar dados de forma incremental: {e}")
+        logging.error(f"Erro ao enviar dados de forma incremental: {e}")
         raise e
 
 if __name__ == "__main__":

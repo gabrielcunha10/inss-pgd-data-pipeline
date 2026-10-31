@@ -1,7 +1,7 @@
 # Guia do Dashboard — Acompanhamento PGD / INSS
 
 > **Documentação Visual e Guia de Métricas do Painel**  
-> **Última Atualização:** 18/10/2026 às 18:06  
+> **Última Atualização:** 20/10/2026 às 22:47  
 > *Capturas de tela e documentação técnica atualizadas de acordo com o modelo publicado em produção.*
 
 Este documento apresenta a estrutura completa, os indicadores de negócio, as métricas e a documentação visual de cada página do relatório analítico do **Programa de Gestão e Desempenho (PGD)** do INSS no Power BI.
@@ -43,23 +43,23 @@ A tela de entrada principal do painel público, desenhada para proporcionar uma 
 
 ---
 
-### 1. Página: Visão Geral & Evolução Histórica
+### 1. Página: Visão Geral
 
 Esta página sintetiza a saúde global do programa, permitindo acompanhar a série histórica desde outubro de 2023 até o presente.
 
 ![Visão Geral do Dashboard](imagens/visao_geral_dashboard.png)
 
 #### Indicadores e Métricas Explicados:
-* **Total de Designações (KPI Card):** Volume acumulado de atos administrativos formais de pactuação de planos registrados no sistema no período filtrado.
-* **Matrículas Ativas / Servidores Únicos (KPI Card):** Quantidade distinta de servidores públicos federais vinculados a planos de trabalho ativos no INSS.
-* **Média de Designações / Mês (KPI Card):** Média aritmética do volume de planos mantidos simultaneamente a cada competência mensal.
-* **Programas Ativos (KPI Card):** Total de programas de gestão institucionais em vigência nos órgãos de assistência, diretorias e superintendências.
-* **Evolução por Status e Competência (Gráfico de Linhas):** Acompanha as 3 categorias funcionais ao longo do tempo:
-  * **Designado (Verde):** Servidores com plano de trabalho vigente formalizado.
-  * **Não Designado (Amarelo):** Servidores aptos sem plano pactuado registrado na competência.
-  * **Desligado (Cinza):** Encerramentos de plano (destaque para a virada cadastral em lote ocorrida em março de 2025).
-* **Média Histórica por Mês (Gráfico de Colunas):** Avalia a sazonalidade anual (janeiro a dezembro), evidenciando picos de renovação no encerramento do primeiro trimestre (março/abril).
-* **Segmentadores de Dados:** Filtros suspensos modernos com busca por **Ano**, **Mês**, **Status** e **Programa**.
+* **Total de Servidores (KPI Card):** Quantidade distinta de servidores públicos federais vinculados a planos de trabalho ativos no INSS (22,20K).
+* **Quantidade de Programas (KPI Card):** Total de programas de gestão institucionais em vigência nos órgãos de assistência, diretorias e superintendências (29).
+* **Designações (KPI Card):** Volume acumulado de atos administrativos formais de pactuação de planos registrados no sistema no período filtrado (45,81K).
+* **Média Designações por Mês (KPI Card):** Média aritmética do volume de planos mantidos simultaneamente a cada competência mensal (15,80K).
+* **Evolução Histórica de Servidores Ativos (Gráfico de Linha):** Acompanha a série temporal contínua da força de trabalho ativa no PGD entre 2023 e 2026, destacando os períodos de recomposição do quadro e a estabilização operacional.
+* **Situação Funcional dos Servidores (Gráfico de Rosca):** Distribuição do quadro total entre:
+  * **Designado (56,80% / 19,83K):** Servidores com plano de trabalho vigente formalizado.
+  * **Não Designado (29,44% / 10,28K):** Servidores aptos sem plano pactuado registrado na competência.
+  * **Desligado (13,76% / 4,81K):** Encerramentos e finalizações de ciclo.
+* **Segmentadores de Dados:** Filtros suspensos modernos com busca por **Linha de Trabalho**, **Mês**, **Ano**, **Modalidade**, **Lotação**, **Status**, **PGD**, **Entrega** e **Programa**.
 
 ---
 
@@ -95,18 +95,21 @@ Classifica a força de trabalho com base no tipo de atividade substantiva desemp
 
 ### 4. Página: Modalidades de Trabalho
 
-Examina a distribuição da força de trabalho quanto ao regime de cumprimento da jornada de trabalho.
+Examina a distribuição da força de trabalho quanto ao regime de cumprimento da jornada de trabalho (Teletrabalho vs. Presencial).
 
 ![Modalidades de Trabalho](imagens/modalidades_dashboard.png)
 
 #### Indicadores e Métricas Explicados:
-* **Proporção por Modalidade (Gráfico de Rosca / Barras):**
-  * **Remoto (100% Teletrabalho):** Regime integral à distância com dispensa de controle de frequência presencial.
-  * **Semipresencial (Híbrido):** Regime misto com cumprimento de parcela da jornada presencialmente na unidade e parcela remota.
-  * **Presencial:** Cumprimento integral da jornada na unidade física de lotação.
-* **Adesão ao Teletrabalho (%):** Percentual consolidado da soma de servidores nos regimes Remoto e Semipresencial em relação ao efetivo total pactuado.
-* **Tipo de Entrega Pactuada:** Distribuição entre pactuações por **Meta e Produto** (modelo de desempenho mensurável) versus modalidades tradicionais.
-* **Evolução Temporal das Modalidades:** Identificação de migração de regime de trabalho dos servidores ao longo dos ciclos anuais.
+* **KPIs Centrais de Teletrabalho e Presencial:**
+  * **Designações em Teletrabalho (23,31K):** Total acumulado de pactuações em regime remoto ou semipresencial.
+  * **Servidores em Teletrabalho (11,28K):** Contingente individual de servidores alocados em teletrabalho.
+  * **Servidores no Presencial (12,17K):** Total de servidores com atuação presencial nas agências e unidades administrativas.
+  * **Designações no Presencial (21,31K):** Volume acumulado de planos de trabalho com cumprimento presencial da jornada.
+* **Evolução Histórica das Modalidades (Gráfico de Linhas):** Trajetória temporal detalhando o comportamento das três modalidades ao longo das competências (2024–2026):
+  * **Remoto (Azul-marinho):** Regime integral à distância com pactuação por metas e produtos.
+  * **Semipresencial (Azul-médio):** Regime misto com parcela presencial na unidade.
+  * **Presencial (Cinza):** Regime tradicional presencial com recomposição de quadro a partir de 2025.
+* **Volume de Designações nos Principais Programas (Gráfico de Barras Empilhadas):** Distribuição do tipo de modalidade adotada em cada programa institucional, com destaque para a liderança da **CEAB1** (Central de Análise de Benefício 1), seguida por `SR_PGD`, `ATENDIMENTO`, `DIR_CENTRAL1` e `CEAP`.
 
 ---
 
