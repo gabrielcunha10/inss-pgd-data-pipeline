@@ -44,9 +44,9 @@
   <!-- ================= SECTION 1: PIPELINE PRINCIPAL ================= -->
   <!-- Section 1 Badge -->
   <g transform="translate(40, 95)">
-    <rect x="0" y="0" width="560" height="28" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
+    <rect x="0" y="0" width="600" height="28" rx="6" fill="#eff6ff" stroke="#bfdbfe" stroke-width="1"/>
     <circle cx="14" cy="14" r="5" fill="#2563eb"/>
-    <text x="26" y="18" font-size="11" font-weight="700" fill="#1e40af">WORKFLOW 1: PIPELINE PRINCIPAL (database_sync.yml — Mensalmente, todo dia 01 às 06:00 BRT)</text>
+    <text x="26" y="18" font-size="11" font-weight="700" fill="#1e40af">WORKFLOW 1: PIPELINE PRINCIPAL (database_sync.yml — Semanalmente, toda segunda às 06:00 BRT)</text>
   </g>
 
   <!-- Card 1: Fonte de Dados -->
@@ -140,15 +140,32 @@
     </g>
     <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Testes QA Dados:</text>
     <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#1d4ed8">test_pipeline.py</text>
-    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">13 Testes Pytest</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">36 Testes Pytest</text>
     <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#1e40af">Integridade &amp; ETL</text>
   </g>
 
   <!-- Arrow 5 -> 6 -->
   <path d="M 835 220 L 859 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- Card 6: Banco Neon -->
+  <!-- Card 6: Geração de Insights -->
   <g transform="translate(865, 135)" filter="url(#card-shadow)">
+    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <!-- Icon Google Gemini Star -->
+    <g transform="translate(42, 20)">
+      <path d="M 25 2 C 25 15 35 25 48 25 C 35 25 25 35 25 48 C 25 35 15 25 2 25 C 15 25 25 15 25 2 Z" fill="url(#grad-gemini)"/>
+      <circle cx="39" cy="11" r="3" fill="#8ab4f8"/>
+    </g>
+    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Geração Insights:</text>
+    <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">gerar_insights.py</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">Gemini Flash IA</text>
+    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#4f46e5">Diagnóstico MoM</text>
+  </g>
+
+  <!-- Arrow 6 -> 7 -->
+  <path d="M 1000 220 L 1024 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+
+  <!-- Card 7: Banco Neon (Star Schema + Insights) -->
+  <g transform="translate(1030, 135)" filter="url(#card-shadow)">
     <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
     <!-- Icon Banco Neon Cilindro -->
     <g transform="translate(42, 22)">
@@ -160,28 +177,8 @@
     </g>
     <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Banco de Dados:</text>
     <text x="67" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#0e7490">PostgreSQL Neon</text>
-    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">Serverless Cloud</text>
-    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#0891b2">tb_pgd_inss</text>
-  </g>
-
-  <!-- Arrow 6 -> 7 -->
-  <path d="M 1000 220 L 1024 220" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Card 7: Orquestração 1 (Actions) -->
-  <g transform="translate(1030, 135)" filter="url(#card-shadow)">
-    <rect width="135" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
-    <!-- Icon GitHub Actions & Docker -->
-    <g transform="translate(42, 22)">
-      <circle cx="25" cy="25" r="23" fill="#0f172a"/>
-      <!-- Actions loop icon -->
-      <path d="M 18 16 C 14 16 12 19 12 23 C 12 28 15 31 19 31 C 24 31 26 27 28 23 C 30 19 32 16 37 16 C 41 16 44 19 44 23 C 44 28 41 31 37 31" stroke="#38bdf8" stroke-width="3" stroke-linecap="round" fill="none"/>
-      <circle cx="15" cy="23" r="2.5" fill="#38bdf8"/>
-      <circle cx="41" cy="23" r="2.5" fill="#38bdf8"/>
-    </g>
-    <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Orquestração:</text>
-    <text x="67" y="119" text-anchor="middle" font-size="9" font-weight="600" fill="#0f172a">GitHub Actions</text>
-    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#2563eb">database_sync.yml</text>
-    <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">Cron Mensal + Auto</text>
+    <text x="67" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#0891b2">Star Schema + IA</text>
+    <text x="67" y="153" text-anchor="middle" font-size="8.5" font-weight="600" fill="#0e7490">Fato, 5 Dims &amp; Insights</text>
   </g>
 
   <!-- Arrow 7 -> 8 -->
@@ -198,28 +195,28 @@
     </g>
     <text x="67" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#854d0e">Visualização:</text>
     <text x="67" y="120" text-anchor="middle" font-size="11" font-weight="800" fill="#a16207">Power BI</text>
-    <text x="67" y="136" text-anchor="middle" font-size="9" font-weight="500" fill="#713f12">Dashboard Web</text>
+    <text x="67" y="136" text-anchor="middle" font-size="9" font-weight="500" fill="#713f12">Projeto PBIP / Web</text>
     <text x="67" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#ca8a04">9 Telas Analíticas</text>
   </g>
 
   <!-- ================= CONNECTING BRIDGE ================= -->
   <!-- Direct flow arrow from Power BI down to Workflow 2 -->
-  <path d="M 1262 305 L 1262 375 L 120 375 L 120 425" stroke="#2563eb" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-blue)"/>
-  <text x="680" y="367" text-anchor="middle" font-size="11" font-weight="700" fill="#2563eb" letter-spacing="0.5">DADOS &amp; DASHBOARD ATUALIZADOS ACIONAM DOCUMENTAÇÃO E INSIGHTS</text>
+  <path d="M 1262 305 L 1262 375 L 155 375 L 155 425" stroke="#2563eb" stroke-width="2" stroke-dasharray="6,4" fill="none" marker-end="url(#arrow-blue)"/>
+  <text x="680" y="367" text-anchor="middle" font-size="11" font-weight="700" fill="#2563eb" letter-spacing="0.5">+1h30 INTERVALO (AGUARDA ATUALIZAÇÃO DO POWER BI) → DISPARO ÀS 07:30 BRT</text>
 
   <!-- ================= SECTION 2: DOCUMENTAÇÃO & INSIGHTS ================= -->
   <!-- Section 2 Badge -->
   <g transform="translate(40, 395)">
-    <rect x="0" y="0" width="670" height="28" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
+    <rect x="0" y="0" width="710" height="28" rx="6" fill="#faf5ff" stroke="#e9d5ff" stroke-width="1"/>
     <circle cx="14" cy="14" r="5" fill="#7c3aed"/>
-    <text x="26" y="18" font-size="11" font-weight="700" fill="#6b21a8">WORKFLOW 2: PRINTS DO DASHBOARD &amp; DOCUMENTAÇÃO (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)</text>
+    <text x="26" y="18" font-size="11" font-weight="700" fill="#6b21a8">WORKFLOW 2: PRINTS DO DASHBOARD &amp; DOCUMENTAÇÃO (atualizar_documentacao_prints.yml — Semanalmente, toda segunda às 07:30 BRT)</text>
   </g>
 
   <!-- Card 9: Capturar Prints -->
   <g transform="translate(40, 435)" filter="url(#card-shadow)">
-    <rect width="190" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+    <rect width="260" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
     <!-- Icon Camera Fotografica -->
-    <g transform="translate(68, 20)">
+    <g transform="translate(105, 20)">
       <rect x="5" y="12" width="40" height="28" rx="6" fill="#0f172a"/>
       <path d="M 16 12 L 20 6 L 30 6 L 34 12 Z" fill="#0f172a"/>
       <circle cx="25" cy="26" r="10" fill="#38bdf8"/>
@@ -227,85 +224,68 @@
       <circle cx="27" cy="24" r="2" fill="#ffffff"/>
       <circle cx="37" cy="18" r="2.5" fill="#ef4444"/>
     </g>
-    <text x="95" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Prints do Dashboard:</text>
-    <text x="95" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">capturar_prints.py</text>
-    <text x="95" y="135" text-anchor="middle" font-size="8.5" font-weight="500" fill="#64748b">Captura das Telas do Dashboard</text>
-    <text x="95" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">Retry com Hash SHA-256</text>
+    <text x="130" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Prints do Dashboard:</text>
+    <text x="130" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#2563eb">capturar_prints.py</text>
+    <text x="130" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">Playwright (Locale pt-BR)</text>
+    <text x="130" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#059669">Retry com Hash SHA-256</text>
   </g>
 
   <!-- Arrow 9 -> 10 -->
-  <path d="M 230 520 L 264 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 300 520 L 364 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- Card 10: Gerar Insights -->
-  <g transform="translate(270, 435)" filter="url(#card-shadow)">
-    <rect width="200" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
-    <!-- Icon Google Gemini Star -->
-    <g transform="translate(75, 18)">
-      <path d="M 25 2 C 25 15 35 25 48 25 C 35 25 25 35 25 48 C 25 35 15 25 2 25 C 15 25 25 15 25 2 Z" fill="url(#grad-gemini)"/>
-      <circle cx="39" cy="11" r="3" fill="#8ab4f8"/>
-    </g>
-    <text x="100" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Insights Executivos:</text>
-    <text x="100" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">gerar_insights.py</text>
-    <text x="100" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#64748b">Google Gemini 3.5 Flash</text>
-    <text x="100" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#4f46e5">Métricas MoM &amp; Análise IA</text>
-  </g>
-
-  <!-- Arrow 10 -> 11 -->
-  <path d="M 470 520 L 504 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-
-  <!-- Card 11: Testes Documentação & Insights -->
-  <g transform="translate(510, 435)" filter="url(#card-shadow)">
-    <rect width="220" height="170" rx="14" fill="url(#card-bg)" stroke="#c084fc" stroke-width="1.5"/>
+  <!-- Card 10: Testes Documentação & Insights -->
+  <g transform="translate(370, 435)" filter="url(#card-shadow)">
+    <rect width="270" height="170" rx="14" fill="url(#card-bg)" stroke="#c084fc" stroke-width="1.5"/>
     <!-- Icon Selo Roxo Checkmark -->
-    <g transform="translate(85, 20)">
+    <g transform="translate(110, 20)">
       <circle cx="25" cy="25" r="23" fill="#7c3aed"/>
       <path d="M 16 26 L 22 32 L 34 18" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
     </g>
-    <text x="110" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Testes QA Documentação:</text>
-    <text x="110" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">test_documentacao_insights.py</text>
-    <text x="110" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">12 Testes Pytest Isolados</text>
-    <text x="110" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#6b21a8">Unicidade SHA-256 &amp; Links</text>
+    <text x="135" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Testes QA Documentação:</text>
+    <text x="135" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#7c3aed">test_documentacao_insights.py</text>
+    <text x="135" y="135" text-anchor="middle" font-size="9" font-weight="400" fill="#64748b">20 Testes Pytest Isolados</text>
+    <text x="135" y="153" text-anchor="middle" font-size="9" font-weight="600" fill="#6b21a8">Unicidade SHA-256 &amp; Links</text>
   </g>
 
-  <!-- Arrow 11 -> 12 -->
-  <path d="M 730 520 L 764 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <!-- Arrow 10 -> 11 -->
+  <path d="M 640 520 L 704 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- Card 12: Orquestração 2 (Actions Docs) -->
-  <g transform="translate(770, 435)" filter="url(#card-shadow)">
-    <rect width="250" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
+  <!-- Card 11: Orquestração 2 (Actions & Prefect) -->
+  <g transform="translate(710, 435)" filter="url(#card-shadow)">
+    <rect width="270" height="170" rx="14" fill="url(#card-bg)" stroke="#cbd5e1" stroke-width="1.5"/>
     <!-- Icon GitHub Actions Documentação -->
-    <g transform="translate(100, 20)">
+    <g transform="translate(110, 20)">
       <circle cx="25" cy="25" r="23" fill="#1e1b4b"/>
       <path d="M 18 16 C 14 16 12 19 12 23 C 12 28 15 31 19 31 C 24 31 26 27 28 23 C 30 19 32 16 37 16 C 41 16 44 19 44 23 C 44 28 41 31 37 31" stroke="#a78bfa" stroke-width="3" stroke-linecap="round" fill="none"/>
       <circle cx="15" cy="23" r="2.5" fill="#a78bfa"/>
       <circle cx="41" cy="23" r="2.5" fill="#a78bfa"/>
     </g>
-    <text x="125" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Orquestração Documentação:</text>
-    <text x="125" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">GitHub Actions</text>
-    <text x="125" y="135" text-anchor="middle" font-size="9" font-weight="600" fill="#7c3aed">atualizar_documentacao_prints.yml</text>
-    <text x="125" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#475569">Execução Agendada (10:30 UTC)</text>
+    <text x="135" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#0f172a">Orquestração CI/CD:</text>
+    <text x="135" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#4338ca">GitHub Actions &amp; Prefect 3</text>
+    <text x="135" y="135" text-anchor="middle" font-size="9" font-weight="600" fill="#7c3aed">pipeline_flow.py / prints_flow.py</text>
+    <text x="135" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#475569">Cron Semanal (Segundas-feiras)</text>
   </g>
 
-  <!-- Arrow 12 -> 13 -->
-  <path d="M 1020 520 L 1054 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <!-- Arrow 11 -> 12 -->
+  <path d="M 980 520 L 1044 520" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
-  <!-- Card 13: Publicação Documentação -->
-  <g transform="translate(1060, 435)" filter="url(#card-shadow)">
-    <rect width="260" height="170" rx="14" fill="url(#card-bg)" stroke="#10b981" stroke-width="1.5"/>
+  <!-- Card 12: Publicação Documentação -->
+  <g transform="translate(1050, 435)" filter="url(#card-shadow)">
+    <rect width="270" height="170" rx="14" fill="url(#card-bg)" stroke="#10b981" stroke-width="1.5"/>
     <!-- Icon Caderno / Markdown -->
-    <g transform="translate(105, 20)">
+    <g transform="translate(110, 20)">
       <rect x="5" y="5" width="40" height="40" rx="6" fill="#047857"/>
       <path d="M 14 18 L 20 25 L 26 18 L 26 31 L 22 31 L 22 23 L 20 26 L 18 23 L 18 31 L 14 31 Z" fill="#ffffff"/>
       <path d="M 32 25 L 35 21 L 38 25 L 36 25 L 36 31 L 34 31 L 34 25 Z" fill="#ffffff"/>
     </g>
-    <text x="130" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">Publicação dos Artefatos:</text>
-    <text x="130" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#047857">READMEs Atualizados</text>
-    <text x="130" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• dashboard_README.md (9 Telas)</text>
-    <text x="130" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• insights_README.md (Relatório IA)</text>
+    <text x="135" y="103" text-anchor="middle" font-size="11" font-weight="700" fill="#065f46">Documentação:</text>
+    <text x="135" y="119" text-anchor="middle" font-size="10" font-weight="600" fill="#047857">READMEs &amp; Artefatos</text>
+    <text x="135" y="135" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• dashboard_README.md (9 Telas)</text>
+    <text x="135" y="153" text-anchor="middle" font-size="9" font-weight="500" fill="#334155">• insights_README.md (Relatório IA)</text>
   </g>
 
   <!-- Footer Info Line -->
   <line x1="40" y1="675" x2="1320" y2="675" stroke="#e2e8f0" stroke-width="1"/>
   <text x="680" y="705" text-anchor="middle" font-size="11" font-weight="500" fill="#64748b">Pipeline de Dados Automatizado — Repositório Open Source PGD SGP-INSS (2023–2026)</text>
-  <text x="680" y="725" text-anchor="middle" font-size="10" font-weight="400" fill="#94a3b8">Isolamento Completo entre Workflow Principal de Carga e Workflow de Documentação Visual</text>
+  <text x="680" y="725" text-anchor="middle" font-size="10" font-weight="400" fill="#94a3b8">Modelagem Star Schema no PostgreSQL Neon + Orquestração Prefect 3 + Documentação Visual Automatizada</text>
 </svg>
