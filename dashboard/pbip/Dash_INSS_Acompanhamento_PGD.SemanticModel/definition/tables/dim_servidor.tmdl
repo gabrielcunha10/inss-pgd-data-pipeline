@@ -1,0 +1,47 @@
+table dim_servidor
+	lineageTag: 44d57b40-b4f7-408b-9534-f40000000001
+
+	column id_usuario
+		dataType: string
+		isKey
+		lineageTag: 44d57b40-b4f7-408b-9534-f40000000002
+		summarizeBy: none
+		sourceColumn: id_usuario
+
+		annotation SummarizationSetBy = Automatic
+
+	column primeira_competencia
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 44d57b40-b4f7-408b-9534-f40000000003
+		summarizeBy: none
+		sourceColumn: primeira_competencia
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ultima_competencia
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 44d57b40-b4f7-408b-9534-f40000000004
+		summarizeBy: none
+		sourceColumn: ultima_competencia
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	partition dim_servidor = m
+		mode: import
+		source =
+				let
+				    Fonte = PostgreSQL.Database("ep-sparkling-truth-acui7jst-pooler.sa-east-1.aws.neon.tech", "neondb"),
+				    public_dim_servidor = Fonte{[Schema="public",Item="dim_servidor"]}[Data]
+				in
+				    public_dim_servidor
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

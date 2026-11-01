@@ -1,0 +1,58 @@
+table dim_programa
+	lineageTag: 11a24e10-81c4-4d58-9201-c10000000001
+
+	column sk_programa
+		dataType: int64
+		formatString: 0
+		lineageTag: 11a24e10-81c4-4d58-9201-c10000000002
+		summarizeBy: none
+		sourceColumn: sk_programa
+
+		annotation SummarizationSetBy = Automatic
+
+	column sigla_programa
+		dataType: string
+		isKey
+		lineageTag: 11a24e10-81c4-4d58-9201-c10000000003
+		summarizeBy: none
+		sourceColumn: sigla_programa
+
+		annotation SummarizationSetBy = Automatic
+
+	column programa
+		dataType: string
+		lineageTag: 11a24e10-81c4-4d58-9201-c10000000004
+		summarizeBy: none
+		sourceColumn: programa
+
+		annotation SummarizationSetBy = Automatic
+
+	column flag_pgd
+		dataType: string
+		lineageTag: 11a24e10-81c4-4d58-9201-c10000000005
+		summarizeBy: none
+		sourceColumn: flag_pgd
+
+		annotation SummarizationSetBy = Automatic
+
+	column filtro_programa
+		dataType: string
+		lineageTag: 11a24e10-81c4-4d58-9201-c10000000006
+		summarizeBy: none
+		sourceColumn: filtro_programa
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_programa = m
+		mode: import
+		source =
+				let
+				    Fonte = PostgreSQL.Database("ep-sparkling-truth-acui7jst-pooler.sa-east-1.aws.neon.tech", "neondb"),
+				    public_dim_programa = Fonte{[Schema="public",Item="dim_programa"]}[Data]
+				in
+				    public_dim_programa
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,50 @@
+table dim_linha_trabalho
+	lineageTag: 22b35f20-92d5-4e69-a312-d20000000001
+
+	column sk_linha_trabalho
+		dataType: int64
+		formatString: 0
+		lineageTag: 22b35f20-92d5-4e69-a312-d20000000002
+		summarizeBy: none
+		sourceColumn: sk_linha_trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column sigla_linha_trabalho
+		dataType: string
+		isKey
+		lineageTag: 22b35f20-92d5-4e69-a312-d20000000003
+		summarizeBy: none
+		sourceColumn: sigla_linha_trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column linha_trabalho
+		dataType: string
+		lineageTag: 22b35f20-92d5-4e69-a312-d20000000004
+		summarizeBy: none
+		sourceColumn: linha_trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column filtro_linha_trabalho
+		dataType: string
+		lineageTag: 22b35f20-92d5-4e69-a312-d20000000005
+		summarizeBy: none
+		sourceColumn: filtro_linha_trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_linha_trabalho = m
+		mode: import
+		source =
+				let
+				    Fonte = PostgreSQL.Database("ep-sparkling-truth-acui7jst-pooler.sa-east-1.aws.neon.tech", "neondb"),
+				    public_dim_linha_trabalho = Fonte{[Schema="public",Item="dim_linha_trabalho"]}[Data]
+				in
+				    public_dim_linha_trabalho
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -43,3 +43,24 @@ relationship cb9d4ff7-73b1-08d2-2db8-dfad39a3c3e7
 	fromColumn: 'public tb_pgd_inss'.competencia
 	toColumn: insights_historico_powerbi.competencia
 
+relationship f0000001-0001-4000-8000-000000000001
+	fromColumn: 'public tb_pgd_inss'.sigla_programa
+	toColumn: dim_programa.sigla_programa
+
+relationship f0000002-0002-4000-8000-000000000002
+	fromColumn: 'public tb_pgd_inss'.sigla_linha_trabalho
+	toColumn: dim_linha_trabalho.sigla_linha_trabalho
+
+relationship f0000003-0003-4000-8000-000000000003
+	fromColumn: 'public tb_pgd_inss'.id_lotacao
+	toColumn: dim_lotacao.id_lotacao
+
+relationship f0000004-0004-4000-8000-000000000004
+	fromColumn: 'public tb_pgd_inss'.id_usuario
+	toColumn: dim_servidor.id_usuario
+
+relationship f0000005-0005-4000-8000-000000000005
+	fromColumn: 'public tb_pgd_inss'.competencia
+	toColumn: dim_calendario.competencia
+
+

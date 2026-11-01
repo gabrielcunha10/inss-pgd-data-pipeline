@@ -57,13 +57,14 @@ table insights_historico_powerbi
 		annotation SummarizationSetBy = Automatic
 
 	column variacao_mensal_mom
-		dataType: int64
-		formatString: 0
+		dataType: double
 		lineageTag: 658407f3-8310-4f4b-b260-576ef8d7f1a3
 		summarizeBy: sum
 		sourceColumn: variacao_mensal_mom
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column variacao_mensal_mom_fmt
 		dataType: double
@@ -76,13 +77,14 @@ table insights_historico_powerbi
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column adesao_teletrabalho_pct
-		dataType: int64
-		formatString: 0
+		dataType: double
 		lineageTag: 53510935-0da9-44e2-95e5-df4eb56ff3bd
 		summarizeBy: sum
 		sourceColumn: adesao_teletrabalho_pct
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column adesao_teletrabalho_fmt
 		dataType: double
@@ -95,13 +97,14 @@ table insights_historico_powerbi
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column adesao_remoto_pct
-		dataType: int64
-		formatString: 0
+		dataType: double
 		lineageTag: 730c069a-dc6d-4d8e-9ac8-79098bc20bed
 		summarizeBy: sum
 		sourceColumn: adesao_remoto_pct
 
 		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
 	column adesao_remoto_fmt
 		dataType: double
@@ -158,9 +161,9 @@ table insights_historico_powerbi
 		mode: import
 		source =
 				let
-				    Fonte = Csv.Document(Web.Contents("https://raw.githubusercontent.com/gabrielcunha10/inss-pgd-data-pipeline/main/dashboard/insights_historico_powerbi.csv"),[Delimiter=",", Columns=14, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
-				    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"competencia", type date}, {"competencia_mes_ano", type date}, {"servidores_plano_ativo", Int64.Type}, {"servidores_plano_ativo_fmt", Int64.Type}, {"variacao_mensal_mom", Int64.Type}, {"variacao_mensal_mom_fmt", Percentage.Type}, {"adesao_teletrabalho_pct", Int64.Type}, {"adesao_teletrabalho_fmt", Percentage.Type}, {"adesao_remoto_pct", Int64.Type}, {"adesao_remoto_fmt", Percentage.Type}, {"motor_analise_ia", type text}, {"diagnostico_executivo", type text}, {"principais_movimentacoes_mom", type text}, {"matriz_alertas_recomendacoes", type text}})
+				    Fonte = PostgreSQL.Database("ep-sparkling-truth-acui7jst-pooler.sa-east-1.aws.neon.tech", "neondb"),
+				    public_insights_historico_powerbi = Fonte{[Schema="public",Item="insights_historico_powerbi"]}[Data],
+				    #"Tipo Alterado" = Table.TransformColumnTypes(public_insights_historico_powerbi,{{"competencia", type date}, {"competencia_mes_ano", type date}, {"servidores_plano_ativo", Int64.Type}, {"servidores_plano_ativo_fmt", Int64.Type}, {"variacao_mensal_mom", type number}, {"variacao_mensal_mom_fmt", Percentage.Type}, {"adesao_teletrabalho_pct", type number}, {"adesao_teletrabalho_fmt", Percentage.Type}, {"adesao_remoto_pct", type number}, {"adesao_remoto_fmt", Percentage.Type}, {"motor_analise_ia", type text}, {"diagnostico_executivo", type text}, {"principais_movimentacoes_mom", type text}, {"matriz_alertas_recomendacoes", type text}})
 				in
 				    #"Tipo Alterado"
 

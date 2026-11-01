@@ -10,7 +10,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 1
 
-annotation PBI_QueryOrder = ["CaminhoAutomatico","public tb_pgd_inss","_Medidas","_Medidas (2)","insights_historico_powerbi"]
+annotation PBI_QueryOrder = ["CaminhoAutomatico","public tb_pgd_inss","dim_programa","dim_linha_trabalho","dim_lotacao","dim_servidor","dim_calendario","_Medidas","_Medidas (2)","insights_historico_powerbi"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -20,6 +20,11 @@ ref table LocalDateTable_b49bec38-849f-4b7e-9bdc-9149b94f0095
 ref table LocalDateTable_1fc3bb5a-c8f1-4035-b881-320f86d65afd
 ref table '_Medidas (2)'
 ref table 'public tb_pgd_inss'
+ref table dim_programa
+ref table dim_linha_trabalho
+ref table dim_lotacao
+ref table dim_servidor
+ref table dim_calendario
 ref table LocalDateTable_d02ee100-2402-423d-a99a-9bc01fc87423
 ref table LocalDateTable_92401043-d257-4411-8acd-1c16cfba3e34
 ref table LocalDateTable_5623ca4c-5e69-4085-9cef-a62460ad174a

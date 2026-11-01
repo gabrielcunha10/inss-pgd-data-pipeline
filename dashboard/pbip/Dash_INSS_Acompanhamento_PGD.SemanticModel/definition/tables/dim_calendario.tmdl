@@ -1,0 +1,88 @@
+table dim_calendario
+	lineageTag: 55e68c50-c508-419c-a645-050000000001
+	dataCategory: Time
+
+	column competencia
+		dataType: dateTime
+		isKey
+		formatString: Long Date
+		lineageTag: 55e68c50-c508-419c-a645-050000000002
+		summarizeBy: none
+		sourceColumn: competencia
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ano
+		dataType: int64
+		formatString: 0
+		lineageTag: 55e68c50-c508-419c-a645-050000000003
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: int64
+		formatString: 0
+		lineageTag: 55e68c50-c508-419c-a645-050000000004
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_mes
+		dataType: string
+		lineageTag: 55e68c50-c508-419c-a645-050000000005
+		summarizeBy: none
+		sourceColumn: nome_mes
+		sortByColumn: mes
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes_abrev
+		dataType: string
+		lineageTag: 55e68c50-c508-419c-a645-050000000006
+		summarizeBy: none
+		sourceColumn: mes_abrev
+		sortByColumn: mes
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column competencia_fmt
+		dataType: string
+		lineageTag: 55e68c50-c508-419c-a645-050000000007
+		summarizeBy: none
+		sourceColumn: competencia_fmt
+		sortByColumn: competencia
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column trimestre
+		dataType: string
+		lineageTag: 55e68c50-c508-419c-a645-050000000008
+		summarizeBy: none
+		sourceColumn: trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dim_calendario = m
+		mode: import
+		source =
+				let
+				    Fonte = PostgreSQL.Database("ep-sparkling-truth-acui7jst-pooler.sa-east-1.aws.neon.tech", "neondb"),
+				    public_dim_calendario = Fonte{[Schema="public",Item="dim_calendario"]}[Data]
+				in
+				    public_dim_calendario
+
+	annotation PBI_NavigationStepName = Navegação
+
+	annotation PBI_ResultType = Table
+

@@ -258,13 +258,27 @@ table '_Medidas (2)'
 
 	measure Cor_Card1_Servidores_Ativos = ```
 			
-			VAR VarNum = SELECTEDVALUE(insights_historico_powerbi[variacao_mensal_mom])
+			VAR CompAtual = SELECTEDVALUE(insights_historico_powerbi[competencia])
+			VAR CompAnterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[competencia]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] < CompAtual
+			    )
+			VAR Atual = SELECTEDVALUE(insights_historico_powerbi[servidores_plano_ativo])
+			VAR Anterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[servidores_plano_ativo]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] = CompAnterior
+			    )
+			VAR Dif = IF(ISBLANK(CompAnterior), 0, Atual - Anterior)
 			RETURN
 			SWITCH(
 			    TRUE(),
-			    VarNum > 0, "#16A34A", -- Verde
-			    VarNum < 0, "#DC2626", -- Vermelho
-			    "#64748B"             -- Cinza para estabilidade
+			    Dif > 0, "#16A34A", -- Verde
+			    Dif < 0, "#DC2626", -- Vermelho
+			    "#64748B"           -- Cinza para estabilidade
 			)
 			
 			```
@@ -272,14 +286,27 @@ table '_Medidas (2)'
 
 	measure Card1_Servidores_Ativos = ```
 			
-			VAR VarNum = SELECTEDVALUE(insights_historico_powerbi[variacao_mensal_mom])
+			VAR CompAtual = SELECTEDVALUE(insights_historico_powerbi[competencia])
+			VAR CompAnterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[competencia]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] < CompAtual
+			    )
 			VAR ValorNum = SELECTEDVALUE(insights_historico_powerbi[servidores_plano_ativo])
+			VAR Anterior = 
+			    CALCULATE(
+			        MAX(insights_historico_powerbi[servidores_plano_ativo]),
+			        ALL(insights_historico_powerbi),
+			        insights_historico_powerbi[competencia] = CompAnterior
+			    )
+			VAR Dif = IF(ISBLANK(CompAnterior), 0, ValorNum - Anterior)
 			VAR ValorFormatado = FORMAT(ValorNum, "#,##0", "pt-BR")
 			RETURN
 			SWITCH(
 			    TRUE(),
-			    VarNum > 0, "▲ " & ValorFormatado,
-			    VarNum < 0, "▼ " & ValorFormatado,
+			    Dif > 0, "▲ " & ValorFormatado,
+			    Dif < 0, "▼ " & ValorFormatado,
 			    "— " & ValorFormatado
 			)
 			

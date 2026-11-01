@@ -4,65 +4,130 @@
     {
       "ordinal": 0,
       "scrollPosition": {
-        "x": 322,
+        "x": 0,
         "y": 0
       },
       "nodes": [
         {
           "location": {
-            "x": 284,
-            "y": 50
+            "x": 520,
+            "y": 280
+          },
+          "nodeIndex": "public tb_pgd_inss",
+          "nodeLineageTag": "0ff3585e-6b21-4216-8b61-137b246c94bb",
+          "size": {
+            "height": 320,
+            "width": 250
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 520,
+            "y": 20
+          },
+          "nodeIndex": "dim_calendario",
+          "nodeLineageTag": "55e68c50-c508-419c-a645-050000000001",
+          "size": {
+            "height": 210,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 180,
+            "y": 140
+          },
+          "nodeIndex": "dim_programa",
+          "nodeLineageTag": "11a24e10-81c4-4d58-9201-c10000000001",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 180,
+            "y": 400
+          },
+          "nodeIndex": "dim_linha_trabalho",
+          "nodeLineageTag": "22b35f20-92d5-4e69-a312-d20000000001",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 860,
+            "y": 140
+          },
+          "nodeIndex": "dim_lotacao",
+          "nodeLineageTag": "33c46a30-a3e6-4f7a-b423-e30000000001",
+          "size": {
+            "height": 180,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 860,
+            "y": 380
+          },
+          "nodeIndex": "dim_servidor",
+          "nodeLineageTag": "44d57b40-b4f7-408b-9534-f40000000001",
+          "size": {
+            "height": 180,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 520,
+            "y": 640
+          },
+          "nodeIndex": "insights_historico_powerbi",
+          "nodeLineageTag": "5366961c-fd58-4e5f-972a-00cb4e09c568",
+          "size": {
+            "height": 240,
+            "width": 250
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 180,
+            "y": 640
           },
           "nodeIndex": "Designacoes_Unicas",
           "size": {
-            "height": 200,
+            "height": 180,
             "width": 234
           },
           "zIndex": 3
         },
         {
           "location": {
-            "x": 582,
-            "y": 0
-          },
-          "nodeIndex": "public tb_pgd_inss",
-          "nodeLineageTag": "0ff3585e-6b21-4216-8b61-137b246c94bb",
-          "size": {
-            "height": 300,
-            "width": 234
-          },
-          "zIndex": 1
-        },
-        {
-          "location": {
-            "x": 836,
-            "y": 344
+            "x": 860,
+            "y": 620
           },
           "nodeIndex": "_Medidas (2)",
           "nodeLineageTag": "733f3efc-7e16-4f9b-ad73-24c50e111bba",
           "size": {
-            "height": 324,
+            "height": 260,
             "width": 234
           },
           "zIndex": 2
-        },
-        {
-          "location": {
-            "x": 855,
-            "y": 0
-          },
-          "nodeIndex": "insights_historico_powerbi",
-          "nodeLineageTag": "5366961c-fd58-4e5f-972a-00cb4e09c568",
-          "size": {
-            "height": 300,
-            "width": 234
-          },
-          "zIndex": 0
         }
       ],
       "name": "Todas as tabelas",
-      "zoomValue": 100,
-      "pinKeyFieldsToTop": false,
+      "zoomValue": 90,
+      "pinKeyFieldsToTop": true,
       "showExtraHeaderInfo": false,
       "hideKeyFieldsWhenCollapsed": false,
       "tablesLocked": false
