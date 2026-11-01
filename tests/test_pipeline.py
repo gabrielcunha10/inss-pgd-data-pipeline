@@ -33,6 +33,7 @@ from tratamento.etl_sgp_inss import (
 )
 from tratamento.load_neon import (
     construir_dtype_mapping,
+    calcular_hash_competencia,
     main as load_neon_main,
 )
 
@@ -526,7 +527,9 @@ def test_carga_execucao_transacional_mock(monkeypatch, tmp_path):
                     load_neon_main()
 
     assert mock_conn.execute.called, "conn.execute deveria ter sido chamado para o DELETE preventivo."
-    call_args, _ = mock_conn.execute.call_args
+    delete_calls = [c for c in mock_conn.execute.call_args_list if "DELETE FROM tb_pgd_inss" in str(c[0][0])]
+    assert len(delete_calls) == 1
+    call_args, _ = delete_calls[0]
     assert "DELETE FROM tb_pgd_inss" in str(call_args[0])
     comps_executadas = call_args[1]["comps"]
     assert "2025-01-01" in comps_executadas
@@ -537,6 +540,51 @@ def test_carga_execucao_transacional_mock(monkeypatch, tmp_path):
     assert to_sql_args[0] == "tb_pgd_inss"
     assert to_sql_kwargs["chunksize"] == 10000
     assert to_sql_kwargs["if_exists"] == "append"
+
+
+def test_carga_pula_competencias_com_hash_identico_mock(monkeypatch, tmp_path):
+    monkeypatch.setenv("DATABASE_URL", "postgresql://mock:mock@localhost:5432/mock")
+
+    df_mock = pd.DataFrame({
+        "competencia": [pd.Timestamp("2025-01-01")],
+        "id_usuario": ["USR-11111111"],
+        "id_designacao": [101],
+        "lotacao": ["GEX CENTRAL"],
+        "status": ["Designado"],
+    })
+    caminho_parquet = tmp_path / "mock_skip.parquet"
+    df_mock.to_parquet(caminho_parquet, index=False)
+
+    hash_esperado = calcular_hash_competencia(df_mock)
+
+    mock_conn = MagicMock()
+
+    def side_effect_execute(stmt, params=None):
+        s = str(stmt)
+        res = MagicMock()
+        if "GROUP BY competencia" in s:
+            res.fetchall.return_value = [("2025-01-01", 1)]
+        elif "FROM tb_controle_carga" in s:
+            res.fetchall.return_value = [("2025-01-01", 1, hash_esperado)]
+        else:
+            res.fetchall.return_value = []
+        return res
+
+    mock_conn.execute.side_effect = side_effect_execute
+    mock_engine = MagicMock()
+    mock_engine.begin.return_value.__enter__.return_value = mock_conn
+
+    mock_inspector = MagicMock()
+    mock_inspector.has_table.return_value = True
+    mock_inspector.get_columns.return_value = [{"name": c} for c in df_mock.columns]
+
+    with patch("tratamento.load_neon.PARQUET_FILE", caminho_parquet):
+        with patch("tratamento.load_neon.create_engine", return_value=mock_engine):
+            with patch("tratamento.load_neon.inspect", return_value=mock_inspector):
+                with patch.object(pd.DataFrame, "to_sql") as mock_to_sql:
+                    load_neon_main()
+
+    assert not mock_to_sql.called, "Não deveria reenviar dados quando o hash e contagem no banco são idênticos."
 
 
 def test_etl_ler_csv_encodings(tmp_path):
