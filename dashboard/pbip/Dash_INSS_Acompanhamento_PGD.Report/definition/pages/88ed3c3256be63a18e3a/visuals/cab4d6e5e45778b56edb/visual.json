@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "cab4d6e5e45778b56edb",
   "position": {
     "x": 692.52279635258367,
@@ -589,5 +589,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "b2e6cf914c6a20c20045",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas (2)"
+              }
+            },
+            "Property": "Servidores no Maior Programa"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

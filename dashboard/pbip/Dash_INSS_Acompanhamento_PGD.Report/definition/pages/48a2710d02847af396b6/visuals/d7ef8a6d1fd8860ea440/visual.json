@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "d7ef8a6d1fd8860ea440",
   "position": {
     "x": 190.32418952618454,
@@ -399,6 +399,25 @@
             }
           ]
         }
+      },
+      {
+        "name": "7a7b15b0bc82d38579c5",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
+                  }
+                },
+                "Property": "id_designacao"
+              }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

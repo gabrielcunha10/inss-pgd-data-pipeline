@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "14d3d10d7fc0956d6e8e",
   "position": {
     "x": 952.21884498480244,
@@ -589,5 +589,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "8d621b74583896a29768",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas (2)"
+              }
+            },
+            "Property": "Média de Servidores por Programa"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

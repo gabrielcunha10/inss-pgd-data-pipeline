@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "be79fe2a0175fef8313b",
   "position": {
     "x": 692.52279635258367,
@@ -589,5 +589,23 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "bc6e1318d051eca0c0e0",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas (2)"
+              }
+            },
+            "Property": "Maior Linha (Servidores)"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "d48645ec2fc4ca3a4c3b",
   "position": {
     "x": 189.66565349544075,
@@ -445,5 +445,65 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "130fe6d3a769ed08cb35",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fato_designacoes"
+              }
+            },
+            "Property": "id_usuario"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "ae7423bdb972163646bd",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas (2)"
+              }
+            },
+            "Property": "Total de Designações"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "56680b80bec4b86a7396",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas (2)"
+              }
+            },
+            "Property": "Designações por Mês"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "879228d506b9bdcbb11d",
+        "field": {
+          "Measure": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "_Medidas (2)"
+              }
+            },
+            "Property": "Meses Observados"
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
