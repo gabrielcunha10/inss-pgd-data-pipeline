@@ -34,6 +34,8 @@ from tratamento.etl_sgp_inss import (
 from tratamento.load_neon import (
     construir_dtype_mapping,
     calcular_hash_competencia,
+    construir_star_schema,
+    sincronizar_insights_neon,
     main as load_neon_main,
 )
 
@@ -151,9 +153,8 @@ def test_ingestao_baixar_arquivos_padronizados_pula_existente(tmp_path):
 
 def test_ingestao_baixar_arquivos_padronizados_erro_api():
     with patch("requests.get", side_effect=Exception("Erro de conexao")):
-        with pytest.raises(SystemExit) as exc_info:
+        with pytest.raises(RuntimeError, match="Erro fatal na consulta a API do INSS"):
             baixar_arquivos_padronizados()
-        assert exc_info.value.code == 1, "Falha na API publica deve disparar sys.exit(1)."
 
 
 def test_ingestao_api_inss_real_disponibilidade_e_contrato():
@@ -645,6 +646,338 @@ def test_etl_main_mock(monkeypatch):
     monkeypatch.setattr("tratamento.etl_sgp_inss.carregar_e_consolidar_brutos", lambda d: mock_df)
     monkeypatch.setattr("tratamento.etl_sgp_inss.salvar_artefatos", MagicMock())
     etl_main()
+
+
+def test_star_schema_decomposicao_e_integridade_referencial():
+    df_flat = pd.DataFrame({
+        "competencia": [pd.Timestamp("2026-07-01"), pd.Timestamp("2026-08-01"), pd.Timestamp("2026-08-01")],
+        "id_usuario": ["USR-11111111", "USR-11111111", "USR-22222222"],
+        "id_designacao": [1001, 1001, 1002],
+        "sigla_programa": ["CEAP", "CEAP", "PG-DTI"],
+        "programa": [
+            "CENTRAL ESPECIALIZADA DE ALTA PERFORMANCE",
+            "CENTRAL ESPECIALIZADA DE ALTA PERFORMANCE",
+            "PROGRAMA DE GESTÃO - DIRETORIA DE TECNOLOGIA DA INFORMAÇÃO",
+        ],
+        "flag_pgd": ["Sim", "Sim", "Sim"],
+        "filtro_programa": ["CEAP - CENTRAL...", "CEAP - CENTRAL...", "PG-DTI - PROGRAMA..."],
+        "sigla_linha_trabalho": ["CEABRD_SR_NE", "CEABRD_SR_NE", "APS_SRSE"],
+        "linha_trabalho": ["Central Nordeste", "Central Nordeste", "Agência Sudeste"],
+        "filtro_linha_trabalho": ["CEABRD_SR_NE - Central...", "CEABRD_SR_NE - Central...", "APS_SRSE - Agência..."],
+        "id_lotacao": ["01800", "01800", "04025060"],
+        "lotacao": ["CORREGEDORIA", "CORREGEDORIA", "APS FEIRA DE SANTANA"],
+        "status": ["Designado", "Designado", "Designado"],
+        "modalidade": ["Remoto", "Remoto", "Semipresencial"],
+        "tipo_entrega": ["Meta", "Meta", "Produto"],
+        "motivo_desligamento": [None, None, None],
+        "dt_inicio_designacao": [pd.Timestamp("2026-01-01")] * 3,
+        "dt_fim_designacao": [pd.Timestamp("2026-12-31")] * 3,
+        "dt_criacao_designacao": [pd.Timestamp("2026-01-01")] * 3,
+        "dt_alteracao_designacao": [pd.Timestamp("2026-01-01")] * 3,
+    })
+
+    star = construir_star_schema(df_flat)
+
+    tabelas_esperadas = {
+        "dim_programa",
+        "dim_linha_trabalho",
+        "dim_lotacao",
+        "dim_servidor",
+        "dim_calendario",
+        "fato_designacoes",
+    }
+    assert set(star.keys()) == tabelas_esperadas
+
+    # Deduplicação das dimensões
+    assert len(star["dim_programa"]) == 2
+    assert len(star["dim_linha_trabalho"]) == 2
+    assert len(star["dim_lotacao"]) == 2
+    assert len(star["dim_servidor"]) == 2
+    assert len(star["dim_calendario"]) == 2
+    assert len(star["fato_designacoes"]) == 3
+
+    # Integridade referencial das Surrogate Keys na tabela fato
+    fato = star["fato_designacoes"]
+    assert set(fato["sk_programa"].dropna()).issubset(set(star["dim_programa"]["sk_programa"]))
+    assert set(fato["sk_linha_trabalho"].dropna()).issubset(set(star["dim_linha_trabalho"]["sk_linha_trabalho"]))
+    assert set(fato["sk_lotacao"].dropna()).issubset(set(star["dim_lotacao"]["sk_lotacao"]))
+
+    # Nenhum texto descritivo longo deve ficar duplicado na tabela fato
+    for col_redundante in ["programa", "linha_trabalho", "lotacao", "filtro_programa", "filtro_linha_trabalho"]:
+        assert col_redundante not in fato.columns
+
+
+def test_sincronizar_insights_neon_sqlite(tmp_path):
+    from sqlalchemy import create_engine, inspect
+
+    csv_fake = tmp_path / "insights_historico_powerbi.csv"
+    pd.DataFrame({
+        "competencia": ["2026-03-01", "2026-04-01"],
+        "competencia_mes_ano": ["03/2026", "04/2026"],
+        "servidores_plano_ativo": [10658, 10672],
+        "servidores_plano_ativo_fmt": ["10.658", "10.672"],
+        "variacao_mensal_mom": [0.5, 0.13],
+        "variacao_mensal_mom_fmt": ["+0,50%", "+0,13%"],
+        "adesao_teletrabalho_pct": [19.4, 19.2],
+        "adesao_teletrabalho_fmt": ["19,4%", "19,2%"],
+        "adesao_remoto_pct": [72.1, 72.6],
+        "adesao_remoto_fmt": ["72,1%", "72,6%"],
+        "motor_analise_ia": ["Google Gemini Flash (3.8)"] * 2,
+        "diagnostico_executivo": ["Diagnóstico 03/2026", "Diagnóstico 04/2026"],
+        "principais_movimentacoes_mom": ["Mov 03/2026", "Mov 04/2026"],
+        "matriz_alertas_recomendacoes": ["Alerta 03/2026", "Alerta 04/2026"],
+    }).to_csv(csv_fake, index=False, encoding="utf-8")
+
+    engine = create_engine("sqlite:///:memory:")
+    with engine.begin() as conn:
+        qtd = sincronizar_insights_neon(conn=conn, caminho_csv=csv_fake)
+        assert qtd == 2
+        insp = inspect(conn)
+        assert insp.has_table("insights_historico_powerbi")
+        df_lido = pd.read_sql_table("insights_historico_powerbi", con=conn)
+        assert len(df_lido) == 2
+        assert list(df_lido["competencia_mes_ano"]) == ["03/2026", "04/2026"]
+
+
+def test_catalogo_s3_dinamico_e_candidatos():
+    from tratamento.download_sgp import construir_catalogo_s3_historico, gerar_candidatos_s3
+
+    cat = construir_catalogo_s3_historico()
+    assert len(cat) == 35
+    assert cat[0]["name"] == "SGP - outubro 2023"
+    assert cat[-1]["name"] == "SGP - agosto 2026"
+    assert cat[-1]["format"] == "XLSX"
+
+    cands = gerar_candidatos_s3(2026, 9)
+    assert len(cands) >= 24
+    formatos = {fmt for fmt, _ in cands}
+    assert {"CSV", "XLSX", "XLS"}.issubset(formatos)
+
+
+def test_precisa_baixar_recurso_detecta_republicacao(tmp_path):
+    from tratamento.download_sgp import precisa_baixar_recurso
+
+    arq = tmp_path / "pgd_inss_202607.csv"
+    arq.write_text("col1,col2\n1,2\n", encoding="utf-8")
+
+    manifest = {
+        "pgd_inss_202607.csv": {
+            "last_modified": "2026-07-05T10:00:00",
+            "etag": "abc123",
+            "size": 14,
+        }
+    }
+    # Mesmo last_modified e etag -> não baixa de novo
+    res_igual = {"last_modified": "2026-07-05T10:00:00", "etag": "abc123", "size": 14}
+    assert precisa_baixar_recurso(str(arq), "pgd_inss_202607.csv", res_igual, manifest) is False
+
+    # INSS republicou com novo last_modified -> deve baixar de novo
+    res_republicado = {"last_modified": "2026-07-20T15:30:00", "etag": "def456", "size": 250}
+    assert precisa_baixar_recurso(str(arq), "pgd_inss_202607.csv", res_republicado, manifest) is True
+
+
+def test_verificar_atualizacao_dados_alerta_defasagem(tmp_path):
+    from datetime import datetime
+    from tratamento.download_sgp import verificar_atualizacao_dados
+
+    (tmp_path / "pgd_inss_202601.csv").write_text("a,b\n1,2\n", encoding="utf-8")
+
+    # Data de referência 2 meses depois -> OK
+    res_ok = verificar_atualizacao_dados(str(tmp_path), max_meses_defasagem=3, data_ref=datetime(2026, 3, 1))
+    assert res_ok["ok"] is True
+    assert res_ok["ultima_competencia"] == "2026-01"
+
+    # Data de referência 6 meses depois -> Alerta de defasagem
+    res_stale = verificar_atualizacao_dados(str(tmp_path), max_meses_defasagem=3, data_ref=datetime(2026, 7, 1))
+    assert res_stale["ok"] is False
+    assert res_stale["meses_defasagem"] == 6
+
+    # Diretório vazio -> Alerta de dados ausentes
+    res_empty = verificar_atualizacao_dados(str(tmp_path / "inexistente"))
+    assert res_empty["ok"] is False
+    assert res_empty["ultima_competencia"] is None
+
+
+def test_precisa_baixar_recurso_head_remoto_etag_e_content_length(tmp_path):
+    from tratamento.download_sgp import precisa_baixar_recurso
+
+    arq = tmp_path / "pgd_inss_202608.csv"
+    arq.write_bytes(b"col1,col2\n1,2\n")
+
+    manifest = {
+        "pgd_inss_202608.csv": {
+            "last_modified": "2026-08-01",
+            "etag": "etag_antigo",
+            "size": 14,
+        }
+    }
+    res_item = {
+        "url": "https://s3.mock/D.SRF.FQS.005.PGD.ACSINSS.202608.csv",
+        "last_modified": "2026-08-01",
+        "etag": "etag_antigo",
+        "size": 14,
+    }
+
+    # Caso 1: HEAD retorna ETag diferente -> True
+    resp_etag = MagicMock(status_code=200, headers={"ETag": '"etag_novo"', "Content-Length": "14"})
+    with patch("requests.head", return_value=resp_etag):
+        assert precisa_baixar_recurso(
+            str(arq), "pgd_inss_202608.csv", res_item, manifest, verificar_head_remoto=True
+        ) is True
+
+    # Caso 2: HEAD retorna Content-Length diferente -> True
+    resp_len = MagicMock(status_code=200, headers={"ETag": '"etag_antigo"', "Content-Length": "999"})
+    with patch("requests.head", return_value=resp_len):
+        assert precisa_baixar_recurso(
+            str(arq), "pgd_inss_202608.csv", res_item, manifest, verificar_head_remoto=True
+        ) is True
+
+
+def test_descobrir_recursos_s3_direto_descobre_novas_competencias():
+    from tratamento.download_sgp import descobrir_recursos_s3_direto
+
+    def fake_head(url, headers=None, timeout=10):
+        resp = MagicMock()
+        resp.status_code = 200 if "202609.csv" in url else 404
+        return resp
+
+    with patch("requests.head", side_effect=fake_head):
+        recursos = descobrir_recursos_s3_direto()
+
+    nomes = [r["name"] for r in recursos]
+    assert "SGP - setembro 2026" in nomes
+
+
+def test_baixar_arquivos_padronizados_fallback_403_e_conversao_xlsx(tmp_path):
+    import io
+
+    # Cria um arquivo XLSX real em memória
+    buf_xlsx = io.BytesIO()
+    pd.DataFrame({"matricula": ["1234567"], "regime": ["Integral"]}).to_excel(buf_xlsx, index=False)
+    xlsx_bytes = buf_xlsx.getvalue()
+
+    resp_403 = MagicMock(status_code=403)
+    http_err_403 = requests.exceptions.HTTPError(response=resp_403)
+    resp_403.raise_for_status.side_effect = http_err_403
+
+    mock_session = MagicMock()
+    mock_session.get.return_value = resp_403
+
+    resp_xlsx = MagicMock(status_code=200, content=xlsx_bytes, headers={"ETag": '"etag_xlsx"'})
+    resp_xlsx.raise_for_status = MagicMock()
+
+    def fake_get(url, **kwargs):
+        if "package_show" in url:
+            return resp_403
+        return resp_xlsx
+
+    s3_fake_list = [
+        {
+            "name": "SGP - agosto 2026",
+            "format": "XLSX",
+            "url": "https://s3.mock/D.SRF.FQS.005.PGD.ACSINSS.202608.xlsx",
+        }
+    ]
+
+    data_dir = tmp_path / "data"
+    data_dir.mkdir(parents=True, exist_ok=True)
+
+    with patch("requests.get", side_effect=fake_get):
+        with patch("requests.Session", return_value=mock_session):
+            with patch("tratamento.download_sgp.descobrir_recursos_s3_direto", return_value=s3_fake_list):
+                with patch("tratamento.download_sgp.os.path.abspath", return_value=str(tmp_path / "tratamento" / "download_sgp.py")):
+                    with patch("tratamento.download_sgp.os.path.dirname", side_effect=lambda p: str(Path(p).parent)):
+                        baixar_arquivos_padronizados()
+
+    csv_gerado = data_dir / "pgd_inss_202608.csv"
+    assert csv_gerado.exists()
+    assert "1234567" in csv_gerado.read_text(encoding="utf-8")
+    assert (data_dir / ".download_manifest.json").exists()
+
+
+def test_sincronizar_star_schema_neon_sqlite_real():
+    from sqlalchemy import create_engine, inspect
+    from tratamento.load_neon import sincronizar_star_schema_neon
+
+    df_flat = pd.DataFrame({
+        "competencia": [pd.Timestamp("2026-01-01"), pd.Timestamp("2026-02-01")],
+        "id_usuario": ["USR-AAAAAAAA", "USR-BBBBBBBB"],
+        "id_designacao": [1001, 1002],
+        "sigla_programa": ["CEAP", "PG-DTI"],
+        "programa": ["CENTRAL ESPECIALIZADA", "DIRETORIA DE TI"],
+        "flag_pgd": ["Sim", "Sim"],
+        "filtro_programa": ["CEAP - CENTRAL", "PG-DTI - DIRETORIA"],
+        "sigla_linha_trabalho": ["CEABRD_SR_NE", "APS_SRSE"],
+        "linha_trabalho": ["Central Nordeste", "Agência Sudeste"],
+        "filtro_linha_trabalho": ["CEABRD_SR_NE - Central", "APS_SRSE - Agência"],
+        "id_lotacao": ["01800", "04025060"],
+        "lotacao": ["CORREGEDORIA", "APS FEIRA DE SANTANA"],
+        "status": ["Designado", "Designado"],
+        "modalidade": ["Remoto", "Semipresencial"],
+        "tipo_entrega": ["Meta", "Produto"],
+        "motivo_desligamento": [None, None],
+        "dt_inicio_designacao": [pd.Timestamp("2026-01-01")] * 2,
+        "dt_fim_designacao": [pd.Timestamp("2026-12-31")] * 2,
+        "dt_criacao_designacao": [pd.Timestamp("2026-01-01")] * 2,
+        "dt_alteracao_designacao": [pd.Timestamp("2026-01-01")] * 2,
+    })
+
+    engine = create_engine("sqlite:///:memory:")
+    with engine.begin() as conn:
+        insp = inspect(conn)
+        sincronizar_star_schema_neon(
+            conn=conn,
+            inspector=insp,
+            df_total=df_flat,
+            competencias_para_carregar=["2026-01-01", "2026-02-01"],
+            full_refresh=True,
+        )
+        # Segunda chamada com tabela já existente e full_refresh=True (cobre o ramo DROP TABLE fato_designacoes)
+        insp2 = inspect(conn)
+        sincronizar_star_schema_neon(
+            conn=conn,
+            inspector=insp2,
+            df_total=df_flat,
+            competencias_para_carregar=["2026-01-01", "2026-02-01"],
+            full_refresh=True,
+        )
+        df_fato_db = pd.read_sql_table("fato_designacoes", con=conn)
+        df_prog_db = pd.read_sql_table("dim_programa", con=conn)
+        assert len(df_fato_db) == 2
+        assert len(df_prog_db) == 2
+
+
+def test_construir_star_schema_fallbacks_colunas_ausentes():
+    df_minimo = pd.DataFrame({
+        "lotacao": ["APS CENTRO", "GEX NORTE"],
+        "status": ["Designado", "Desligado"],
+    })
+    star = construir_star_schema(df_minimo)
+    assert len(star["dim_lotacao"]) == 2
+    assert len(star["dim_programa"]) == 0
+    assert len(star["dim_calendario"]) == 0
+    assert len(star["fato_designacoes"]) == 2
+
+
+def test_normalizar_id_lotacao_casos_borda():
+    serie = pd.Series(["1800.0", "4025060", "51234", "nan", "", None, "APS-01"])
+    res = normalizar_id_lotacao(
+        serie,
+        codigos_6_conhecidos={"051234"},
+        codigos_8_conhecidos={"04025060"},
+    )
+    assert res.iloc[0] == "01800"
+    assert res.iloc[1] == "04025060"
+    assert res.iloc[2] == "051234"
+    assert pd.isna(res.iloc[3])
+    assert pd.isna(res.iloc[4])
+    assert pd.isna(res.iloc[5])
+    assert res.iloc[6] == "APS-01"
+
+
+
+
+
 
 
 

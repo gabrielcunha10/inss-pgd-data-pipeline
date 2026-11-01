@@ -70,32 +70,31 @@ Projetei esta solução para conectar a complexidade real da gestão pública à
 
 ```mermaid
 flowchart TD
-    subgraph WF1 ["Workflow 1: Pipeline Principal (database_sync.yml — Mensalmente, todo dia 01 às 06:00 BRT)"]
+    subgraph WF1 ["Workflow 1: Pipeline Principal (database_sync.yml — Semanalmente, toda segunda às 06:00 BRT)"]
         API["Portal de Dados Abertos INSS<br/>(API CKAN Pública)"]
         PREFECT_P1["pipeline_flow.py<br/>(Orquestrador Prefect 3)"]
         SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
         SCRIPT_ETL["etl_sgp_inss.py<br/>(Tratamento, Pontes & Parquet)"]
         LGPD["Anonimização LGPD<br/>(HMAC-SHA256)"]
-        TESTS_DATA["test_pipeline.py<br/>(33 Testes de Integridade & ETL)"]
-        SCRIPT_LOAD["load_neon.py<br/>(Carga em Lotes)"]
-        NEON[("PostgreSQL Serverless<br/>Neon: tb_pgd_inss")]
+        TESTS_DATA["test_pipeline.py<br/>(36 Testes de Integridade & Star Schema)"]
         INSIGHTS["gerar_insights.py<br/>(Google Gemini IA + Métricas MoM)"]
+        SCRIPT_LOAD["load_neon.py<br/>(Carga Idempotente Star Schema & Insights)"]
+        NEON[("PostgreSQL Serverless<br/>Neon: Star Schema + Insights + tb_pgd_inss")]
         HOOK["Webhook Trigger<br/>(cURL POST)"]
         POWER_AUTO["Power Automate<br/>(Gatilho HTTP)"]
         PBI["Power BI Service<br/>(Painel Executivo)"]
 
         API --> PREFECT_P1
         PREFECT_P1 --> SCRIPT_IN --> SCRIPT_ETL --> LGPD --> TESTS_DATA
-        TESTS_DATA -->|"Aprovação"| SCRIPT_LOAD --> NEON
-        NEON --> INSIGHTS
+        TESTS_DATA -->|"Aprovação"| INSIGHTS --> SCRIPT_LOAD --> NEON
         NEON -->|"Conexão Nativa SQL"| PBI
         NEON --> HOOK --> POWER_AUTO -->|"Refresh Dataset"| PBI
     end
 
-    subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Mensalmente, todo dia 01 às 07:30 BRT)"]
+    subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Semanalmente, toda segunda às 07:30 BRT)"]
         PREFECT_P2["prints_flow.py<br/>(Orquestrador Prefect 3)"]
         PRINTS["capturar_prints.py<br/>(Playwright Headless: 9 Telas)"]
-        TESTS_DOCS["test_documentacao_insights.py<br/>(21 Testes de QA & Visual)"]
+        TESTS_DOCS["test_documentacao_insights.py<br/>(20 Testes de QA & Visual)"]
         DOCS["Publicação de Artefatos & Markdown<br/>(dashboard_README.md & imagens)"]
 
         PBI -->|"+1h30 (Aguarda Refresh do Power BI)"| PREFECT_P2
@@ -110,7 +109,7 @@ flowchart TD
 
 A solução é orquestrada por dois workflows desacoplados e complementares no GitHub Actions, garantindo que o ciclo principal de engenharia de dados seja blindado contra eventuais instabilidades de renderização visual ou de interfaces web:
 
-#### Workflow 1: Pipeline Principal (`database_sync.yml` — Mensalmente, todo dia 01 às 06:00 BRT)
+#### Workflow 1: Pipeline Principal (`database_sync.yml` — Semanalmente, toda segunda-feira às 06:00 BRT)
 
 1. **Fonte de Dados (API de Dados Abertos do INSS)**:
 
@@ -133,22 +132,21 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
    - Geração de pseudônimos seguros (`USR-XXXXXXXX`), impedindo o tráfego ou armazenamento de dados pessoais identificáveis (PII) no banco em nuvem e nos dashboards públicos.
 5. **Qualidade de Dados e Guardião do Banco (`test_pipeline.py`)**:
 
-   - Execução de malha fina via `pytest` com 33 testes automatizados cobrindo ingestão via API CKAN, detecção de múltiplos encodings, consolidação do ETL, tipagem estrita, consistência temporal, não nulidade, regras de negócio, validação da máscara LGPD e carga transacional.
+   - Execução de malha fina via `pytest` com 36 testes automatizados cobrindo ingestão via API CKAN, detecção de múltiplos encodings, consolidação do ETL, decomposição do Star Schema, tipagem estrita, consistência temporal, não nulidade, regras de negócio, validação da máscara LGPD e carga transacional.
    - Atuação no padrão *Write-Audit-Publish (WAP)*: a carga no banco de dados só é autorizada se 100% dos testes forem aprovados.
-6. **Carga Transacional e Armazenamento em Nuvem (`load_neon.py` e PostgreSQL Neon)**:
-
-   - Carga transacional em lotes (`chunksize=10.000`) na tabela `tb_pgd_inss` no PostgreSQL Serverless da Neon Tech.
-   - Operação idempotente por partição de competência (`Delete & Insert`), garantindo zero duplicidades, integridade de índices e nenhuma indisponibilidade (*zero downtime*) para consultas analíticas.
-   - Geração de amostra versionada (`sample.csv` com 5.000 linhas) para auditoria rápida no repositório.
-7. **Visualização Executiva e Disparo de Atualização (Power Automate & Power BI Service)**:
-
-   - Disparo imediato de Webhook via requisição HTTP POST para o **Power Automate**, que aciona o gatilho de atualização assíncrona do modelo semântico no **Power BI Service** logo após a conclusão da carga no banco relacional.
-   - Painel executivo interativo composto por 9 telas analíticas conectadas nativamente ao banco relacional Neon.
-8. **Geração de Insights Executivos com IA (`gerar_insights.py`)**:
+6. **Geração de Insights Executivos com IA (`gerar_insights.py`)**:
 
    - Processamento estatístico comparativo mês a mês (Month-over-Month - MoM) e diagnóstico dos 6 eixos de gestão.
-   - Integração com a API do Google Gemini (com fallback automático para motor analítico local em Python), gerando relatório executivo autônomo.
+   - Integração com a API do Google Gemini (com fallback automático para motor analítico local em Python), gerando relatório executivo autônomo e alimentando a base histórica (`insights_historico_powerbi.csv`).
    - Arquivamento histórico automático das versões mensais na pasta `dashboard/relatorios/` (`insights_AAAA_MM.md`) antes da substituição do relatório vigente (`insights_README.md`).
+7. **Carga Transacional e Star Schema em Nuvem (`load_neon.py` e PostgreSQL Neon)**:
+
+   - Sincronização do modelo dimensional **Star Schema** (`fato_designacoes` + 5 dimensões: `dim_programa`, `dim_linha_trabalho`, `dim_lotacao`, `dim_servidor`, `dim_calendario`), da tabela analítica de diagnósticos de IA (`insights_historico_powerbi`) e da camada consolidada (`tb_pgd_inss`) no PostgreSQL Serverless da Neon Tech.
+   - Operação idempotente por partição de competência com controle de hash SHA-256 (`tb_controle_carga`), garantindo zero duplicidades, integridade referencial e nenhuma indisponibilidade (*zero downtime*) para consultas analíticas.
+8. **Visualização Executiva e Disparo de Atualização (Power Automate & Power BI Service)**:
+
+   - Disparo imediato de Webhook via requisição HTTP POST para o **Power Automate**, que aciona o gatilho de atualização assíncrona do modelo semântico no **Power BI Service** logo após a conclusão da carga no banco relacional.
+   - Painel executivo interativo composto por 9 telas analíticas conectadas nativamente ao PostgreSQL Neon.
 
 ---
 
@@ -158,7 +156,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 
 ---
 
-#### Workflow 2: Prints do Dashboard & Documentação (`atualizar_documentacao_prints.yml` — Mensalmente, todo dia 01 às 07:30 BRT)
+#### Workflow 2: Prints do Dashboard & Documentação (`atualizar_documentacao_prints.yml` — Semanalmente, toda segunda-feira às 07:30 BRT)
 
 1. **Captura Automatizada das Telas do Dashboard (`capturar_prints.py`)**:
 
@@ -213,7 +211,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 │   └── pgd_inss_*.csv                             # Arquivos mensais baixados da API CKAN do INSS
 ├── tests/                                         # Testes automatizados e base tratada de saída
 │   ├── pgd_designacoes_inss_2023_2026.parquet     # Base tratada consolidada após o ETL (não versionado)
-│   ├── test_pipeline.py                           # Suíte de 33 testes de engenharia, ingestão, ETL e regras de negócio
+│   ├── test_pipeline.py                           # Suíte de 45 testes de engenharia, ingestão, ETL, Star Schema e regras de negócio
 │   ├── test_documentacao_insights.py              # Suíte de 21 testes de QA de documentação, relatórios, Gemini e prints
 │   └── test_prefect_flow.py                       # Suíte de 9 testes de orquestração, DAGs e resiliência do Prefect 3
 ├── tratamento/
@@ -252,9 +250,91 @@ Todas as minhas decisões e intervenções de dados foram pautadas em validaçã
 
 ---
 
-## Esquema do Banco de Dados (`tb_pgd_inss`)
+## Modelagem Dimensional (Star Schema) e Esquema do Banco de Dados
 
-A tabela consolidada `tb_pgd_inss` no PostgreSQL Serverless (Neon Tech) é alimentada diretamente a partir do arquivo colunar otimizado [`tests/pgd_designacoes_inss_2023_2026.parquet`](tests/pgd_designacoes_inss_2023_2026.parquet) via SQLAlchemy (`load_neon.py`), contendo **20 colunas canônicas padronizadas, tipadas e auditadas**.
+O armazenamento relacional no PostgreSQL Serverless (Neon Tech) e o modelo semântico do Power BI ([`dashboard/pbip/`](dashboard/pbip/)) seguem a arquitetura **Star Schema (Esquema Estrela)**, eliminando redundância textual na tabela de fatos e otimizando a compressão colunar (VertiPaq) e a filtragem analítica:
+
+```mermaid
+erDiagram
+    dim_calendario ||--o{ fato_designacoes : "competencia"
+    dim_calendario ||--o| insights_historico_powerbi : "competencia"
+    dim_servidor ||--o{ fato_designacoes : "id_usuario"
+    dim_programa ||--o{ fato_designacoes : "sk_programa"
+    dim_linha_trabalho ||--o{ fato_designacoes : "sk_linha_trabalho"
+    dim_lotacao ||--o{ fato_designacoes : "sk_lotacao"
+
+    fato_designacoes {
+        date competencia FK
+        text id_usuario FK
+        bigint id_designacao
+        int sk_programa FK
+        int sk_linha_trabalho FK
+        int sk_lotacao FK
+        text status
+        text modalidade
+        text tipo_entrega
+        text motivo_desligamento
+        timestamp dt_inicio_designacao
+        timestamp dt_fim_designacao
+        timestamp dt_criacao_designacao
+        timestamp dt_alteracao_designacao
+    }
+
+    dim_programa {
+        int sk_programa PK
+        text sigla_programa
+        text programa
+        text flag_pgd
+        text filtro_programa
+    }
+
+    dim_linha_trabalho {
+        int sk_linha_trabalho PK
+        text sigla_linha_trabalho
+        text linha_trabalho
+        text filtro_linha_trabalho
+    }
+
+    dim_lotacao {
+        int sk_lotacao PK
+        text id_lotacao
+        text lotacao
+    }
+
+    dim_servidor {
+        text id_usuario PK
+        date primeira_competencia
+        date ultima_competencia
+    }
+
+    dim_calendario {
+        date competencia PK
+        int ano
+        int mes
+        text nome_mes
+        text mes_abrev
+        text competencia_fmt
+        text trimestre
+    }
+
+    insights_historico_powerbi {
+        date competencia PK
+        text competencia_mes_ano
+        bigint servidores_plano_ativo
+        float variacao_mensal_mom
+        float adesao_teletrabalho_pct
+        float adesao_remoto_pct
+        text motor_analise_ia
+        text diagnostico_executivo
+        text principais_movimentacoes_mom
+        text matriz_alertas_recomendacoes
+    }
+```
+
+- **`fato_designacoes`:** Tabela fato central particionada por `competencia`, contendo apenas chaves substitutas (`sk_programa`, `sk_linha_trabalho`, `sk_lotacao`), identificadores pseudonimizados (`id_usuario`, `id_designacao`), status transacional e carimbos de data/hora.
+- **5 Tabelas Dimensão (`dim_programa`, `dim_linha_trabalho`, `dim_lotacao`, `dim_servidor`, `dim_calendario`):** Armazenam cadastros únicos sem duplicação textual.
+- **`insights_historico_powerbi`:** Tabela analítica sincronizada no PostgreSQL Neon contendo a série histórica de diagnósticos executivos gerados por IA (`gerar_insights.py`), variações MoM e matrizes de recomendação por competência.
+- **`tb_pgd_inss` (Camada Consolidada / OBT):** Mantida sincronizada de forma incremental por hash SHA-256 (`tb_controle_carga`) a partir do arquivo colunar [`tests/pgd_designacoes_inss_2023_2026.parquet`](tests/pgd_designacoes_inss_2023_2026.parquet) via SQLAlchemy (`load_neon.py`), contendo as **20 colunas canônicas padronizadas, tipadas e auditadas**:
 
 Abaixo está o dicionário de dados detalhado, refletindo fielmente a ordem física, os tipos de dados no Parquet/Pandas, os tipos relacionais no PostgreSQL (Neon), o status de nulidade e a semântica de negócio de cada atributo:
 
@@ -285,9 +365,9 @@ Abaixo está o dicionário de dados detalhado, refletindo fielmente a ordem fís
 
 ## Testes e Qualidade de Dados (Pytest)
 
-Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei três suítes de testes automatizados com **`pytest`**, totalizando **63 testes unitários e de integração (100% de aprovação)** e atingindo **88% de cobertura de código** via `pytest-cov`:
+Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei três suítes de testes automatizados com **`pytest`**, totalizando **75 testes unitários e de integração (100% de aprovação)** e atingindo **88,1% de cobertura de código** nos módulos do pipeline:
 
-1. **Testes de Engenharia, Ingestão, ETL e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 33 testes):**
+1. **Testes de Engenharia, Ingestão, ETL e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 45 testes):**
 
    - Atuam como guardião do banco de dados no padrão *Write-Audit-Publish (WAP)*: a carga no PostgreSQL só ocorre se 100% dos testes forem aprovados.
    - **Ingestão e Contrato da API CKAN:** Valida extração de competência, idempotência de arquivos locais, resiliência HTTP com mocks e contrato ao vivo da API de Dados Abertos do INSS.
@@ -319,14 +399,14 @@ Name                           Stmts   Miss  Cover
 --------------------------------------------------
 dashboard/prints_flow.py          40      2    95%
 pipeline_flow.py                  74      6    92%
-dashboard/capturar_prints.py     135     14    90%
-tratamento/load_neon.py           57      6    89%
-tratamento/gerar_insights.py     334     36    89%
-tratamento/download_sgp.py        86     13    85%
-tratamento/etl_sgp_inss.py       195     32    84%
+dashboard/capturar_prints.py     132     13  90.2%
+tratamento/load_neon.py          229     32  86.0%
+tratamento/gerar_insights.py     328     31  90.5%
+tratamento/download_sgp.py       236     25  89.4%
+tratamento/etl_sgp_inss.py       194     32  83.5%
 --------------------------------------------------
-TOTAL                            921    109    88%
-====================== 63 passed in ~20s =======================
+TOTAL                           1119    133  88.1%
+====================== 75 passed in ~8s ========================
 ```
 
 ---
@@ -422,7 +502,7 @@ python tratamento/download_sgp.py
 # 2. Processamento (ETL): limpa os dados e gera o arquivo Parquet e o CSV sample
 python tratamento/etl_sgp_inss.py
 
-# 3. Qualidade de Dados: roda a suíte com os 63 testes automatizados e relatório de cobertura (Pytest)
+# 3. Qualidade de Dados: roda a suíte com os 75 testes automatizados e relatório de cobertura (Pytest)
 pytest tests/
 
 # 4. Carga no Banco (Load): insere os dados validados na tabela tb_pgd_inss no Neon DB
@@ -443,7 +523,7 @@ A automação da solução é estruturada em dois workflows independentes e agen
 
 ### Workflow 1: Pipeline Principal de Dados ([`.github/workflows/database_sync.yml`](.github/workflows/database_sync.yml))
 
-- **Agendamento:** Todo dia 01 de cada mês às 06:00 BRT (`0 9 1 * *`) ou sob demanda (**workflow_dispatch**).
+- **Agendamento:** Semanalmente, toda segunda-feira às 06:00 BRT (`0 9 * * 1`) — capturando automaticamente novas competências assim que publicadas pelo INSS — ou sob demanda (**workflow_dispatch**).
 - **Segredos no Repositório (Settings > Secrets and variables > Actions):**
   - `NEON_DATABASE_URL`: String de conexão ao PostgreSQL Serverless do Neon Tech.
   - `POWER_AUTOMATE_WEBHOOK_URL`: URL do gatilho HTTP do fluxo no Power Automate.
@@ -462,7 +542,7 @@ A automação da solução é estruturada em dois workflows independentes e agen
 
 ### Workflow 2: Prints do Dashboard & Documentação ([`.github/workflows/atualizar_documentacao_prints.yml`](.github/workflows/atualizar_documentacao_prints.yml))
 
-- **Agendamento:** Todo dia 01 de cada mês às 07:30 BRT (`30 10 1 * *` — intervalo de +1h30 para conclusão do refresh no Power BI Service) ou sob demanda.
+- **Agendamento:** Semanalmente, toda segunda-feira às 07:30 BRT (`30 10 * * 1` — intervalo de +1h30 para conclusão do refresh no Power BI Service) ou sob demanda.
 - **Ciclo de Execução:**
   1. Setup do ambiente Python 3.12 e instalação do Chromium headless via Playwright;
   2. Execução de `dashboard/capturar_prints.py` (captura automatizada das 9 telas do relatório online);
