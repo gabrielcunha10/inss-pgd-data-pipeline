@@ -1,11 +1,11 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "85faafd574d47a447e33",
   "position": {
-    "x": 586.6666666666666,
+    "x": 586.66666666666663,
     "y": 106.66666666666666,
     "z": 14000,
-    "height": 35.55555555555556,
+    "height": 35.555555555555557,
     "width": 186.66666666666666,
     "tabOrder": 14000
   },
@@ -245,7 +245,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "0de984b6ed7f1dba25b6",
+        "name": "99bd64e1b9ea597e839c",
         "field": {
           "Column": {
             "Expression": {
@@ -256,65 +256,7 @@
             "Property": "lotacao"
           }
         },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Not": {
-                  "Expression": {
-                    "In": {
-                      "Expressions": [
-                        {
-                          "Column": {
-                            "Expression": {
-                              "SourceRef": {
-                                "Source": "p"
-                              }
-                            },
-                            "Property": "lotacao"
-                          }
-                        }
-                      ],
-                      "Values": [
-                        [
-                          {
-                            "Literal": {
-                              "Value": "null"
-                            }
-                          }
-                        ]
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "objects": {
-          "general": [
-            {
-              "properties": {
-                "isInvertedSelectionMode": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "true"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        }
+        "type": "Categorical"
       }
     ]
   }

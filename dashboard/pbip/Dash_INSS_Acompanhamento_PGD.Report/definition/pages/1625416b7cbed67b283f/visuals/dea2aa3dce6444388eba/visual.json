@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "dea2aa3dce6444388eba",
   "position": {
-    "x": 693.0673316708229,
+    "x": 693.06733167082291,
     "y": 360,
     "z": 6000,
-    "height": 333.0673316708229,
-    "width": 475.8104738154613,
+    "height": 333.06733167082291,
+    "width": 475.81047381546131,
     "tabOrder": 6000
   },
   "visual": {
@@ -489,5 +489,42 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "7acd366ab8e84089b055",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fato_designacoes"
+              }
+            },
+            "Property": "status"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "92b652d30231d34dc7c2",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
+                  }
+                },
+                "Property": "id_usuario"
+              }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }

@@ -23,15 +23,6 @@ table dim_calendario
 
 		annotation SummarizationSetBy = Automatic
 
-	column Mes_Num
-		dataType: int64
-		formatString: 0
-		lineageTag: 55e68c50-c508-419c-a645-050000000004
-		summarizeBy: none
-		sourceColumn: mes
-
-		annotation SummarizationSetBy = Automatic
-
 	column Mes
 		dataType: string
 		lineageTag: 55e68c50-c508-419c-a645-050000000005
@@ -73,6 +64,15 @@ table dim_calendario
 
 		annotation SummarizationSetBy = Automatic
 
+	column Mes_Num
+		dataType: int64
+		formatString: 0
+		lineageTag: 55e68c50-c508-419c-a645-050000000004
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_calendario = m
 		mode: import
 		source =
@@ -83,3 +83,4 @@ table dim_calendario
 				    public_dim_calendario
 
 	annotation PBI_ResultType = Table
+

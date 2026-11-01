@@ -2,8 +2,8 @@ table dim_lotacao
 	lineageTag: 33c46a30-a3e6-4f7a-b423-e30000000001
 
 	column sk_lotacao
-		isKey
 		dataType: int64
+		isKey
 		formatString: 0
 		lineageTag: 33c46a30-a3e6-4f7a-b423-e30000000002
 		summarizeBy: none

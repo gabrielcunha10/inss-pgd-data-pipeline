@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "28d5f7f7a2df2fe5f66b",
   "position": {
-    "x": 693.0673316708229,
+    "x": 693.06733167082291,
     "y": 360,
     "z": 25000,
-    "height": 333.0673316708229,
-    "width": 475.8104738154613,
+    "height": 333.06733167082291,
+    "width": 475.81047381546131,
     "tabOrder": 25000
   },
   "visual": {
@@ -636,7 +636,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "552b34a086e6bceb61e9",
+        "name": "3347ca9fe6984005e7e2",
         "field": {
           "Column": {
             "Expression": {
@@ -647,64 +647,26 @@
             "Property": "lotacao"
           }
         },
-        "type": "TopN",
+        "type": "Categorical"
+      },
+      {
+        "name": "a078c751072614131917",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "fato_designacoes"
+              }
+            },
+            "Property": "tipo_entrega"
+          }
+        },
+        "type": "Categorical",
         "filter": {
           "Version": 2,
           "From": [
             {
-              "Name": "subquery",
-              "Expression": {
-                "Subquery": {
-                  "Query": {
-                    "Version": 2,
-                    "From": [
-                      {
-                        "Name": "p",
-                        "Entity": "fato_designacoes",
-                        "Type": 0
-                      }
-                    ],
-                    "Select": [
-                      {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Source": "p"
-                            }
-                          },
-                          "Property": "lotacao"
-                        },
-                        "Name": "field"
-                      }
-                    ],
-                    "OrderBy": [
-                      {
-                        "Direction": 2,
-                        "Expression": {
-                          "Aggregation": {
-                            "Expression": {
-                              "Column": {
-                                "Expression": {
-                                  "SourceRef": {
-                                    "Source": "p"
-                                  }
-                                },
-                                "Property": "id_designacao"
-                              }
-                            },
-                            "Function": 2
-                          }
-                        }
-                      }
-                    ],
-                    "Top": 10
-                  }
-                }
-              },
-              "Type": 2
-            },
-            {
-              "Name": "p",
+              "Name": "f",
               "Entity": "fato_designacoes",
               "Type": 0
             }
@@ -712,22 +674,45 @@
           "Where": [
             {
               "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
+                "Not": {
+                  "Expression": {
+                    "In": {
+                      "Expressions": [
+                        {
+                          "Column": {
+                            "Expression": {
+                              "SourceRef": {
+                                "Source": "f"
+                              }
+                            },
+                            "Property": "tipo_entrega"
                           }
-                        },
-                        "Property": "lotacao"
-                      }
+                        }
+                      ],
+                      "Values": [
+                        [
+                          {
+                            "Literal": {
+                              "Value": "null"
+                            }
+                          }
+                        ]
+                      ]
                     }
-                  ],
-                  "Table": {
-                    "SourceRef": {
-                      "Source": "subquery"
+                  }
+                }
+              }
+            }
+          ]
+        },
+        "objects": {
+          "general": [
+            {
+              "properties": {
+                "isInvertedSelectionMode": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "true"
                     }
                   }
                 }
@@ -735,6 +720,25 @@
             }
           ]
         }
+      },
+      {
+        "name": "61653d6ee0e3eda0b071",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
+                  }
+                },
+                "Property": "id_designacao"
+              }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

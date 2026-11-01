@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "554efdfac3b5ba0a25aa",
   "position": {
     "x": 190.32418952618454,
     "y": 360,
     "z": 24000,
-    "height": 333.0673316708229,
-    "width": 475.8104738154613,
+    "height": 333.06733167082291,
+    "width": 475.81047381546131,
     "tabOrder": 24000
   },
   "visual": {
@@ -544,7 +544,7 @@
         }
       },
       {
-        "name": "9497b6f15bda99d33716",
+        "name": "9b1c2e0dd091806e7177",
         "field": {
           "Column": {
             "Expression": {
@@ -555,94 +555,26 @@
             "Property": "lotacao"
           }
         },
-        "type": "TopN",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "subquery",
-              "Expression": {
-                "Subquery": {
-                  "Query": {
-                    "Version": 2,
-                    "From": [
-                      {
-                        "Name": "p",
-                        "Entity": "fato_designacoes",
-                        "Type": 0
-                      }
-                    ],
-                    "Select": [
-                      {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Source": "p"
-                            }
-                          },
-                          "Property": "lotacao"
-                        },
-                        "Name": "field"
-                      }
-                    ],
-                    "OrderBy": [
-                      {
-                        "Direction": 2,
-                        "Expression": {
-                          "Aggregation": {
-                            "Expression": {
-                              "Column": {
-                                "Expression": {
-                                  "SourceRef": {
-                                    "Source": "p"
-                                  }
-                                },
-                                "Property": "id_designacao"
-                              }
-                            },
-                            "Function": 2
-                          }
-                        }
-                      }
-                    ],
-                    "Top": 10
+        "type": "Categorical"
+      },
+      {
+        "name": "0eede9c27496dec9b954",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
                   }
-                }
-              },
-              "Type": 2
-            },
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
-                          }
-                        },
-                        "Property": "lotacao"
-                      }
-                    }
-                  ],
-                  "Table": {
-                    "SourceRef": {
-                      "Source": "subquery"
-                    }
-                  }
-                }
+                },
+                "Property": "id_designacao"
               }
-            }
-          ]
-        }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

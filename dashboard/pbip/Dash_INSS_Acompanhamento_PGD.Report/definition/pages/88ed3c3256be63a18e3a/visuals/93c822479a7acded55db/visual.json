@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "93c822479a7acded55db",
   "position": {
     "x": 189.66565349544075,
     "y": 359.87841945288756,
     "z": 24000,
     "height": 332.64437689969606,
-    "width": 477.5683890577508,
+    "width": 477.56838905775078,
     "tabOrder": 24000
   },
   "visual": {
@@ -432,7 +432,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "acd69d0cdfdfbb8c7029",
+        "name": "5c6782b56758436309d0",
         "field": {
           "Column": {
             "Expression": {
@@ -448,8 +448,8 @@
           "Version": 2,
           "From": [
             {
-              "Name": "p",
-              "Entity": "fato_designacoes",
+              "Name": "d",
+              "Entity": "dim_programa",
               "Type": 0
             }
           ],
@@ -464,7 +464,7 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Source": "p"
+                                "Source": "d"
                               }
                             },
                             "Property": "sigla_programa"
@@ -504,106 +504,18 @@
         }
       },
       {
-        "name": "6de02631b659301da3fa",
+        "name": "dad054a8073039037a9a",
         "field": {
-          "Column": {
+          "Measure": {
             "Expression": {
               "SourceRef": {
-                "Entity": "dim_programa"
+                "Entity": "_Medidas (2)"
               }
             },
-            "Property": "sigla_programa"
+            "Property": "Média Dias Designação"
           }
         },
-        "type": "TopN",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "subquery",
-              "Expression": {
-                "Subquery": {
-                  "Query": {
-                    "Version": 2,
-                    "From": [
-                      {
-                        "Name": "p",
-                        "Entity": "fato_designacoes",
-                        "Type": 0
-                      },
-                      {
-                        "Name": "_",
-                        "Entity": "_Medidas (2)",
-                        "Type": 0
-                      }
-                    ],
-                    "Select": [
-                      {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Source": "p"
-                            }
-                          },
-                          "Property": "sigla_programa"
-                        },
-                        "Name": "field"
-                      }
-                    ],
-                    "OrderBy": [
-                      {
-                        "Direction": 2,
-                        "Expression": {
-                          "Measure": {
-                            "Expression": {
-                              "SourceRef": {
-                                "Source": "_"
-                              }
-                            },
-                            "Property": "Média Dias Designação"
-                          }
-                        }
-                      }
-                    ],
-                    "Top": 10
-                  }
-                }
-              },
-              "Type": 2
-            },
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
-                          }
-                        },
-                        "Property": "sigla_programa"
-                      }
-                    }
-                  ],
-                  "Table": {
-                    "SourceRef": {
-                      "Source": "subquery"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "howCreated": "User"
+        "type": "Advanced"
       }
     ]
   }

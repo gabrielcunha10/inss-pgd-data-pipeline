@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "ee2edabab1c3e820f77a",
   "position": {
-    "x": 894.4444444444445,
+    "x": 894.44444444444446,
     "y": 107.77777777777777,
     "z": 22000,
     "height": 36.666666666666664,
-    "width": 74.44444444444444,
+    "width": 74.444444444444443,
     "tabOrder": 22000
   },
   "visual": {
@@ -239,7 +239,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "30a0207155251c219f55",
+        "name": "af87997db8b308707c35",
         "field": {
           "Column": {
             "Expression": {
@@ -250,65 +250,7 @@
             "Property": "flag_pgd"
           }
         },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Not": {
-                  "Expression": {
-                    "In": {
-                      "Expressions": [
-                        {
-                          "Column": {
-                            "Expression": {
-                              "SourceRef": {
-                                "Source": "p"
-                              }
-                            },
-                            "Property": "flag_pgd"
-                          }
-                        }
-                      ],
-                      "Values": [
-                        [
-                          {
-                            "Literal": {
-                              "Value": "null"
-                            }
-                          }
-                        ]
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "objects": {
-          "general": [
-            {
-              "properties": {
-                "isInvertedSelectionMode": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "true"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        }
+        "type": "Categorical"
       }
     ]
   }

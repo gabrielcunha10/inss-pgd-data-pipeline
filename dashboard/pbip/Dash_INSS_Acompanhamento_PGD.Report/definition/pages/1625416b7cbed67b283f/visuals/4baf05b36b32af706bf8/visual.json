@@ -1,11 +1,11 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "4baf05b36b32af706bf8",
   "position": {
     "x": 1090,
     "y": 106.66666666666666,
     "z": 8000,
-    "height": 36.96048632218845,
+    "height": 36.960486322188451,
     "width": 186.74772036474164,
     "tabOrder": 8000
   },
@@ -245,7 +245,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "ac43f1fbe6fa07c88fa5",
+        "name": "e2f31f504012a0e3adc0",
         "field": {
           "Column": {
             "Expression": {
@@ -253,7 +253,7 @@
                 "Entity": "dim_programa"
               }
             },
-            "Property": "programa"
+            "Property": "filtro_programa"
           }
         },
         "type": "Categorical",
@@ -261,8 +261,8 @@
           "Version": 2,
           "From": [
             {
-              "Name": "p",
-              "Entity": "fato_designacoes",
+              "Name": "d",
+              "Entity": "dim_programa",
               "Type": 0
             }
           ],
@@ -277,10 +277,10 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Source": "p"
+                                "Source": "d"
                               }
                             },
-                            "Property": "programa"
+                            "Property": "filtro_programa"
                           }
                         }
                       ],
@@ -300,7 +300,6 @@
             }
           ]
         },
-        "howCreated": "User",
         "objects": {
           "general": [
             {

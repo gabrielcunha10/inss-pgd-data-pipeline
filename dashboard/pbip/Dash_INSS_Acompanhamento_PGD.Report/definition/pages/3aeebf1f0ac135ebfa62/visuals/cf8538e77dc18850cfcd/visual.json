@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "cf8538e77dc18850cfcd",
   "position": {
     "x": 189.66565349544075,
     "y": 359.87841945288756,
     "z": 24000,
     "height": 332.64437689969606,
-    "width": 477.5683890577508,
+    "width": 477.56838905775078,
     "tabOrder": 24000
   },
   "visual": {
@@ -572,7 +572,7 @@
         }
       },
       {
-        "name": "15531f0f35f5e47769fe",
+        "name": "589b64cc9ebab07adb02",
         "field": {
           "Column": {
             "Expression": {
@@ -583,94 +583,26 @@
             "Property": "filtro_linha_trabalho"
           }
         },
-        "type": "TopN",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "subquery",
-              "Expression": {
-                "Subquery": {
-                  "Query": {
-                    "Version": 2,
-                    "From": [
-                      {
-                        "Name": "p",
-                        "Entity": "fato_designacoes",
-                        "Type": 0
-                      }
-                    ],
-                    "Select": [
-                      {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Source": "p"
-                            }
-                          },
-                          "Property": "filtro_linha_trabalho"
-                        },
-                        "Name": "field"
-                      }
-                    ],
-                    "OrderBy": [
-                      {
-                        "Direction": 2,
-                        "Expression": {
-                          "Aggregation": {
-                            "Expression": {
-                              "Column": {
-                                "Expression": {
-                                  "SourceRef": {
-                                    "Source": "p"
-                                  }
-                                },
-                                "Property": "id_designacao"
-                              }
-                            },
-                            "Function": 2
-                          }
-                        }
-                      }
-                    ],
-                    "Top": 10
+        "type": "Categorical"
+      },
+      {
+        "name": "9b95ba41aac0d1de9c15",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
                   }
-                }
-              },
-              "Type": 2
-            },
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
-                          }
-                        },
-                        "Property": "filtro_linha_trabalho"
-                      }
-                    }
-                  ],
-                  "Table": {
-                    "SourceRef": {
-                      "Source": "subquery"
-                    }
-                  }
-                }
+                },
+                "Property": "id_designacao"
               }
-            }
-          ]
-        }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

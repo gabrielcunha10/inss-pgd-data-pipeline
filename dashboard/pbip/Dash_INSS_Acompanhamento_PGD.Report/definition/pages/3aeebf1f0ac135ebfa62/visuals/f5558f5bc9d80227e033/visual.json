@@ -1,8 +1,8 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "f5558f5bc9d80227e033",
   "position": {
-    "x": 83.33333333333333,
+    "x": 83.333333333333329,
     "y": 107.77777777777777,
     "z": 8000,
     "height": 36.666666666666664,
@@ -245,7 +245,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "5e298f465e5c3242e299",
+        "name": "0307d3151e5e388d3260",
         "field": {
           "Column": {
             "Expression": {
@@ -261,8 +261,8 @@
           "Version": 2,
           "From": [
             {
-              "Name": "p",
-              "Entity": "fato_designacoes",
+              "Name": "d",
+              "Entity": "dim_linha_trabalho",
               "Type": 0
             }
           ],
@@ -277,7 +277,7 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Source": "p"
+                                "Source": "d"
                               }
                             },
                             "Property": "filtro_linha_trabalho"

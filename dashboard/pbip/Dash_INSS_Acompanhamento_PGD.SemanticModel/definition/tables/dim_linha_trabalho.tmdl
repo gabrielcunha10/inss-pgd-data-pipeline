@@ -2,8 +2,8 @@ table dim_linha_trabalho
 	lineageTag: 22b35f20-92d5-4e69-a312-d20000000001
 
 	column sk_linha_trabalho
-		isKey
 		dataType: int64
+		isKey
 		formatString: 0
 		lineageTag: 22b35f20-92d5-4e69-a312-d20000000002
 		summarizeBy: none

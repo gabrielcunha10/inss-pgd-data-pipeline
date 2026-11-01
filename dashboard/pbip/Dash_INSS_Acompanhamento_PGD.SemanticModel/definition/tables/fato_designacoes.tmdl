@@ -1,68 +1,6 @@
 table fato_designacoes
 	lineageTag: 0ff3585e-6b21-4216-8b61-137b246c94bb
 
-	column competencia
-		dataType: dateTime
-		formatString: Short Date
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026301
-		summarizeBy: none
-		sourceColumn: competencia
-
-		annotation SummarizationSetBy = Automatic
-		annotation UnderlyingDateTimeDataType = Date
-
-	column id_usuario
-		dataType: string
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026302
-		summarizeBy: none
-		sourceColumn: id_usuario
-
-		annotation SummarizationSetBy = Automatic
-
-	column id_designacao
-		dataType: int64
-		formatString: 0
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026303
-		summarizeBy: count
-		sourceColumn: id_designacao
-
-		annotation SummarizationSetBy = Automatic
-
-	column sk_programa
-		dataType: int64
-		formatString: 0
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026304
-		summarizeBy: none
-		sourceColumn: sk_programa
-
-		annotation SummarizationSetBy = Automatic
-
-	column sk_linha_trabalho
-		dataType: int64
-		formatString: 0
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026305
-		summarizeBy: none
-		sourceColumn: sk_linha_trabalho
-
-		annotation SummarizationSetBy = Automatic
-
-	column sk_lotacao
-		dataType: int64
-		formatString: 0
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026306
-		summarizeBy: none
-		sourceColumn: sk_lotacao
-
-		annotation SummarizationSetBy = Automatic
-
-	column status
-		dataType: string
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026307
-		summarizeBy: none
-		sourceColumn: status
-
-		annotation SummarizationSetBy = Automatic
-
 	column modalidade
 		dataType: string
 		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026308
@@ -74,22 +12,11 @@ table fato_designacoes
 
 		annotation SummarizationSetBy = Automatic
 
-	column tipo_entrega
+	column status
 		dataType: string
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026309
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026307
 		summarizeBy: none
-		sourceColumn: tipo_entrega
-		sortByColumn: Ordem_Entrega
-
-		changedProperty = SortByColumn
-
-		annotation SummarizationSetBy = Automatic
-
-	column motivo_desligamento
-		dataType: string
-		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026310
-		summarizeBy: none
-		sourceColumn: motivo_desligamento
+		sourceColumn: status
 
 		annotation SummarizationSetBy = Automatic
 
@@ -121,6 +48,26 @@ table fato_designacoes
 
 		annotation SummarizationSetBy = Automatic
 
+	column competencia
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026301
+		summarizeBy: none
+		sourceColumn: competencia
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column id_designacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026303
+		summarizeBy: count
+		sourceColumn: id_designacao
+
+		annotation SummarizationSetBy = Automatic
+
 	column dt_criacao_designacao
 		dataType: dateTime
 		formatString: General Date
@@ -149,6 +96,33 @@ table fato_designacoes
 
 		annotation SummarizationSetBy = Automatic
 
+	column tipo_entrega
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026309
+		summarizeBy: none
+		sourceColumn: tipo_entrega
+		sortByColumn: Ordem_Entrega
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column motivo_desligamento
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026310
+		summarizeBy: none
+		sourceColumn: motivo_desligamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_usuario
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026302
+		summarizeBy: none
+		sourceColumn: id_usuario
+
+		annotation SummarizationSetBy = Automatic
+
 	column 'Ordem Modalidade'
 		dataType: int64
 		formatString: 0
@@ -167,6 +141,33 @@ table fato_designacoes
 
 		annotation SummarizationSetBy = Automatic
 
+	column sk_programa
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026304
+		summarizeBy: none
+		sourceColumn: sk_programa
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_linha_trabalho
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026305
+		summarizeBy: none
+		sourceColumn: sk_linha_trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_lotacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026306
+		summarizeBy: none
+		sourceColumn: sk_lotacao
+
+		annotation SummarizationSetBy = Automatic
+
 	partition fato_designacoes = m
 		mode: import
 		source =
@@ -179,3 +180,4 @@ table fato_designacoes
 				    #"Coluna Condicional Adicionada1"
 
 	annotation PBI_ResultType = Table
+

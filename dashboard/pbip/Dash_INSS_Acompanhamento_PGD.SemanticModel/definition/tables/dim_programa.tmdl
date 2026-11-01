@@ -2,8 +2,8 @@ table dim_programa
 	lineageTag: 11a24e10-81c4-4d58-9201-c10000000001
 
 	column sk_programa
-		isKey
 		dataType: int64
+		isKey
 		formatString: 0
 		lineageTag: 11a24e10-81c4-4d58-9201-c10000000002
 		summarizeBy: none

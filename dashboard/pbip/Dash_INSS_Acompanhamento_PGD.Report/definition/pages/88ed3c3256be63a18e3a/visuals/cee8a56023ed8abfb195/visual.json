@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "cee8a56023ed8abfb195",
   "position": {
-    "x": 692.5227963525837,
+    "x": 692.52279635258367,
     "y": 359.87841945288756,
     "z": 25000,
     "height": 332.64437689969606,
-    "width": 477.5683890577508,
+    "width": 477.56838905775078,
     "tabOrder": 25000
   },
   "visual": {
@@ -657,7 +657,7 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "c42a1263a595614d9764",
+        "name": "be283af6ee02e153224c",
         "field": {
           "Column": {
             "Expression": {
@@ -673,8 +673,8 @@
           "Version": 2,
           "From": [
             {
-              "Name": "p",
-              "Entity": "fato_designacoes",
+              "Name": "d",
+              "Entity": "dim_programa",
               "Type": 0
             }
           ],
@@ -689,7 +689,7 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Source": "p"
+                                "Source": "d"
                               }
                             },
                             "Property": "sigla_programa"
@@ -729,106 +729,37 @@
         }
       },
       {
-        "name": "9299a970691579b3dfc0",
+        "name": "0940bf6ed6ae64403808",
         "field": {
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "dim_programa"
+                "Entity": "fato_designacoes"
               }
             },
-            "Property": "sigla_programa"
+            "Property": "tipo_entrega"
           }
         },
-        "type": "TopN",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "subquery",
-              "Expression": {
-                "Subquery": {
-                  "Query": {
-                    "Version": 2,
-                    "From": [
-                      {
-                        "Name": "p",
-                        "Entity": "fato_designacoes",
-                        "Type": 0
-                      }
-                    ],
-                    "Select": [
-                      {
-                        "Column": {
-                          "Expression": {
-                            "SourceRef": {
-                              "Source": "p"
-                            }
-                          },
-                          "Property": "sigla_programa"
-                        },
-                        "Name": "field"
-                      }
-                    ],
-                    "OrderBy": [
-                      {
-                        "Direction": 2,
-                        "Expression": {
-                          "Aggregation": {
-                            "Expression": {
-                              "Column": {
-                                "Expression": {
-                                  "SourceRef": {
-                                    "Source": "p"
-                                  }
-                                },
-                                "Property": "id_designacao"
-                              }
-                            },
-                            "Function": 2
-                          }
-                        }
-                      }
-                    ],
-                    "Top": 10
+        "type": "Categorical"
+      },
+      {
+        "name": "3e1a48ca0bce0483e701",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
                   }
-                }
-              },
-              "Type": 2
-            },
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "In": {
-                  "Expressions": [
-                    {
-                      "Column": {
-                        "Expression": {
-                          "SourceRef": {
-                            "Source": "p"
-                          }
-                        },
-                        "Property": "sigla_programa"
-                      }
-                    }
-                  ],
-                  "Table": {
-                    "SourceRef": {
-                      "Source": "subquery"
-                    }
-                  }
-                }
+                },
+                "Property": "id_designacao"
               }
-            }
-          ]
+            },
+            "Function": 2
+          }
         },
-        "howCreated": "User"
+        "type": "Advanced"
       }
     ]
   }

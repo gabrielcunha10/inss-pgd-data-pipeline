@@ -1,12 +1,12 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "b2b39f26bb7ca5e0475f",
   "position": {
     "x": 190.32418952618454,
     "y": 360,
     "z": 5000,
-    "height": 333.0673316708229,
-    "width": 475.8104738154613,
+    "height": 333.06733167082291,
+    "width": 475.81047381546131,
     "tabOrder": 5000
   },
   "visual": {
@@ -691,6 +691,39 @@
             }
           ]
         }
+      },
+      {
+        "name": "1c3ee8c53e6bdb4d7714",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_calendario"
+              }
+            },
+            "Property": "competencia"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "8ced02819caa0855d6d4",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
+                  }
+                },
+                "Property": "id_designacao"
+              }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
       }
     ]
   }

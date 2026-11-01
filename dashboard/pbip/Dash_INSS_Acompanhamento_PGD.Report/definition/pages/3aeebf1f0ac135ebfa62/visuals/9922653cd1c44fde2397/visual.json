@@ -1,9 +1,9 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "9922653cd1c44fde2397",
   "position": {
-    "x": 449.3617021276596,
-    "y": 175.0759878419453,
+    "x": 449.36170212765961,
+    "y": 175.07598784194531,
     "z": 1000,
     "height": 154.65045592705167,
     "width": 217.87234042553192,
@@ -596,77 +596,23 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "65c8731550aeaaea2395",
+        "name": "85c8f3b2dd0ad0d96751",
         "field": {
-          "Column": {
+          "Aggregation": {
             "Expression": {
-              "SourceRef": {
-                "Entity": "dim_programa"
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "dim_linha_trabalho"
+                  }
+                },
+                "Property": "linha_trabalho"
               }
             },
-            "Property": "programa"
+            "Function": 2
           }
         },
-        "type": "Categorical",
-        "filter": {
-          "Version": 2,
-          "From": [
-            {
-              "Name": "p",
-              "Entity": "fato_designacoes",
-              "Type": 0
-            }
-          ],
-          "Where": [
-            {
-              "Condition": {
-                "Not": {
-                  "Expression": {
-                    "In": {
-                      "Expressions": [
-                        {
-                          "Column": {
-                            "Expression": {
-                              "SourceRef": {
-                                "Source": "p"
-                              }
-                            },
-                            "Property": "programa"
-                          }
-                        }
-                      ],
-                      "Values": [
-                        [
-                          {
-                            "Literal": {
-                              "Value": "null"
-                            }
-                          }
-                        ]
-                      ]
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        },
-        "howCreated": "User",
-        "objects": {
-          "general": [
-            {
-              "properties": {
-                "isInvertedSelectionMode": {
-                  "expr": {
-                    "Literal": {
-                      "Value": "true"
-                    }
-                  }
-                }
-              }
-            }
-          ]
-        }
+        "type": "Advanced"
       }
     ]
   }
