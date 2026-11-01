@@ -462,7 +462,7 @@ def test_gerar_relatorio_com_gemini_mock():
         }
         texto, modelo = gerar_relatorio_com_gemini(metricas_teste, tabs_teste, "fake_key")
         assert "Relatório Executivo Gemini" in texto
-        assert modelo == "gemini-4-argon"
+        assert modelo == "gemini-3.8-flash"
 
 
 def test_gerar_relatorio_com_gemini_falha_todos_modelos():
