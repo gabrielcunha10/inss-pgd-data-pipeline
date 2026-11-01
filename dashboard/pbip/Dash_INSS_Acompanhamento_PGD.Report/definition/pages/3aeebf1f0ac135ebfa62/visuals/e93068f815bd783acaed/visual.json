@@ -33,7 +33,8 @@
               },
               "queryRef": "Min(public tb_pgd_inss.id_usuario)",
               "nativeQueryRef": "Total de Servidores",
-              "displayName": "Total de Servidores"
+              "displayName": "Total de Servidores",
+              "format": "0.00"
             }
           ]
         }
