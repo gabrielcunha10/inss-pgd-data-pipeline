@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "a3baef51de8452872013",
   "position": {
     "x": 392.22222222222223,
@@ -23,32 +23,17 @@
                       "Entity": "public tb_pgd_inss"
                     }
                   },
-                  "Property": "competencia"
+                  "Property": "Ano"
                 }
               },
-              "queryRef": "public tb_pgd_inss.competencia.Variation.Hierarquia de datas.Ano",
-              "nativeQueryRef": "competencia Ano",
+              "queryRef": "public tb_pgd_inss.Ano",
+              "nativeQueryRef": "Ano",
               "active": true
             }
           ]
         }
       },
       "sortDefinition": {
-        "sort": [
-          {
-            "field": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "public tb_pgd_inss"
-                  }
-                },
-                "Property": "competencia"
-              }
-            },
-            "direction": "Ascending"
-          }
-        ],
         "isDefaultSort": true
       }
     },

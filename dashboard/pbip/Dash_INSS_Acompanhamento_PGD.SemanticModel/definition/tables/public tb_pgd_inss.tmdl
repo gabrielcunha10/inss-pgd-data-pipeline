@@ -211,6 +211,33 @@ table 'public tb_pgd_inss'
 
 		annotation SummarizationSetBy = Automatic
 
+	column Mes = ```
+			
+			UPPER(LEFT(FORMAT('public tb_pgd_inss'[competencia], "mmmm", "pt-BR"), 1)) & 
+			MID(FORMAT('public tb_pgd_inss'[competencia], "mmmm", "pt-BR"), 2, 20)
+			```
+		lineageTag: 218c4e91-5188-4a03-b92d-2188d885588e
+		summarizeBy: none
+		sortByColumn: Mes_Num
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes_Num = MONTH('public tb_pgd_inss'[competencia])
+		formatString: 0
+		lineageTag: de1bec99-d265-4ed5-b06d-a470d4dd6c02
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano = YEAR('public tb_pgd_inss'[competencia])
+		formatString: 0
+		lineageTag: 597e3d04-5eec-4916-abac-675cad70cf92
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
 	partition 'public tb_pgd_inss' = m
 		mode: import
 		source =

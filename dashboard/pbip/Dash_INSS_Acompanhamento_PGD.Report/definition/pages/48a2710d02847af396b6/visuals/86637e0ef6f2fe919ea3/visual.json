@@ -1,5 +1,5 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "86637e0ef6f2fe919ea3",
   "position": {
     "x": 274.44444444444446,
@@ -23,11 +23,11 @@
                       "Entity": "public tb_pgd_inss"
                     }
                   },
-                  "Property": "competencia"
+                  "Property": "Mes"
                 }
               },
-              "queryRef": "public tb_pgd_inss.competencia.Variation.Hierarquia de datas.Mês",
-              "nativeQueryRef": "competencia Mês",
+              "queryRef": "public tb_pgd_inss.Mes",
+              "nativeQueryRef": "Mes",
               "active": true
             }
           ]
