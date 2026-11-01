@@ -128,6 +128,8 @@ def capturar_todas_as_paginas():
         context = browser.new_context(
             viewport={"width": 1920, "height": 1080},
             device_scale_factor=1.25,
+            locale="pt-BR",
+            timezone_id="America/Sao_Paulo",
         )
 
         page = context.new_page()
