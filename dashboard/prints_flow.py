@@ -3,9 +3,9 @@ Orquestrador visual e governança de documentação construído com Prefect.
 """
 
 import logging
+import subprocess
 import sys
 from pathlib import Path
-import pytest
 from prefect import flow, task
 
 PROJECT_DIR = Path(__file__).resolve().parent.parent
@@ -44,9 +44,10 @@ def task_capturar_prints():
     description="Garante que todos os 9 prints existem, têm cabeçalho PNG válido, tamanho adequado, são únicos e referenciados.",
 )
 def task_validar_documentacao_insights():
-    logging.info("[Prefect] Executando validação de integridade dos prints e documentação com Pytest...")
+    logging.info("[Prefect] Executando validação de integridade dos prints e documentação em subprocesso isolado...")
     caminho_testes = str(PROJECT_DIR / "tests" / "test_documentacao_insights.py")
-    exit_code = pytest.main(["-q", caminho_testes])
+    proc = subprocess.run([sys.executable, "-m", "pytest", "-q", caminho_testes], check=False)
+    exit_code = proc.returncode
     if exit_code != 0:
         msg = f"[Prefect] Falha na validação de documentação/prints: Pytest retornou código {exit_code}."
         logging.error(msg)

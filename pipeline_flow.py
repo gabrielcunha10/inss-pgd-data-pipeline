@@ -4,10 +4,10 @@ Orquestrador central construído com Prefect.
 
 import logging
 import os
+import subprocess
 import sys
 from pathlib import Path
 from dotenv import load_dotenv
-import pytest
 from prefect import flow, task
 
 PROJECT_DIR = Path(__file__).resolve().parent
@@ -58,12 +58,13 @@ def task_etl_lgpd():
 
 @task(
     name="3. Guardião de Qualidade e Integridade (Pytest)",
-    description="Executa 29 testes automatizados do pipeline no padrão Write-Audit-Publish antes da carga no banco.",
+    description="Executa os testes automatizados do pipeline em subprocesso isolado no padrão Write-Audit-Publish antes da carga no banco.",
 )
 def task_validar_qualidade():
-    logging.info("[Prefect] Executando suíte de testes de integridade do pipeline...")
+    logging.info("[Prefect] Executando suíte de testes de integridade do pipeline em subprocesso isolado...")
     caminho_testes = str(PROJECT_DIR / "tests" / "test_pipeline.py")
-    exit_code = pytest.main(["-q", caminho_testes])
+    proc = subprocess.run([sys.executable, "-m", "pytest", "-q", caminho_testes], check=False)
+    exit_code = proc.returncode
     if exit_code != 0:
         msg = f"[Prefect] Falha crítica de qualidade: Pytest retornou código {exit_code}. Carga abortada para proteger o banco."
         logging.error(msg)
@@ -72,8 +73,21 @@ def task_validar_qualidade():
 
 
 @task(
-    name="4. Carga Idempotente no PostgreSQL (Neon Tech)",
-    description="Executa a carga transacional particionada e idempotente dos dados no banco em nuvem.",
+    name="4. Diagnósticos Executivos de IA (Google Gemini)",
+    description="Gera diagnóstico analítico mensal via IA generativa e atualiza histórico do Power BI.",
+    retries=2,
+    retry_delay_seconds=20,
+)
+def task_gerar_insights():
+    logging.info("[Prefect] Iniciando geração autônoma de insights executivos...")
+    from tratamento.gerar_insights import main as insights_main
+    insights_main()
+    logging.info("[Prefect] Relatórios e histórico analítico do Power BI atualizados com sucesso.")
+
+
+@task(
+    name="5. Carga Idempotente no PostgreSQL (Neon Tech)",
+    description="Executa a carga transacional particionada e idempotente do Star Schema e insights no banco em nuvem.",
     retries=2,
     retry_delay_seconds=30,
 )
@@ -91,19 +105,6 @@ def task_carga_neon():
     except Exception as e:
         logging.error(f"[Prefect] Erro durante a carga no banco: {e}")
         raise e
-
-
-@task(
-    name="5. Diagnósticos Executivos de IA (Google Gemini)",
-    description="Gera diagnóstico analítico mensal via IA generativa e atualiza histórico do Power BI.",
-    retries=2,
-    retry_delay_seconds=20,
-)
-def task_gerar_insights():
-    logging.info("[Prefect] Iniciando geração autônoma de insights executivos...")
-    from tratamento.gerar_insights import main as insights_main
-    insights_main()
-    logging.info("[Prefect] Relatórios e histórico analítico do Power BI atualizados com sucesso.")
 
 
 @flow(
@@ -126,12 +127,12 @@ def pipeline_flow(executar_carga_banco: bool = True):
     # 3. Barreira de Qualidade
     task_validar_qualidade()
 
-    # 4. Carga no Neon DB (se habilitada)
+    # 4. Geração de Insights de IA (antes da carga no banco para sincronizar insights_historico_powerbi no Neon)
+    task_gerar_insights()
+
+    # 5. Carga no Neon DB (Star Schema + tb_pgd_inss + insights_historico_powerbi)
     if executar_carga_banco:
         task_carga_neon()
-
-    # 5. Geração de Insights de IA
-    task_gerar_insights()
 
     logging.info("==================================================")
     logging.info("Pipeline PGD INSS finalizado com êxito pelo Prefect")

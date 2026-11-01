@@ -43,12 +43,12 @@ def test_carga_neon_pula_quando_sem_database_url(monkeypatch):
 
 
 def test_validar_qualidade_sucesso():
-    with patch("pytest.main", return_value=0):
+    with patch("subprocess.run", return_value=MagicMock(returncode=0)):
         task_validar_qualidade.fn()
 
 
 def test_validar_qualidade_falha():
-    with patch("pytest.main", return_value=1):
+    with patch("subprocess.run", return_value=MagicMock(returncode=1)):
         with pytest.raises(RuntimeError, match="Falha crítica de qualidade"):
             task_validar_qualidade.fn()
 
@@ -56,7 +56,7 @@ def test_validar_qualidade_falha():
 def test_fluxo_orquestrado_mock():
     with patch("tratamento.download_sgp.main") as mock_down:
         with patch("tratamento.etl_sgp_inss.main") as mock_etl:
-            with patch("pytest.main", return_value=0) as mock_pytest:
+            with patch("subprocess.run", return_value=MagicMock(returncode=0)) as mock_pytest:
                 with patch("tratamento.load_neon.main") as mock_load:
                     with patch("tratamento.gerar_insights.main") as mock_insights:
                         pipeline_flow.fn(executar_carga_banco=True)
@@ -70,7 +70,7 @@ def test_fluxo_orquestrado_mock():
 def test_fluxo_orquestrado_sem_banco():
     with patch("tratamento.download_sgp.main") as mock_down:
         with patch("tratamento.etl_sgp_inss.main") as mock_etl:
-            with patch("pytest.main", return_value=0) as mock_pytest:
+            with patch("subprocess.run", return_value=MagicMock(returncode=0)) as mock_pytest:
                 with patch("tratamento.load_neon.main") as mock_load:
                     with patch("tratamento.gerar_insights.main") as mock_insights:
                         pipeline_flow.fn(executar_carga_banco=False)
@@ -83,19 +83,19 @@ def test_fluxo_orquestrado_sem_banco():
 
 
 def test_validar_documentacao_insights_sucesso():
-    with patch("pytest.main", return_value=0):
+    with patch("subprocess.run", return_value=MagicMock(returncode=0)):
         task_validar_documentacao_insights.fn()
 
 
 def test_validar_documentacao_insights_falha():
-    with patch("pytest.main", return_value=1):
+    with patch("subprocess.run", return_value=MagicMock(returncode=1)):
         with pytest.raises(RuntimeError, match="Falha na validação de documentação/prints"):
             task_validar_documentacao_insights.fn()
 
 
 def test_prints_flow_mock():
     with patch("dashboard.capturar_prints.capturar_todas_as_paginas") as mock_cap:
-        with patch("pytest.main", return_value=0) as mock_pytest:
+        with patch("subprocess.run", return_value=MagicMock(returncode=0)) as mock_pytest:
             prints_flow.fn()
             assert mock_cap.called
             assert mock_pytest.called
