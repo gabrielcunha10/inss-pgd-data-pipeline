@@ -533,20 +533,18 @@ def test_carga_execucao_transacional_mock(monkeypatch, tmp_path):
                 with patch.object(pd.DataFrame, "to_sql") as mock_to_sql:
                     load_neon_main()
 
-    assert mock_conn.execute.called, "conn.execute deveria ter sido chamado para o DELETE preventivo."
-    delete_calls = [c for c in mock_conn.execute.call_args_list if "DELETE FROM tb_pgd_inss" in str(c[0][0])]
+    assert mock_conn.execute.called, "conn.execute deveria ter sido chamado para o DELETE preventivo do Star Schema."
+    delete_calls = [c for c in mock_conn.execute.call_args_list if "DELETE FROM fato_designacoes" in str(c[0][0])]
     assert len(delete_calls) == 1
     call_args, _ = delete_calls[0]
-    assert "DELETE FROM tb_pgd_inss" in str(call_args[0])
+    assert "DELETE FROM fato_designacoes" in str(call_args[0])
     comps_executadas = call_args[1]["comps"]
     assert "2025-01-01" in comps_executadas
     assert "2025-02-01" in comps_executadas
 
-    assert mock_to_sql.called, "to_sql deveria ter sido chamado para inserir os dados."
-    to_sql_args, to_sql_kwargs = mock_to_sql.call_args
-    assert to_sql_args[0] == "tb_pgd_inss"
-    assert to_sql_kwargs["chunksize"] == 10000
-    assert to_sql_kwargs["if_exists"] == "append"
+    assert mock_to_sql.called, "to_sql deveria ter sido chamado para inserir o Star Schema."
+    tabelas_inseridas = [c[0][0] for c in mock_to_sql.call_args_list]
+    assert "fato_designacoes" in tabelas_inseridas
 
 
 def test_carga_pula_competencias_com_hash_identico_mock(monkeypatch, tmp_path):

@@ -54,7 +54,7 @@ def calcular_hash_competencia(df_particao: pd.DataFrame) -> str:
     colunas_ordenadas = sorted(df_particao.columns)
     df_norm = df_particao[colunas_ordenadas].copy()
     for col in colunas_ordenadas:
-        df_norm[col] = df_norm[col].where(df_norm[col].notna(), "").astype(str)
+        df_norm[col] = df_norm[col].astype(str)
         df_norm[col] = df_norm[col].replace({"nan": "", "None": "", "<NA>": "", "NaT": ""})
     df_norm = df_norm.sort_values(by=colunas_ordenadas).reset_index(drop=True)
     payload_csv = df_norm.to_csv(index=False, lineterminator="\n").encode("utf-8")
@@ -324,7 +324,7 @@ def sincronizar_star_schema_neon(
             text("DELETE FROM fato_designacoes WHERE competencia = ANY(CAST(:comps AS date[]))"),
             {"comps": list(competencias_para_carregar)},
         )
-        datas_alvo = pd.to_datetime(competencias_para_carregar)
+        datas_alvo = {pd.to_datetime(c).date() for c in competencias_para_carregar}
         df_fato_carga = df_fato[df_fato["competencia"].isin(datas_alvo)]
 
     df_fato_carga.to_sql(
@@ -386,22 +386,21 @@ def sincronizar_insights_neon(conn, caminho_csv: Path = INSIGHTS_CSV_FILE) -> in
 
 
 def main(full_refresh: bool = False):
-    logging.info("Iniciando a carga dos dados para o Neon DB...")
-
     db_url = os.getenv("DATABASE_URL")
     if not db_url:
         raise ValueError("Variável de ambiente DATABASE_URL não encontrada.")
 
-    logging.info(f"Lendo dados do arquivo: {PARQUET_FILE}")
     if not PARQUET_FILE.exists():
         raise FileNotFoundError(f"Arquivo não encontrado: {PARQUET_FILE}. Rode o ETL antes.")
 
+    logging.info(f"Lendo base tratada de {PARQUET_FILE}...")
     df_total = pd.read_parquet(PARQUET_FILE)
-    dtype_mapping = construir_dtype_mapping(df_total.columns)
+    df_total["competencia"] = pd.to_datetime(df_total["competencia"]).dt.date
 
+    # Resumo local por competência
     resumo_local = {}
-    for comp_ts, df_part in df_total.groupby("competencia", dropna=True):
-        comp_str = comp_ts.strftime("%Y-%m-%d")
+    for comp, df_part in df_total.groupby("competencia"):
+        comp_str = str(comp)
         resumo_local[comp_str] = {
             "qtd": len(df_part),
             "hash": calcular_hash_competencia(df_part),
@@ -411,7 +410,7 @@ def main(full_refresh: bool = False):
     try:
         with engine.begin() as conn:
             inspector = inspect(conn)
-            tabela_existe = inspector.has_table("tb_pgd_inss")
+            fato_existe = inspector.has_table("fato_designacoes")
             controle_existe = inspector.has_table("tb_controle_carga")
 
             conn.execute(
@@ -427,107 +426,71 @@ def main(full_refresh: bool = False):
                 )
             )
 
-            if not tabela_existe:
-                logging.info("Tabela 'tb_pgd_inss' não existe. Criando estrutura inicial no banco...")
-                df_total.head(0).to_sql(
-                    "tb_pgd_inss",
-                    con=conn,
-                    if_exists="append",
-                    index=False,
-                    dtype=dtype_mapping,
-                )
-                competencias_para_carregar = sorted(resumo_local.keys())
-            elif full_refresh:
-                logging.info("Modo full_refresh ativado: todas as competências serão recarregadas.")
+            if not fato_existe or full_refresh:
+                if full_refresh:
+                    logging.info("Modo full_refresh ativado: todas as competências do Star Schema serão recarregadas.")
+                else:
+                    logging.info("Tabela 'fato_designacoes' não existe. Criando modelo Star Schema inicial no banco...")
                 competencias_para_carregar = sorted(resumo_local.keys())
             else:
-                colunas_banco = {c["name"] for c in inspector.get_columns("tb_pgd_inss")}
-                colunas_locais = set(df_total.columns)
+                contagem_banco = {}
+                rows_cnt = conn.execute(
+                    text("SELECT CAST(competencia AS TEXT), COUNT(*) FROM fato_designacoes GROUP BY competencia")
+                ).fetchall()
+                for r in rows_cnt:
+                    if r[0] is not None:
+                        contagem_banco[str(r[0])[:10]] = int(r[1])
 
-                if colunas_banco and colunas_banco != colunas_locais:
-                    logging.info(
-                        "Mudança de schema detectada nas colunas do ETL. Recarregando tabela completa..."
-                    )
-                    conn.execute(text("DROP TABLE tb_pgd_inss"))
-                    df_total.head(0).to_sql(
-                        "tb_pgd_inss",
-                        con=conn,
-                        if_exists="append",
-                        index=False,
-                        dtype=dtype_mapping,
-                    )
-                    competencias_para_carregar = sorted(resumo_local.keys())
-                else:
-                    contagem_banco = {}
-                    rows_cnt = conn.execute(
-                        text("SELECT CAST(competencia AS TEXT), COUNT(*) FROM tb_pgd_inss GROUP BY competencia")
+                hashes_banco = {}
+                if controle_existe:
+                    rows_ctrl = conn.execute(
+                        text("SELECT CAST(competencia AS TEXT), qtd_registros, hash_dados FROM tb_controle_carga")
                     ).fetchall()
-                    for r in rows_cnt:
+                    for r in rows_ctrl:
                         if r[0] is not None:
-                            contagem_banco[str(r[0])[:10]] = int(r[1])
+                            hashes_banco[str(r[0])[:10]] = (int(r[1]), str(r[2]))
 
-                    hashes_banco = {}
-                    if controle_existe:
-                        rows_ctrl = conn.execute(
-                            text("SELECT CAST(competencia AS TEXT), qtd_registros, hash_dados FROM tb_controle_carga")
-                        ).fetchall()
-                        for r in rows_ctrl:
-                            if r[0] is not None:
-                                hashes_banco[str(r[0])[:10]] = (int(r[1]), str(r[2]))
+                competencias_para_carregar = []
+                competencias_bootstrap = []
 
-                    competencias_para_carregar = []
-                    competencias_bootstrap = []
+                for comp_str, info in sorted(resumo_local.items()):
+                    qtd_local = info["qtd"]
+                    hash_local = info["hash"]
+                    qtd_db = contagem_banco.get(comp_str)
 
-                    for comp_str, info in sorted(resumo_local.items()):
-                        qtd_local = info["qtd"]
-                        hash_local = info["hash"]
-                        qtd_db = contagem_banco.get(comp_str)
-
-                        if comp_str not in hashes_banco:
-                            if qtd_db == qtd_local:
-                                competencias_bootstrap.append(comp_str)
-                            else:
-                                competencias_para_carregar.append(comp_str)
+                    if comp_str not in hashes_banco:
+                        if qtd_db == qtd_local:
+                            competencias_bootstrap.append(comp_str)
                         else:
-                            qtd_ctrl, hash_ctrl = hashes_banco[comp_str]
-                            if qtd_db != qtd_local or qtd_ctrl != qtd_local or hash_ctrl != hash_local:
-                                competencias_para_carregar.append(comp_str)
+                            competencias_para_carregar.append(comp_str)
+                    else:
+                        qtd_ctrl, hash_ctrl = hashes_banco[comp_str]
+                        if qtd_db != qtd_local or qtd_ctrl != qtd_local or hash_ctrl != hash_local:
+                            competencias_para_carregar.append(comp_str)
 
-                    if competencias_bootstrap:
-                        logging.info(
-                            f"Registrando hashes iniciais de {len(competencias_bootstrap)} competência(s) "
-                            "já presentes no banco (sem reenvio de dados)..."
+                if competencias_bootstrap:
+                    logging.info(
+                        f"Registrando hashes iniciais de {len(competencias_bootstrap)} competência(s) "
+                        "já presentes no banco (sem reenvio de dados)..."
+                    )
+                    for comp_str in competencias_bootstrap:
+                        info = resumo_local[comp_str]
+                        conn.execute(
+                            text(
+                                """
+                                INSERT INTO tb_controle_carga (competencia, qtd_registros, hash_dados, atualizado_em)
+                                VALUES (CAST(:comp AS DATE), :qtd, :hash, CURRENT_TIMESTAMP)
+                                ON CONFLICT (competencia) DO UPDATE
+                                SET qtd_registros = EXCLUDED.qtd_registros,
+                                    hash_dados = EXCLUDED.hash_dados,
+                                    atualizado_em = CURRENT_TIMESTAMP
+                                """
+                            ),
+                            {"comp": comp_str, "qtd": info["qtd"], "hash": info["hash"]},
                         )
-                        for comp_str in competencias_bootstrap:
-                            info = resumo_local[comp_str]
-                            conn.execute(
-                                text(
-                                    """
-                                    INSERT INTO tb_controle_carga (competencia, qtd_registros, hash_dados, atualizado_em)
-                                    VALUES (CAST(:comp AS DATE), :qtd, :hash, CURRENT_TIMESTAMP)
-                                    ON CONFLICT (competencia) DO UPDATE
-                                    SET qtd_registros = EXCLUDED.qtd_registros,
-                                        hash_dados = EXCLUDED.hash_dados,
-                                        atualizado_em = CURRENT_TIMESTAMP
-                                    """
-                                ),
-                                {"comp": comp_str, "qtd": info["qtd"], "hash": info["hash"]},
-                            )
 
             if not competencias_para_carregar:
-                if not inspector.has_table("fato_designacoes"):
-                    logging.info(
-                        "Tabelas Star Schema ainda não existem no banco. Criando e populando a partir do ETL..."
-                    )
-                    sincronizar_star_schema_neon(
-                        conn=conn,
-                        inspector=inspector,
-                        df_total=df_total,
-                        competencias_para_carregar=sorted(resumo_local.keys()),
-                        full_refresh=True,
-                    )
-                    sincronizar_insights_neon(conn=conn)
-                elif not inspector.has_table("insights_historico_powerbi"):
+                if not inspector.has_table("insights_historico_powerbi"):
                     sincronizar_insights_neon(conn=conn)
                 else:
                     logging.info(
@@ -536,40 +499,21 @@ def main(full_refresh: bool = False):
                     )
                 return
 
-            if tabela_existe:
-                logging.info(
-                    f"Executando exclusão preventiva de {len(competencias_para_carregar)} competência(s) "
-                    "novas ou alteradas para carga idempotente..."
-                )
-                conn.execute(
-                    text("DELETE FROM tb_pgd_inss WHERE competencia = ANY(CAST(:comps AS date[]))"),
-                    {"comps": list(competencias_para_carregar)},
-                )
-
-            datas_alvo = pd.to_datetime(competencias_para_carregar)
+            datas_alvo = {pd.to_datetime(c).date() for c in competencias_para_carregar}
             df_carga = df_total[df_total["competencia"].isin(datas_alvo)]
 
             logging.info(
-                f"Inserindo {len(df_carga)} registros ({len(competencias_para_carregar)} competência(s)) "
-                "na tabela 'tb_pgd_inss' em lotes (chunksize=10.000)..."
+                f"Sincronizando {len(df_carga)} registros ({len(competencias_para_carregar)} competência(s)) "
+                "no modelo Star Schema (fato_designacoes + 5 dimensões)..."
             )
             sincronizar_star_schema_neon(
                 conn=conn,
                 inspector=inspector,
                 df_total=df_total,
                 competencias_para_carregar=competencias_para_carregar,
-                full_refresh=full_refresh or (not tabela_existe),
+                full_refresh=full_refresh or (not fato_existe),
             )
             sincronizar_insights_neon(conn=conn)
-
-            df_carga.to_sql(
-                "tb_pgd_inss",
-                con=conn,
-                if_exists="append",
-                index=False,
-                dtype=dtype_mapping,
-                chunksize=10000,
-            )
 
             for comp_str in competencias_para_carregar:
                 info = resumo_local[comp_str]
@@ -589,7 +533,7 @@ def main(full_refresh: bool = False):
 
         logging.info(
             f"Carga incremental concluída com sucesso: {len(df_carga)} linhas sincronizadas "
-            f"({len(competencias_para_carregar)} competência(s)) na tabela 'tb_pgd_inss' no Neon Tech."
+            f"({len(competencias_para_carregar)} competência(s)) no Star Schema (Neon Tech)."
         )
     except Exception as e:
         logging.error(f"Erro ao enviar dados de forma incremental: {e}")

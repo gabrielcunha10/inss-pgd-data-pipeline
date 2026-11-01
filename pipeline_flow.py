@@ -130,7 +130,7 @@ def pipeline_flow(executar_carga_banco: bool = True):
     # 4. Geração de Insights de IA (antes da carga no banco para sincronizar insights_historico_powerbi no Neon)
     task_gerar_insights()
 
-    # 5. Carga no Neon DB (Star Schema + tb_pgd_inss + insights_historico_powerbi)
+    # 5. Carga no Neon DB (Star Schema + insights_historico_powerbi)
     if executar_carga_banco:
         task_carga_neon()
 
