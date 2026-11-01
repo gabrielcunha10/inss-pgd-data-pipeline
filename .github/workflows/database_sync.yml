@@ -2,7 +2,8 @@ name: Sincronização do Banco SGP-INSS
 
 on:
   schedule:
-    - cron: "0 9 1 * *"
+    # Executa semanalmente toda segunda-feira às 09:00 UTC (06:00 BRT)
+    - cron: "0 9 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -23,6 +24,11 @@ jobs:
           key: dados-inss-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             dados-inss-${{ runner.os }}-
+
+      - name: Lint e Checagem Estática (Ruff)
+        run: |
+          python3 -m pip install --quiet ruff==0.9.10
+          ruff check tratamento/ dashboard/ pipeline_flow.py --select E9,F63,F7,F82
 
       - name: Construir Imagem Docker do Pipeline
         run: |
@@ -71,3 +77,14 @@ jobs:
           path: logs/pipeline.log
           retention-days: 90
           if-no-files-found: warn
+
+      - name: Alerta de Falha e Resumo de Atualidade dos Dados
+        if: always()
+        run: |
+          echo "### Status de Execução do Pipeline PGD INSS: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+          if [ -f logs/pipeline.log ]; then
+            grep -E "ALERTA DE DEFASAGEM|Verificacao de atualidade OK|Carga incremental concluída|Star Schema atualizado" logs/pipeline.log >> $GITHUB_STEP_SUMMARY || true
+          fi
+          if [ "${{ job.status }}" = "failure" ]; then
+            echo "::error title=Falha Crítica no Pipeline PGD INSS::A execução semanal do pipeline falhou. Verifique os logs anexados no artefato pipeline-log-sync-${{ github.run_id }}."
+          fi

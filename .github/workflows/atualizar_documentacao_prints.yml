@@ -2,8 +2,8 @@ name: Atualização de Prints e Documentação do Dashboard
 
 on:
   schedule:
-    # Executa no dia 01 de cada mês às 10:30 UTC (1h30 após a sincronização do banco das 09:00 UTC)
-    - cron: "30 10 1 * *"
+    # Executa semanalmente toda segunda-feira às 10:30 UTC (07:30 BRT — 1h30 após a sincronização do banco)
+    - cron: "30 10 * * 1"
   workflow_dispatch:
 
 jobs:
@@ -22,11 +22,11 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Instalar Dependências e Navegador Playwright
+      - name: Instalar Dependências, Linter e Navegador Playwright
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install playwright
+          pip install -r requirements-dev.txt
+          ruff check tratamento/ dashboard/ pipeline_flow.py --select E9,F63,F7,F82
           playwright install --with-deps chromium
 
       - name: Executar Fluxo de Captura e Validação de Prints (Prefect)
@@ -56,3 +56,8 @@ jobs:
           path: logs/pipeline.log
           retention-days: 90
           if-no-files-found: warn
+
+      - name: Alerta de Falha na Captura de Prints
+        if: failure()
+        run: |
+          echo "::error title=Falha na Captura de Prints do Dashboard::O workflow atualizar_documentacao_prints.yml falhou. Consulte o artefato pipeline-log-prints-${{ github.run_id }}."
