@@ -6,7 +6,7 @@
     "y": 359.87841945288756,
     "z": 23000,
     "height": 332.64437689969606,
-    "width": 477.56838905775078,
+    "width": 477.5683890577508,
     "tabOrder": 23000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "fato_designacoes"
                     }
                   },
                   "Property": "id_usuario"
                 }
               },
-              "queryRef": "public tb_pgd_inss.id_usuario",
+              "queryRef": "fato_designacoes.id_usuario",
               "nativeQueryRef": "Servidor",
               "displayName": "Servidor"
             },

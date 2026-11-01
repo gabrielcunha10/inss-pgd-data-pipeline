@@ -22,7 +22,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "fato_designacoes"
                         }
                       },
                       "Property": "id_designacao"
@@ -48,7 +48,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "public tb_pgd_inss"
+                        "Entity": "fato_designacoes"
                       }
                     },
                     "Property": "id_designacao"
@@ -609,7 +609,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "programa"
@@ -621,7 +621,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

@@ -5,8 +5,8 @@
     "x": 190.32418952618454,
     "y": 360,
     "z": 5000,
-    "height": 333.06733167082291,
-    "width": 475.81047381546131,
+    "height": 333.0673316708229,
+    "width": 475.8104738154613,
     "tabOrder": 5000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_calendario"
                     }
                   },
                   "Property": "competencia"
                 }
               },
-              "queryRef": "public tb_pgd_inss.competencia.Variation.Hierarquia de datas.Ano",
+              "queryRef": "fato_designacoes.competencia.Variation.Hierarquia de datas.Ano",
               "nativeQueryRef": "Competência",
               "active": true,
               "displayName": "Competência"
@@ -40,13 +40,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "fato_designacoes"
                     }
                   },
                   "Property": "modalidade"
                 }
               },
-              "queryRef": "public tb_pgd_inss.modalidade",
+              "queryRef": "fato_designacoes.modalidade",
               "nativeQueryRef": "modalidade"
             }
           ]
@@ -60,7 +60,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "fato_designacoes"
                         }
                       },
                       "Property": "id_designacao"
@@ -167,7 +167,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "status"
@@ -243,7 +243,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -335,7 +335,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -376,7 +376,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -417,7 +417,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -626,7 +626,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "fato_designacoes"
               }
             },
             "Property": "modalidade"
@@ -638,7 +638,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

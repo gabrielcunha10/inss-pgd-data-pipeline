@@ -3,7 +3,7 @@
   "name": "e93068f815bd783acaed",
   "position": {
     "x": 189.66565349544075,
-    "y": 175.07598784194531,
+    "y": 175.0759878419453,
     "z": 2000,
     "height": 154.65045592705167,
     "width": 217.87234042553192,
@@ -22,7 +22,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "fato_designacoes"
                         }
                       },
                       "Property": "id_usuario"
@@ -47,7 +47,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "public tb_pgd_inss"
+                        "Entity": "fato_designacoes"
                       }
                     },
                     "Property": "id_usuario"

@@ -73,6 +73,25 @@ table dim_calendario
 
 		annotation SummarizationSetBy = Automatic
 
+
+	column Ano = dim_calendario[ano]
+		dataType: int64
+		formatString: 0
+		lineageTag: 55e68c50-c508-419c-a645-050000000009
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mes = dim_calendario[nome_mes]
+		dataType: string
+		lineageTag: 55e68c50-c508-419c-a645-050000000010
+		summarizeBy: none
+		sortByColumn: mes
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_calendario = m
 		mode: import
 		source =

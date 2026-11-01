@@ -5,10 +5,10 @@ table Designacoes_Unicas
 			
 			VAR _MesTemDados = 
 			    CALCULATE(
-			        COUNTROWS('public tb_pgd_inss'), 
-			        ALL('public tb_pgd_inss'[status])
+			        COUNTROWS('fato_designacoes'), 
+			        ALL('fato_designacoes'[status])
 			    )
-			VAR _QtdStatus = COUNTROWS('public tb_pgd_inss')
+			VAR _QtdStatus = COUNTROWS('fato_designacoes')
 			
 			RETURN
 			    IF(
@@ -23,18 +23,18 @@ table Designacoes_Unicas
 			
 			VAR _MesTemDados = 
 			    CALCULATE(
-			        COUNTROWS('public tb_pgd_inss'), 
-			        ALL('public tb_pgd_inss'[status])
+			        COUNTROWS('fato_designacoes'), 
+			        ALL('fato_designacoes'[status])
 			    )
-			VAR _StatusAtual = SELECTEDVALUE('public tb_pgd_inss'[status])
+			VAR _StatusAtual = SELECTEDVALUE('fato_designacoes'[status])
 			VAR _Qtd = 
 			    SWITCH(
 			        _StatusAtual,
-			        "Desligado", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Desligado"),
-			        "Ativo", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Ativo"),
-			        "Concluído", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Concluído"),
-			        "Cancelado", CALCULATE(COUNTROWS('public tb_pgd_inss'), 'public tb_pgd_inss'[status] = "Cancelado"),
-			        COUNTROWS('public tb_pgd_inss')
+			        "Desligado", CALCULATE(COUNTROWS('fato_designacoes'), 'fato_designacoes'[status] = "Desligado"),
+			        "Ativo", CALCULATE(COUNTROWS('fato_designacoes'), 'fato_designacoes'[status] = "Ativo"),
+			        "Concluído", CALCULATE(COUNTROWS('fato_designacoes'), 'fato_designacoes'[status] = "Concluído"),
+			        "Cancelado", CALCULATE(COUNTROWS('fato_designacoes'), 'fato_designacoes'[status] = "Cancelado"),
+			        COUNTROWS('fato_designacoes')
 			    )
 			RETURN
 			    IF(
@@ -48,10 +48,10 @@ table Designacoes_Unicas
 	column 'Data Fim' =
 			
 			CALCULATE(
-			    MAX('public tb_pgd_inss'[dt_fim_designacao]),
+			    MAX('fato_designacoes'[dt_fim_designacao]),
 			    FILTER(
-			        'public tb_pgd_inss',
-			        'public tb_pgd_inss'[id_designacao]
+			        'fato_designacoes',
+			        'fato_designacoes'[id_designacao]
 			            = Designacoes_Unicas[id_designacao]
 			    )
 			)
@@ -69,10 +69,10 @@ table Designacoes_Unicas
 	column 'Data Início' =
 			
 			CALCULATE(
-			    MIN('public tb_pgd_inss'[dt_inicio_designacao]),
+			    MIN('fato_designacoes'[dt_inicio_designacao]),
 			    FILTER(
-			        'public tb_pgd_inss',
-			        'public tb_pgd_inss'[id_designacao]
+			        'fato_designacoes',
+			        'fato_designacoes'[id_designacao]
 			            = Designacoes_Unicas[id_designacao]
 			    )
 			)
@@ -112,7 +112,7 @@ table Designacoes_Unicas
 		lineageTag: ea412bd6-4834-4c5c-8b1e-f8959a7c3f83
 		summarizeBy: sum
 		isNameInferred
-		sourceColumn: public tb_pgd_inss[id_designacao]
+		sourceColumn: fato_designacoes[id_designacao]
 
 		annotation SummarizationSetBy = Automatic
 
@@ -120,7 +120,7 @@ table Designacoes_Unicas
 		lineageTag: 54b5863c-e9ae-443d-ac2a-07d4f2aec8ce
 		summarizeBy: none
 		isNameInferred
-		sourceColumn: public tb_pgd_inss[sigla_programa]
+		sourceColumn: fato_designacoes[sk_programa]
 
 		annotation SummarizationSetBy = Automatic
 
@@ -129,9 +129,9 @@ table Designacoes_Unicas
 		source =
 				
 				SUMMARIZE(
-				    'public tb_pgd_inss',
-				    'public tb_pgd_inss'[id_designacao],
-				    'public tb_pgd_inss'[sigla_programa]
+				    'fato_designacoes',
+				    'fato_designacoes'[id_designacao],
+				    RELATED('dim_programa'[sigla_programa])
 				)
 
 	annotation PBI_Id = 7abdbc30a87e4ce884b99e538a2e8668

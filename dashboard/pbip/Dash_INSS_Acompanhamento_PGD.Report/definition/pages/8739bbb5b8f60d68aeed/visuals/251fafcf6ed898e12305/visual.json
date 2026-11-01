@@ -3,7 +3,7 @@
   "name": "251fafcf6ed898e12305",
   "position": {
     "x": 400.42520880789675,
-    "y": 91.359149582384219,
+    "y": 91.35914958238422,
     "z": 1000,
     "height": 152.58921791951406,
     "width": 254.63933181473047,
@@ -595,7 +595,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "programa"
@@ -607,7 +607,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

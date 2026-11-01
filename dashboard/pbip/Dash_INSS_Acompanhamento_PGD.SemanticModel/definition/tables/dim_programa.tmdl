@@ -2,6 +2,7 @@ table dim_programa
 	lineageTag: 11a24e10-81c4-4d58-9201-c10000000001
 
 	column sk_programa
+		isKey
 		dataType: int64
 		formatString: 0
 		lineageTag: 11a24e10-81c4-4d58-9201-c10000000002
@@ -12,7 +13,6 @@ table dim_programa
 
 	column sigla_programa
 		dataType: string
-		isKey
 		lineageTag: 11a24e10-81c4-4d58-9201-c10000000003
 		summarizeBy: none
 		sourceColumn: sigla_programa

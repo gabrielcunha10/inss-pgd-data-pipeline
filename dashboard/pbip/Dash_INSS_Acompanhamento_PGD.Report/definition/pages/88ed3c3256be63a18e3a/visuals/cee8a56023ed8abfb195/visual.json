@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "cee8a56023ed8abfb195",
   "position": {
-    "x": 692.52279635258367,
+    "x": 692.5227963525837,
     "y": 359.87841945288756,
     "z": 25000,
     "height": 332.64437689969606,
-    "width": 477.56838905775078,
+    "width": 477.5683890577508,
     "tabOrder": 25000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_programa"
                     }
                   },
                   "Property": "sigla_programa"
                 }
               },
-              "queryRef": "public tb_pgd_inss.sigla_programa",
+              "queryRef": "dim_programa.sigla_programa",
               "nativeQueryRef": "sigla_programa",
               "active": true
             }
@@ -39,13 +39,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "fato_designacoes"
                     }
                   },
                   "Property": "tipo_entrega"
                 }
               },
-              "queryRef": "public tb_pgd_inss.tipo_entrega",
+              "queryRef": "fato_designacoes.tipo_entrega",
               "nativeQueryRef": "tipo_entrega"
             }
           ]
@@ -59,7 +59,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "fato_designacoes"
                         }
                       },
                       "Property": "id_designacao"
@@ -83,7 +83,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "public tb_pgd_inss"
+                        "Entity": "fato_designacoes"
                       }
                     },
                     "Property": "id_designacao"
@@ -164,7 +164,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -212,7 +212,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -253,7 +253,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -294,7 +294,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "tipo_entrega"
@@ -335,7 +335,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "tipo_entrega"
@@ -376,7 +376,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "tipo_entrega"
@@ -417,7 +417,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "tipo_entrega"
@@ -662,7 +662,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "sigla_programa"
@@ -674,7 +674,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],
@@ -734,7 +734,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "sigla_programa"
@@ -753,7 +753,7 @@
                     "From": [
                       {
                         "Name": "p",
-                        "Entity": "public tb_pgd_inss",
+                        "Entity": "fato_designacoes",
                         "Type": 0
                       }
                     ],
@@ -798,7 +798,7 @@
             },
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

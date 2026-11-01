@@ -6,7 +6,7 @@
     "y": 359.87841945288756,
     "z": 24000,
     "height": 332.64437689969606,
-    "width": 477.56838905775078,
+    "width": 477.5683890577508,
     "tabOrder": 24000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_linha_trabalho"
                     }
                   },
                   "Property": "filtro_linha_trabalho"
                 }
               },
-              "queryRef": "public tb_pgd_inss.filtro_linha_trabalho",
+              "queryRef": "dim_linha_trabalho.filtro_linha_trabalho",
               "nativeQueryRef": "filtro_linha_trabalho",
               "active": true
             }
@@ -39,13 +39,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "fato_designacoes"
                     }
                   },
                   "Property": "modalidade"
                 }
               },
-              "queryRef": "public tb_pgd_inss.modalidade",
+              "queryRef": "fato_designacoes.modalidade",
               "nativeQueryRef": "modalidade"
             }
           ]
@@ -59,7 +59,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "fato_designacoes"
                         }
                       },
                       "Property": "id_designacao"
@@ -83,7 +83,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "public tb_pgd_inss"
+                        "Entity": "fato_designacoes"
                       }
                     },
                     "Property": "id_designacao"
@@ -262,7 +262,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -310,7 +310,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -351,7 +351,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -505,7 +505,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "fato_designacoes"
               }
             },
             "Property": "modalidade"
@@ -517,7 +517,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],
@@ -577,7 +577,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_linha_trabalho"
               }
             },
             "Property": "filtro_linha_trabalho"
@@ -596,7 +596,7 @@
                     "From": [
                       {
                         "Name": "p",
-                        "Entity": "public tb_pgd_inss",
+                        "Entity": "fato_designacoes",
                         "Type": 0
                       }
                     ],
@@ -641,7 +641,7 @@
             },
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

@@ -110,7 +110,7 @@ table LocalDateTable_d02ee100-2402-423d-a99a-9bc01fc87423
 
 	partition LocalDateTable_d02ee100-2402-423d-a99a-9bc01fc87423 = calculated
 		mode: import
-		source = Calendar(Date(Year(MIN('public tb_pgd_inss'[dt_inicio_designacao])), 1, 1), Date(Year(MAX('public tb_pgd_inss'[dt_inicio_designacao])), 12, 31))
+		source = Calendar(Date(Year(MIN('fato_designacoes'[dt_inicio_designacao])), 1, 1), Date(Year(MAX('fato_designacoes'[dt_inicio_designacao])), 12, 31))
 
 	annotation __PBI_LocalDateTable = true
 

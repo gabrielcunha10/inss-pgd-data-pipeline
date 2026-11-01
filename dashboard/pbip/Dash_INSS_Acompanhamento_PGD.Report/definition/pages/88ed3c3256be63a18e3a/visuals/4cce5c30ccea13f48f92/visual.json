@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "4cce5c30ccea13f48f92",
   "position": {
-    "x": 391.42144638403988,
+    "x": 391.4214463840399,
     "y": 110.42394014962593,
     "z": 16000,
-    "height": 35.012468827930171,
+    "height": 35.01246882793017,
     "width": 74.51371571072319,
     "tabOrder": 16000
   },
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_calendario"
                     }
                   },
                   "Property": "Ano"
                 }
               },
-              "queryRef": "public tb_pgd_inss.Ano",
+              "queryRef": "dim_calendario.Ano",
               "nativeQueryRef": "Ano",
               "active": true
             }

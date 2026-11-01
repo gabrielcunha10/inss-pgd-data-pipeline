@@ -110,7 +110,7 @@ table LocalDateTable_5623ca4c-5e69-4085-9cef-a62460ad174a
 
 	partition LocalDateTable_5623ca4c-5e69-4085-9cef-a62460ad174a = calculated
 		mode: import
-		source = Calendar(Date(Year(MIN('public tb_pgd_inss'[dt_criacao_designacao])), 1, 1), Date(Year(MAX('public tb_pgd_inss'[dt_criacao_designacao])), 12, 31))
+		source = Calendar(Date(Year(MIN('fato_designacoes'[dt_criacao_designacao])), 1, 1), Date(Year(MAX('fato_designacoes'[dt_criacao_designacao])), 12, 31))
 
 	annotation __PBI_LocalDateTable = true
 

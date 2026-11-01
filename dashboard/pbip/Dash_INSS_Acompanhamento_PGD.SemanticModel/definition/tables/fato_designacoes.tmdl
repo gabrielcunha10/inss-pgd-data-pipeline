@@ -1,0 +1,181 @@
+table fato_designacoes
+	lineageTag: 0ff3585e-6b21-4216-8b61-137b246c94bb
+
+	column competencia
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026301
+		summarizeBy: none
+		sourceColumn: competencia
+
+		annotation SummarizationSetBy = Automatic
+		annotation UnderlyingDateTimeDataType = Date
+
+	column id_usuario
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026302
+		summarizeBy: none
+		sourceColumn: id_usuario
+
+		annotation SummarizationSetBy = Automatic
+
+	column id_designacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026303
+		summarizeBy: count
+		sourceColumn: id_designacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_programa
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026304
+		summarizeBy: none
+		sourceColumn: sk_programa
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_linha_trabalho
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026305
+		summarizeBy: none
+		sourceColumn: sk_linha_trabalho
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_lotacao
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026306
+		summarizeBy: none
+		sourceColumn: sk_lotacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026307
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column modalidade
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026308
+		summarizeBy: none
+		sourceColumn: modalidade
+		sortByColumn: 'Ordem Modalidade'
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_entrega
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026309
+		summarizeBy: none
+		sourceColumn: tipo_entrega
+		sortByColumn: Ordem_Entrega
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column motivo_desligamento
+		dataType: string
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026310
+		summarizeBy: none
+		sourceColumn: motivo_desligamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column dt_inicio_designacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026311
+		summarizeBy: none
+		sourceColumn: dt_inicio_designacao
+
+		variation Variation
+			isDefault
+			relationship: 3b43b145-4b42-4beb-aa30-43f972464534
+			defaultHierarchy: LocalDateTable_d02ee100-2402-423d-a99a-9bc01fc87423.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column dt_fim_designacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026312
+		summarizeBy: none
+		sourceColumn: dt_fim_designacao
+
+		variation Variation
+			isDefault
+			relationship: 9599d9c4-c42d-4dd8-a9c7-050016a2723c
+			defaultHierarchy: LocalDateTable_92401043-d257-4411-8acd-1c16cfba3e34.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column dt_criacao_designacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026313
+		summarizeBy: none
+		sourceColumn: dt_criacao_designacao
+
+		variation Variation
+			isDefault
+			relationship: 91123009-75ce-464a-b1e4-ef0497bc1fb8
+			defaultHierarchy: LocalDateTable_5623ca4c-5e69-4085-9cef-a62460ad174a.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column dt_alteracao_designacao
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026314
+		summarizeBy: none
+		sourceColumn: dt_alteracao_designacao
+
+		variation Variation
+			isDefault
+			relationship: 6d28489c-d297-40b9-91ac-b42c5942e668
+			defaultHierarchy: LocalDateTable_a99bdc61-a0a8-4d41-98d6-da00488b72b1.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ordem Modalidade'
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026315
+		summarizeBy: none
+		sourceColumn: Ordem Modalidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ordem_Entrega
+		dataType: int64
+		formatString: 0
+		lineageTag: 7026c7ee-1d2c-424e-916e-e7fe34026316
+		summarizeBy: none
+		sourceColumn: Ordem_Entrega
+
+		annotation SummarizationSetBy = Automatic
+
+	partition fato_designacoes = m
+		mode: import
+		source =
+				let
+				    Fonte = PostgreSQL.Database("ep-sparkling-truth-acui7jst-pooler.sa-east-1.aws.neon.tech", "neondb"),
+				    public_fato = Fonte{[Schema="public",Item="fato_designacoes"]}[Data],
+				    #"Coluna Condicional Adicionada" = Table.AddColumn(public_fato, "Ordem Modalidade", each if [modalidade] = "Remoto" then 1 else if [modalidade] = "Semipresencial" then 2 else if [modalidade] = "Presencial" then 3 else null, Int64.Type),
+				    #"Coluna Condicional Adicionada1" = Table.AddColumn(#"Coluna Condicional Adicionada", "Ordem_Entrega", each if [tipo_entrega] = "Produto" then 1 else if [tipo_entrega] = "Meta" then 2 else if [tipo_entrega] = "Jornada e Meta" then 3 else 4, Int64.Type)
+				in
+				    #"Coluna Condicional Adicionada1"
+
+	annotation PBI_ResultType = Table

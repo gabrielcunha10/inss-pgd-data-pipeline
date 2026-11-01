@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "bf4cdff94c98813dcb90",
   "position": {
-    "x": 587.13216957605982,
+    "x": 587.1321695760598,
     "y": 110.42394014962593,
     "z": 12000,
-    "height": 35.012468827930171,
-    "width": 185.83541147132169,
+    "height": 35.01246882793017,
+    "width": 185.8354114713217,
     "tabOrder": 12000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_lotacao"
                     }
                   },
                   "Property": "lotacao"
                 }
               },
-              "queryRef": "public tb_pgd_inss.lotacao",
+              "queryRef": "dim_lotacao.lotacao",
               "nativeQueryRef": "lotacao",
               "active": true
             }
@@ -250,7 +250,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_lotacao"
               }
             },
             "Property": "lotacao"
@@ -262,7 +262,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

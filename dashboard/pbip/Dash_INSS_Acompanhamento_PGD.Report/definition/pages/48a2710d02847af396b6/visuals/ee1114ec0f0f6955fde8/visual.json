@@ -5,8 +5,8 @@
     "x": 392.22222222222223,
     "y": 106.66666666666666,
     "z": 18000,
-    "height": 35.555555555555557,
-    "width": 74.444444444444443,
+    "height": 35.55555555555556,
+    "width": 74.44444444444444,
     "tabOrder": 18000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_calendario"
                     }
                   },
                   "Property": "Ano"
                 }
               },
-              "queryRef": "public tb_pgd_inss.Ano",
+              "queryRef": "dim_calendario.Ano",
               "nativeQueryRef": "Ano",
               "active": true
             }

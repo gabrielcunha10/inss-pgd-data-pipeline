@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
   "name": "9267701819e35dd9b616",
   "position": {
-    "x": 273.81546134663341,
+    "x": 273.8154613466334,
     "y": 110.42394014962593,
     "z": 18000,
-    "height": 35.012468827930171,
+    "height": 35.01246882793017,
     "width": 114.0149625935162,
     "tabOrder": 18000
   },
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_calendario"
                     }
                   },
                   "Property": "Mes"
                 }
               },
-              "queryRef": "public tb_pgd_inss.Mes",
+              "queryRef": "dim_calendario.Mes",
               "nativeQueryRef": "Mes",
               "active": true
             }
@@ -250,7 +250,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "fato_designacoes"
               }
             },
             "Property": "tipo_entrega"
@@ -262,7 +262,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

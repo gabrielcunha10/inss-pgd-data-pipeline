@@ -5,7 +5,7 @@
     "x": 274.44444444444446,
     "y": 106.66666666666666,
     "z": 18000,
-    "height": 35.555555555555557,
+    "height": 35.55555555555556,
     "width": 113.33333333333333,
     "tabOrder": 18000
   },
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_calendario"
                     }
                   },
                   "Property": "Mes"
                 }
               },
-              "queryRef": "public tb_pgd_inss.Mes",
+              "queryRef": "dim_calendario.Mes",
               "nativeQueryRef": "Mes",
               "active": true
             }
@@ -250,7 +250,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "fato_designacoes"
               }
             },
             "Property": "tipo_entrega"
@@ -262,7 +262,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

@@ -6,7 +6,7 @@
     "y": 359.87841945288756,
     "z": 24000,
     "height": 332.64437689969606,
-    "width": 477.56838905775078,
+    "width": 477.5683890577508,
     "tabOrder": 24000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_programa"
                     }
                   },
                   "Property": "sigla_programa"
                 }
               },
-              "queryRef": "public tb_pgd_inss.sigla_programa",
+              "queryRef": "dim_programa.sigla_programa",
               "nativeQueryRef": "sigla_programa",
               "active": true
             }
@@ -131,7 +131,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -179,7 +179,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -220,7 +220,7 @@
                       "Column": {
                         "Expression": {
                           "SourceRef": {
-                            "Entity": "public tb_pgd_inss"
+                            "Entity": "fato_designacoes"
                           }
                         },
                         "Property": "modalidade"
@@ -437,7 +437,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "sigla_programa"
@@ -449,7 +449,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],
@@ -509,7 +509,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "sigla_programa"
@@ -528,7 +528,7 @@
                     "From": [
                       {
                         "Name": "p",
-                        "Entity": "public tb_pgd_inss",
+                        "Entity": "fato_designacoes",
                         "Type": 0
                       },
                       {
@@ -573,7 +573,7 @@
             },
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

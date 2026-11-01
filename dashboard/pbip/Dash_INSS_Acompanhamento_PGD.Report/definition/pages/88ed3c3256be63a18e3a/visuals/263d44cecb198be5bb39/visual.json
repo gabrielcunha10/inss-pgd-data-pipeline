@@ -5,7 +5,7 @@
     "x": 1089.8753117206982,
     "y": 110.42394014962593,
     "z": 6000,
-    "height": 35.012468827930171,
+    "height": 35.01246882793017,
     "width": 186.73316708229424,
     "tabOrder": 6000
   },
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_programa"
                     }
                   },
                   "Property": "filtro_programa"
                 }
               },
-              "queryRef": "public tb_pgd_inss.filtro_programa",
+              "queryRef": "dim_programa.filtro_programa",
               "nativeQueryRef": "filtro_programa",
               "active": true
             }
@@ -250,7 +250,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "programa"
@@ -262,7 +262,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

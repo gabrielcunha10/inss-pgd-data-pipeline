@@ -2,8 +2,8 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "9922653cd1c44fde2397",
   "position": {
-    "x": 449.36170212765961,
-    "y": 175.07598784194531,
+    "x": 449.3617021276596,
+    "y": 175.0759878419453,
     "z": 1000,
     "height": 154.65045592705167,
     "width": 217.87234042553192,
@@ -22,7 +22,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "dim_linha_trabalho"
                         }
                       },
                       "Property": "linha_trabalho"
@@ -47,7 +47,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "public tb_pgd_inss"
+                        "Entity": "dim_linha_trabalho"
                       }
                     },
                     "Property": "linha_trabalho"
@@ -601,7 +601,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "programa"
@@ -613,7 +613,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

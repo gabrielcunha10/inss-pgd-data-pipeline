@@ -3,7 +3,7 @@ table '_Medidas (2)'
 
 	measure Designações =
 			
-			DISTINCTCOUNT('public tb_pgd_inss'[id_designacao])
+			DISTINCTCOUNT('fato_designacoes'[id_designacao])
 		formatString: 0
 		lineageTag: 65d0874e-58d1-4bb2-b8e5-7889a96bed7b
 
@@ -19,8 +19,8 @@ table '_Medidas (2)'
 	measure 'Designações por Status' =
 			
 			CALCULATE(
-			    DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]),
-			    'public tb_pgd_inss'[id_designacao] <> BLANK()
+			    DISTINCTCOUNT('fato_designacoes'[id_designacao]),
+			    'fato_designacoes'[id_designacao] <> BLANK()
 			)
 		formatString: 0
 		lineageTag: 7bd9ab8e-b897-4f38-b9c3-4aab85463ef2
@@ -28,7 +28,7 @@ table '_Medidas (2)'
 	measure 'Média de Designações' =
 			
 			AVERAGEX(
-			    VALUES('public tb_pgd_inss'[competencia]),
+			    VALUES('fato_designacoes'[competencia]),
 			    [Designações]
 			)
 		lineageTag: 1b15661a-f301-4a4c-a40e-3de8028b5123
@@ -38,10 +38,10 @@ table '_Medidas (2)'
 	measure 'Média de Designações por Mês' =
 			
 			AVERAGEX(
-			    VALUES('public tb_pgd_inss'[competencia]),
+			    VALUES('fato_designacoes'[competencia]),
 			    CALCULATE(
 			        DISTINCTCOUNT(
-			            'public tb_pgd_inss'[id_designacao]
+			            'fato_designacoes'[id_designacao]
 			        )
 			    )
 			)
@@ -52,14 +52,14 @@ table '_Medidas (2)'
 	measure 'Meses Observados' =
 			
 			DISTINCTCOUNT(
-			    'public tb_pgd_inss'[competencia]
+			    'fato_designacoes'[competencia]
 			)
 		formatString: 0
 		lineageTag: 8b6f26e8-e258-4ccc-9672-0984b873c5e7
 
 	measure 'Total de Designações' =
 			
-			DISTINCTCOUNT('public tb_pgd_inss'[id_designacao])
+			DISTINCTCOUNT('fato_designacoes'[id_designacao])
 		formatString: 0
 		lineageTag: 33fe3015-40b5-4534-9d6c-5d7ab4a13c2d
 
@@ -67,15 +67,15 @@ table '_Medidas (2)'
 			
 			COUNTROWS(
 			    FILTER(
-			        VALUES('public tb_pgd_inss'[id_matricula]),
+			        VALUES('fato_designacoes'[id_usuario]),
 			        VAR UltimaCompetencia =
 			            CALCULATE(
-			                MAX('public tb_pgd_inss'[competencia])
+			                MAX('fato_designacoes'[competencia])
 			            )
 			        VAR UltimoStatus =
 			            CALCULATE(
-			                MAX('public tb_pgd_inss'[status]),
-			                'public tb_pgd_inss'[competencia] = UltimaCompetencia
+			                MAX('fato_designacoes'[status]),
+			                'fato_designacoes'[competencia] = UltimaCompetencia
 			            )
 			        RETURN
 			            UltimoStatus <> "Desligado"
@@ -96,9 +96,9 @@ table '_Medidas (2)'
 	measure 'Média Dias Designação' = ```
 			
 			AVERAGEX(
-			    'public tb_pgd_inss',
-			    VAR dt_ini = 'public tb_pgd_inss'[dt_inicio_designacao]
-			    VAR dt_fim = 'public tb_pgd_inss'[dt_fim_designacao]
+			    'fato_designacoes',
+			    VAR dt_ini = 'fato_designacoes'[dt_inicio_designacao]
+			    VAR dt_fim = 'fato_designacoes'[dt_fim_designacao]
 			    RETURN
 			    IF(
 			        NOT(ISBLANK(dt_ini)) && NOT(ISBLANK(dt_fim)) && dt_fim >= dt_ini,
@@ -115,9 +115,9 @@ table '_Medidas (2)'
 	measure 'Total Teletrabalho' = ```
 			
 			CALCULATE(
-			    DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]), 
-			    'public tb_pgd_inss'[modalidade] IN {"Remoto", "Semipresencial"},
-			    'public tb_pgd_inss'[status] = "Designado"
+			    DISTINCTCOUNT('fato_designacoes'[id_designacao]), 
+			    'fato_designacoes'[modalidade] IN {"Remoto", "Semipresencial"},
+			    'fato_designacoes'[status] = "Designado"
 			)
 			
 			
@@ -128,9 +128,9 @@ table '_Medidas (2)'
 	measure 'Teletrabalho Usuarios' = ```
 			
 			CALCULATE(
-			    DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]), 
-			    'public tb_pgd_inss'[modalidade] IN {"Remoto", "Semipresencial"},
-			    'public tb_pgd_inss'[status] = "Designado"
+			    DISTINCTCOUNT('fato_designacoes'[id_usuario]), 
+			    'fato_designacoes'[modalidade] IN {"Remoto", "Semipresencial"},
+			    'fato_designacoes'[status] = "Designado"
 			)
 			
 			```
@@ -140,9 +140,9 @@ table '_Medidas (2)'
 	measure 'Total Designacoes Presencial' = ```
 			
 			CALCULATE(
-			    DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]), 
-			    'public tb_pgd_inss'[modalidade] = "Presencial",
-			    'public tb_pgd_inss'[status] = "Designado"
+			    DISTINCTCOUNT('fato_designacoes'[id_designacao]), 
+			    'fato_designacoes'[modalidade] = "Presencial",
+			    'fato_designacoes'[status] = "Designado"
 			)
 			
 			```
@@ -152,9 +152,9 @@ table '_Medidas (2)'
 	measure 'Total Usuarios Presencial' = ```
 			
 			CALCULATE(
-			    DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]), 
-			    'public tb_pgd_inss'[modalidade] = "Presencial",
-			    'public tb_pgd_inss'[status] = "Designado"
+			    DISTINCTCOUNT('fato_designacoes'[id_usuario]), 
+			    'fato_designacoes'[modalidade] = "Presencial",
+			    'fato_designacoes'[status] = "Designado"
 			)
 			
 			```
@@ -167,8 +167,8 @@ table '_Medidas (2)'
 	measure 'Média de Servidores' = ```
 			
 			DIVIDE (
-			    DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]), 
-			    DISTINCTCOUNT('public tb_pgd_inss'[lotacao]),
+			    DISTINCTCOUNT('fato_designacoes'[id_usuario]), 
+			    DISTINCTCOUNT('dim_lotacao'[lotacao]),
 			    0
 			)
 			
@@ -180,8 +180,8 @@ table '_Medidas (2)'
 	measure 'Servidores no Maior Polo' = ```
 			
 			MAXX(
-			    VALUES('public tb_pgd_inss'[lotacao]), 
-			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			    VALUES('dim_lotacao'[lotacao]), 
+			    CALCULATE(DISTINCTCOUNT('fato_designacoes'[id_usuario]))
 			)
 			```
 		formatString: 0
@@ -190,8 +190,8 @@ table '_Medidas (2)'
 	measure 'Servidores no Maior Programa' = ```
 			
 			MAXX(
-			    VALUES('public tb_pgd_inss'[sigla_programa]), 
-			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			    VALUES('dim_programa'[sigla_programa]), 
+			    CALCULATE(DISTINCTCOUNT('fato_designacoes'[id_usuario]))
 			)
 			
 			```
@@ -201,8 +201,8 @@ table '_Medidas (2)'
 	measure 'Média de Servidores por Programa' = ```
 			
 			AVERAGEX(
-			    VALUES('public tb_pgd_inss'[sigla_programa]), 
-			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			    VALUES('dim_programa'[sigla_programa]), 
+			    CALCULATE(DISTINCTCOUNT('fato_designacoes'[id_usuario]))
 			)
 			
 			```
@@ -213,8 +213,8 @@ table '_Medidas (2)'
 	measure 'Maior Linha (Servidores)' = ```
 			
 			MAXX(
-			    VALUES('public tb_pgd_inss'[linha_trabalho]),
-			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			    VALUES('dim_linha_trabalho'[linha_trabalho]),
+			    CALCULATE(DISTINCTCOUNT('fato_designacoes'[id_usuario]))
 			)
 			
 			```
@@ -224,8 +224,8 @@ table '_Medidas (2)'
 	measure 'Média Servidores por Linha' = ```
 			
 			AVERAGEX(
-			    VALUES('public tb_pgd_inss'[linha_trabalho]),
-			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_usuario]))
+			    VALUES('dim_linha_trabalho'[linha_trabalho]),
+			    CALCULATE(DISTINCTCOUNT('fato_designacoes'[id_usuario]))
 			)
 			
 			```
@@ -235,8 +235,8 @@ table '_Medidas (2)'
 
 	measure 'Média Vínculos por Servidor' = ```
 			
-			VAR TotalDesignacoes = DISTINCTCOUNT('public tb_pgd_inss'[id_designacao])
-			VAR TotalServidores = DISTINCTCOUNT('public tb_pgd_inss'[id_usuario])
+			VAR TotalDesignacoes = DISTINCTCOUNT('fato_designacoes'[id_designacao])
+			VAR TotalServidores = DISTINCTCOUNT('fato_designacoes'[id_usuario])
 			RETURN
 			DIVIDE(TotalDesignacoes, TotalServidores, 0)
 			
@@ -248,8 +248,8 @@ table '_Medidas (2)'
 	measure 'Maior Volume de Vínculos' = ```
 			
 			MAXX(
-			    VALUES('public tb_pgd_inss'[id_usuario]),
-			    CALCULATE(DISTINCTCOUNT('public tb_pgd_inss'[id_designacao]))
+			    VALUES('fato_designacoes'[id_usuario]),
+			    CALCULATE(DISTINCTCOUNT('fato_designacoes'[id_designacao]))
 			)
 			
 			```

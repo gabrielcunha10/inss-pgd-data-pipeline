@@ -22,7 +22,7 @@
                     "Column": {
                       "Expression": {
                         "SourceRef": {
-                          "Entity": "public tb_pgd_inss"
+                          "Entity": "fato_designacoes"
                         }
                       },
                       "Property": "id_usuario"
@@ -48,7 +48,7 @@
                   "Column": {
                     "Expression": {
                       "SourceRef": {
-                        "Entity": "public tb_pgd_inss"
+                        "Entity": "fato_designacoes"
                       }
                     },
                     "Property": "id_usuario"
@@ -611,7 +611,7 @@
               "Column": {
                 "Expression": {
                   "SourceRef": {
-                    "Entity": "public tb_pgd_inss"
+                    "Entity": "fato_designacoes"
                   }
                 },
                 "Property": "id_usuario"

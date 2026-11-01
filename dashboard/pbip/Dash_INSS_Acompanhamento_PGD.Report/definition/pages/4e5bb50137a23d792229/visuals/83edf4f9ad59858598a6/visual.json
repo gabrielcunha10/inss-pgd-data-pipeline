@@ -2,10 +2,10 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "83edf4f9ad59858598a6",
   "position": {
-    "x": 972.22222222222217,
+    "x": 972.2222222222222,
     "y": 107.77777777777777,
     "z": 14000,
-    "height": 35.987841945288757,
+    "height": 35.98784194528876,
     "width": 113.79939209726444,
     "tabOrder": 14000
   },
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "fato_designacoes"
                     }
                   },
                   "Property": "tipo_entrega"
                 }
               },
-              "queryRef": "public tb_pgd_inss.tipo_entrega",
+              "queryRef": "fato_designacoes.tipo_entrega",
               "nativeQueryRef": "tipo_entrega",
               "active": true
             }
@@ -250,7 +250,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "fato_designacoes"
               }
             },
             "Property": "tipo_entrega"
@@ -262,7 +262,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],

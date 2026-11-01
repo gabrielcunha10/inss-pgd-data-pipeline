@@ -2,11 +2,11 @@
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
   "name": "68b7430f07f6ae8bc26a",
   "position": {
-    "x": 894.44444444444446,
+    "x": 894.4444444444445,
     "y": 107.77777777777777,
     "z": 20000,
     "height": 36.666666666666664,
-    "width": 74.444444444444443,
+    "width": 74.44444444444444,
     "tabOrder": 20000
   },
   "visual": {
@@ -20,13 +20,13 @@
                 "Column": {
                   "Expression": {
                     "SourceRef": {
-                      "Entity": "public tb_pgd_inss"
+                      "Entity": "dim_programa"
                     }
                   },
                   "Property": "flag_pgd"
                 }
               },
-              "queryRef": "public tb_pgd_inss.flag_pgd",
+              "queryRef": "dim_programa.flag_pgd",
               "nativeQueryRef": "PGD",
               "active": true,
               "displayName": "PGD"
@@ -244,7 +244,7 @@
           "Column": {
             "Expression": {
               "SourceRef": {
-                "Entity": "public tb_pgd_inss"
+                "Entity": "dim_programa"
               }
             },
             "Property": "flag_pgd"
@@ -256,7 +256,7 @@
           "From": [
             {
               "Name": "p",
-              "Entity": "public tb_pgd_inss",
+              "Entity": "fato_designacoes",
               "Type": 0
             }
           ],
