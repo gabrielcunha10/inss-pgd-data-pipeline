@@ -1,13 +1,13 @@
 {
-  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.13.0/schema.json",
-  "name": "b4125939542eadddef28",
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "2a5fbfee0d29bcd978c3",
   "position": {
-    "x": 190.08,
-    "y": 175.68,
-    "z": 1000,
-    "height": 155.52,
-    "width": 217.44,
-    "tabOrder": 1000
+    "x": 190.63829787234044,
+    "y": 175.07598784194531,
+    "z": 34001,
+    "height": 154.65045592705167,
+    "width": 216.89969604863222,
+    "tabOrder": 34001
   },
   "visual": {
     "visualType": "cardVisual",
@@ -17,18 +17,23 @@
           "projections": [
             {
               "field": {
-                "Measure": {
+                "Aggregation": {
                   "Expression": {
-                    "SourceRef": {
-                      "Entity": "_Medidas (2)"
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "fato_designacoes"
+                        }
+                      },
+                      "Property": "id_usuario"
                     }
                   },
-                  "Property": "Total Teletrabalho"
+                  "Function": 2
                 }
               },
-              "queryRef": "_Medidas (2).Total Teletrabalho",
-              "nativeQueryRef": "Designações em Teletrabalho",
-              "displayName": "Designações em Teletrabalho",
+              "queryRef": "Min(public tb_pgd_inss.id_usuario)",
+              "nativeQueryRef": "Total de Servidores",
+              "displayName": "Total de Servidores",
               "format": "0.00"
             }
           ]
@@ -38,13 +43,18 @@
         "sort": [
           {
             "field": {
-              "Measure": {
+              "Aggregation": {
                 "Expression": {
-                  "SourceRef": {
-                    "Entity": "_Medidas (2)"
+                  "Column": {
+                    "Expression": {
+                      "SourceRef": {
+                        "Entity": "fato_designacoes"
+                      }
+                    },
+                    "Property": "id_usuario"
                   }
                 },
-                "Property": "Total Teletrabalho"
+                "Function": 2
               }
             },
             "direction": "Descending"
@@ -68,13 +78,6 @@
         },
         {
           "properties": {
-            "fontSize": {
-              "expr": {
-                "Literal": {
-                  "Value": "21D"
-                }
-              }
-            },
             "fontColor": {
               "solid": {
                 "color": {
@@ -83,6 +86,13 @@
                       "Value": "'#334155'"
                     }
                   }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "21D"
                 }
               }
             },
@@ -590,5 +600,28 @@
       ]
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "030257308dd606e544a9",
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "fato_designacoes"
+                  }
+                },
+                "Property": "id_usuario"
+              }
+            },
+            "Function": 2
+          }
+        },
+        "type": "Advanced"
+      }
+    ]
   }
 }
