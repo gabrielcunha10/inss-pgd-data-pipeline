@@ -14,7 +14,7 @@ table dim_calendario
 
 		annotation UnderlyingDateTimeDataType = Date
 
-	column ano
+	column Ano
 		dataType: int64
 		formatString: 0
 		lineageTag: 55e68c50-c508-419c-a645-050000000003
@@ -23,7 +23,7 @@ table dim_calendario
 
 		annotation SummarizationSetBy = Automatic
 
-	column mes
+	column Mes_Num
 		dataType: int64
 		formatString: 0
 		lineageTag: 55e68c50-c508-419c-a645-050000000004
@@ -32,12 +32,12 @@ table dim_calendario
 
 		annotation SummarizationSetBy = Automatic
 
-	column nome_mes
+	column Mes
 		dataType: string
 		lineageTag: 55e68c50-c508-419c-a645-050000000005
 		summarizeBy: none
 		sourceColumn: nome_mes
-		sortByColumn: mes
+		sortByColumn: Mes_Num
 
 		changedProperty = SortByColumn
 
@@ -48,7 +48,7 @@ table dim_calendario
 		lineageTag: 55e68c50-c508-419c-a645-050000000006
 		summarizeBy: none
 		sourceColumn: mes_abrev
-		sortByColumn: mes
+		sortByColumn: Mes_Num
 
 		changedProperty = SortByColumn
 
@@ -73,25 +73,6 @@ table dim_calendario
 
 		annotation SummarizationSetBy = Automatic
 
-
-	column Ano = dim_calendario[ano]
-		dataType: int64
-		formatString: 0
-		lineageTag: 55e68c50-c508-419c-a645-050000000009
-		summarizeBy: none
-
-		annotation SummarizationSetBy = Automatic
-
-	column Mes = dim_calendario[nome_mes]
-		dataType: string
-		lineageTag: 55e68c50-c508-419c-a645-050000000010
-		summarizeBy: none
-		sortByColumn: mes
-
-		changedProperty = SortByColumn
-
-		annotation SummarizationSetBy = Automatic
-
 	partition dim_calendario = m
 		mode: import
 		source =
@@ -101,7 +82,4 @@ table dim_calendario
 				in
 				    public_dim_calendario
 
-	annotation PBI_NavigationStepName = Navegação
-
 	annotation PBI_ResultType = Table
-
