@@ -586,23 +586,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "c5c52efe609053a9504d",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Card2_Variacao_MoM"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

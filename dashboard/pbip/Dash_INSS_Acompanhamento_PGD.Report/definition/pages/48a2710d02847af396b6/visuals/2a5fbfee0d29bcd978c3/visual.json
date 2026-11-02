@@ -4,10 +4,10 @@
   "position": {
     "x": 190.63829787234044,
     "y": 175.07598784194531,
-    "z": 34001,
+    "z": 34000,
     "height": 154.65045592705167,
     "width": 216.89969604863222,
-    "tabOrder": 34001
+    "tabOrder": 34000
   },
   "visual": {
     "visualType": "cardVisual",
@@ -600,28 +600,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "030257308dd606e544a9",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "fato_designacoes"
-                  }
-                },
-                "Property": "id_usuario"
-              }
-            },
-            "Function": 2
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

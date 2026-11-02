@@ -590,23 +590,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "386bd2ea04c598b81515",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Teletrabalho Usuarios"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

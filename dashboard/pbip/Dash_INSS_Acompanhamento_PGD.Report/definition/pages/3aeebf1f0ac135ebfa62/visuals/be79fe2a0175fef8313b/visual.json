@@ -589,23 +589,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "bc6e1318d051eca0c0e0",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Maior Linha (Servidores)"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

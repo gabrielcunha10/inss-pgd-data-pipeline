@@ -581,23 +581,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "802908400a3ded0d0550",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Média Servidores por Linha"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

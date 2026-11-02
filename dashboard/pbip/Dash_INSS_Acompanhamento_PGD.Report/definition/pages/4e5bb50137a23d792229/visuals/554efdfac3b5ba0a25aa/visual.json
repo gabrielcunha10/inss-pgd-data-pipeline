@@ -488,7 +488,7 @@
           "Version": 2,
           "From": [
             {
-              "Name": "p",
+              "Name": "f",
               "Entity": "fato_designacoes",
               "Type": 0
             }
@@ -504,7 +504,7 @@
                           "Column": {
                             "Expression": {
                               "SourceRef": {
-                                "Source": "p"
+                                "Source": "f"
                               }
                             },
                             "Property": "modalidade"
@@ -544,7 +544,7 @@
         }
       },
       {
-        "name": "9b1c2e0dd091806e7177",
+        "name": "63686a1b2e99e5033e8d",
         "field": {
           "Column": {
             "Expression": {
@@ -555,10 +555,102 @@
             "Property": "lotacao"
           }
         },
-        "type": "Categorical"
+        "type": "TopN",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "subquery",
+              "Expression": {
+                "Subquery": {
+                  "Query": {
+                    "Version": 2,
+                    "From": [
+                      {
+                        "Name": "d",
+                        "Entity": "dim_lotacao",
+                        "Type": 0
+                      },
+                      {
+                        "Name": "f",
+                        "Entity": "fato_designacoes",
+                        "Type": 0
+                      }
+                    ],
+                    "Select": [
+                      {
+                        "Column": {
+                          "Expression": {
+                            "SourceRef": {
+                              "Source": "d"
+                            }
+                          },
+                          "Property": "lotacao"
+                        },
+                        "Name": "field"
+                      }
+                    ],
+                    "OrderBy": [
+                      {
+                        "Direction": 2,
+                        "Expression": {
+                          "Aggregation": {
+                            "Expression": {
+                              "Column": {
+                                "Expression": {
+                                  "SourceRef": {
+                                    "Source": "f"
+                                  }
+                                },
+                                "Property": "id_designacao"
+                              }
+                            },
+                            "Function": 2
+                          }
+                        }
+                      }
+                    ],
+                    "Top": 10
+                  }
+                }
+              },
+              "Type": 2
+            },
+            {
+              "Name": "d",
+              "Entity": "dim_lotacao",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "d"
+                          }
+                        },
+                        "Property": "lotacao"
+                      }
+                    }
+                  ],
+                  "Table": {
+                    "SourceRef": {
+                      "Source": "subquery"
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
       },
       {
-        "name": "0eede9c27496dec9b954",
+        "name": "46042184ec602c845c1b",
         "field": {
           "Aggregation": {
             "Expression": {

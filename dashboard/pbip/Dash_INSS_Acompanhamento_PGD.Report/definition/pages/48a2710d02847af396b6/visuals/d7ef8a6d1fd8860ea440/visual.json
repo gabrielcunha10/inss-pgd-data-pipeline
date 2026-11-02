@@ -4,10 +4,10 @@
   "position": {
     "x": 190.32418952618454,
     "y": 360,
-    "z": 4000,
+    "z": 3000,
     "height": 333.06733167082291,
     "width": 475.81047381546131,
-    "tabOrder": 4000
+    "tabOrder": 3000
   },
   "visual": {
     "visualType": "donutChart",
@@ -399,25 +399,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "7a7b15b0bc82d38579c5",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "fato_designacoes"
-                  }
-                },
-                "Property": "id_designacao"
-              }
-            },
-            "Function": 2
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

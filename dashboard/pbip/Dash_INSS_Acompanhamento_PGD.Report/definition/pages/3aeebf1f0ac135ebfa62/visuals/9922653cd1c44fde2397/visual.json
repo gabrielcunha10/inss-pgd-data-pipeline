@@ -596,25 +596,6 @@
   "filterConfig": {
     "filters": [
       {
-        "name": "85c8f3b2dd0ad0d96751",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "dim_linha_trabalho"
-                  }
-                },
-                "Property": "linha_trabalho"
-              }
-            },
-            "Function": 2
-          }
-        },
-        "type": "Advanced"
-      },
-      {
         "name": "cd5c8b31d207990b267b",
         "field": {
           "Column": {

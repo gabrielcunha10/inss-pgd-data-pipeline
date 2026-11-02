@@ -589,23 +589,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "d6df86214dcd86018ec4",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Média de Designações por Mês"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

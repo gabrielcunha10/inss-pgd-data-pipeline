@@ -691,39 +691,6 @@
             }
           ]
         }
-      },
-      {
-        "name": "1c3ee8c53e6bdb4d7714",
-        "field": {
-          "Column": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "dim_calendario"
-              }
-            },
-            "Property": "competencia"
-          }
-        },
-        "type": "Categorical"
-      },
-      {
-        "name": "8ced02819caa0855d6d4",
-        "field": {
-          "Aggregation": {
-            "Expression": {
-              "Column": {
-                "Expression": {
-                  "SourceRef": {
-                    "Entity": "fato_designacoes"
-                  }
-                },
-                "Property": "id_designacao"
-              }
-            },
-            "Function": 2
-          }
-        },
-        "type": "Advanced"
       }
     ]
   }

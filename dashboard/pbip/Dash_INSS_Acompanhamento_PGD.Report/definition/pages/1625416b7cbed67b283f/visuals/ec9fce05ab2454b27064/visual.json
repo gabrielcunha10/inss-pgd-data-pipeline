@@ -589,23 +589,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "466225b7608752241d3a",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Designações"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

@@ -589,23 +589,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "8d621b74583896a29768",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Média de Servidores por Programa"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }

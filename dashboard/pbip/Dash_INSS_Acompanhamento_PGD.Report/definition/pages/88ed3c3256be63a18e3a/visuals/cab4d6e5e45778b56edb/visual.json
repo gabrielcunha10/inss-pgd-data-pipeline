@@ -589,23 +589,5 @@
       ]
     },
     "drillFilterOtherVisuals": true
-  },
-  "filterConfig": {
-    "filters": [
-      {
-        "name": "b2e6cf914c6a20c20045",
-        "field": {
-          "Measure": {
-            "Expression": {
-              "SourceRef": {
-                "Entity": "_Medidas (2)"
-              }
-            },
-            "Property": "Servidores no Maior Programa"
-          }
-        },
-        "type": "Advanced"
-      }
-    ]
   }
 }
