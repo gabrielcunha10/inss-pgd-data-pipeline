@@ -1,4 +1,4 @@
-# Guia do Dashboard — Acompanhamento PGD / INSS
+# Guia do Dashboard - Acompanhamento PGD / INSS
 
 > **Documentação Visual e Guia de Métricas do Painel**  
 > **Última Atualização:** 01/11/2026 às 16:55  
@@ -105,7 +105,7 @@ Examina a distribuição da força de trabalho quanto ao regime de cumprimento d
   * **Servidores em Teletrabalho (11,28K):** Contingente individual de servidores alocados em teletrabalho.
   * **Servidores no Presencial (12,17K):** Total de servidores com atuação presencial nas agências e unidades administrativas.
   * **Designações no Presencial (21,31K):** Volume acumulado de planos de trabalho com cumprimento presencial da jornada.
-* **Evolução Histórica das Modalidades (Gráfico de Linhas):** Trajetória temporal detalhando o comportamento das três modalidades ao longo das competências (2024–2026):
+* **Evolução Histórica das Modalidades (Gráfico de Linhas):** Trajetória temporal detalhando o comportamento das três modalidades ao longo das competências (2024-2026):
   * **Remoto (Azul-marinho):** Regime integral à distância com pactuação por metas e produtos.
   * **Semipresencial (Azul-médio):** Regime misto com parcela presencial na unidade.
   * **Presencial (Cinza):** Regime tradicional presencial com recomposição de quadro a partir de 2025.
@@ -141,7 +141,7 @@ Painel dedicado à auditoria cadastral e governança de dados, garantindo máxim
 
 ---
 
-### 7. Página: SGP – Insights & Diagnóstico IA
+### 7. Página: SGP - Insights & Diagnóstico IA
 
 Painel executivo integrado que disponibiliza o diagnóstico analítico gerado de forma autônoma por Inteligência Artificial (Google Gemini) diretamente na interface do Power BI. A página interpreta as oscilações mensais (MoM), adesão ao teletrabalho, concentração funcional e matriz de riscos operacionais.
 
@@ -163,11 +163,11 @@ Painel executivo integrado que disponibiliza o diagnóstico analítico gerado de
 * **Matriz de Alertas & Recomendações (Painel Estratégico):**
   * **Alerta de Ociosidade/Repactuação:** Mapeamento de servidores não designados com potencial de repactuação imediata nas Centrais de Análise de Benefícios (CEAB1);
   * **Recomendação Estratégica:** Equilíbrio da força de trabalho entre presencial e teletrabalho para cumprimento de prazos normativos e metas acordadas.
-* **Ação Direta — "Ver Relatório de Insights Completo (GitHub)":** Botão interativo com direcionamento para a documentação técnica detalhada no repositório GitHub.
+* **Ação Direta - "Ver Relatório de Insights Completo (GitHub)":** Botão interativo com direcionamento para a documentação técnica detalhada no repositório GitHub.
 
 ---
 
-### Página: SGP – Informações do Projeto
+### Página: SGP - Informações do Projeto
 
 Reúne a governança técnica, os conceitos fundamentais do PGD e os links oficiais do ecossistema do projeto em uma grade estruturada de 4 blocos executivos:
 
@@ -176,7 +176,7 @@ Reúne a governança técnica, os conceitos fundamentais do PGD e os links ofici
 #### Blocos e Conteúdos Explicados:
 1. **Sobre o Projeto & Objetivo:**
    * **Objetivo:** Monitorar a força de trabalho e a evolução dos planos de trabalho no Programa de Gestão e Desempenho (PGD) do INSS.
-   * **Fonte dos Dados:** Portal de Dados Abertos do INSS (`dadosabertos.inss.gov.br`) — conjunto oficial de Designações.
+   * **Fonte dos Dados:** Portal de Dados Abertos do INSS (`dadosabertos.inss.gov.br`) - conjunto oficial de Designações.
    * **Janela Temporal:** Série histórica contínua de Outubro de 2023 até o presente.
 2. **Glossário & Regras de Negócio:**
    * **Designação:** Ato administrativo formal que vincula o servidor a um programa e plano de trabalho.

@@ -313,7 +313,7 @@ Tabela de Auditoria LGPD:
    - No Eixo 6: ![Linhas de Trabalho](imagens/linhas_trabalho_dashboard.png)
    - Na Auditoria LGPD: ![Auditoria LGPD](imagens/lgpd_dashboard.png)
 5. Estrutura exata das seções:
-   # Insights Executivos do Dashboard — Acompanhamento PGD / INSS
+   # Insights Executivos do Dashboard - Acompanhamento PGD / INSS
    > Nota Metodológica & Governança (mencionar HMAC-SHA256, Parquet e Lei 13.709/2018)
    ## Resumo Rápido da Série Histórica
    ## Destaques da Última Competência ({m['comp_atual_str']} vs. {m['comp_ant_str']})
@@ -375,7 +375,7 @@ def gerar_relatorio_condicional_local(m: dict, tabs: dict) -> str:
     else:
         coment_teletrab = f"Houve movimentação em direção ao presencial, com o teletrabalho oscilando {m['var_teletrab']:+.2f}% e fechando em {m['pct_teletrab_serv']:.1f}% dos pactuados"
 
-    return f"""# Insights Executivos do Dashboard — Acompanhamento PGD / INSS
+    return f"""# Insights Executivos do Dashboard - Acompanhamento PGD / INSS
 
 Este documento apresenta o diagnóstico analítico consolidado dos microdados do **Programa de Gestão e Desempenho (PGD)** do INSS, abrangendo a série histórica completa de **{p_inicio} a {p_fim}** ({m['total_meses']} competências observadas).
 
@@ -409,7 +409,7 @@ O comparativo mês contra mês (**MoM - Month over Month**) entre a competência
 
 ## Análise Detalhada dos 6 Eixos do Painel
 
-### Eixo 1 — Visão Geral & Evolução Histórica
+### Eixo 1 - Visão Geral & Evolução Histórica
 
 ![Visão Geral do Dashboard](imagens/visao_geral_dashboard.png)
 
@@ -418,7 +418,7 @@ A evolução das modalidades revela três momentos estratégicos nítidos:
 * **2025 (Salto Estrutural & Virada Cadastral)**: Em março/2025, o programa salta para o patamar de 18,6 mil a 19 mil servidores, acompanhado por um pico pontual de 3,4 mil encerramentos em lote para renovação contratual na nova sistemática.
 * **2026 (Maturidade Operacional)**: O programa sustenta um patamar consistente entre 17,5 mil e 18,8 mil servidores ativos, demonstrando maturidade e integração nos processos rotineiros da autarquia.
 
-### Eixo 2 — Modalidades de Trabalho
+### Eixo 2 - Modalidades de Trabalho
 
 ![Modalidades de Trabalho](imagens/modalidades_dashboard.png)
 
@@ -426,7 +426,7 @@ Distribuição detalhada das designações no mês mais recente ({c_atual}):
 
 {tabs['tabela_mod']}
 
-### Eixo 3 — Programas de Gestão & Duração Média dos Planos
+### Eixo 3 - Programas de Gestão & Duração Média dos Planos
 
 ![Programas de Gestão e Duração Média](imagens/programas_dashboard.png)
 
@@ -434,13 +434,13 @@ A análise do ciclo de vida dos planos revela perfis distintos de permanência:
 
 {tabs['tabela_duracao']}
 
-### Eixo 4 — Top Programas com Maior Efetivo Ativo
+### Eixo 4 - Top Programas com Maior Efetivo Ativo
 
 Os 5 programas com maior concentração de servidores no mês de **{c_atual}**:
 
 {tabs['tabela_top_prog']}
 
-### Eixo 5 — Distribuição Geográfica & Lotações
+### Eixo 5 - Distribuição Geográfica & Lotações
 
 ![Distribuição Geográfica e Lotações](imagens/lotacoes_dashboard.png)
 
@@ -448,7 +448,7 @@ As 5 unidades com maior concentração de servidores no mês de **{c_atual}**:
 
 {tabs['tabela_top_lot']}
 
-### Eixo 6 — Principais Linhas de Trabalho
+### Eixo 6 - Principais Linhas de Trabalho
 
 ![Linhas de Trabalho](imagens/linhas_trabalho_dashboard.png)
 
@@ -618,7 +618,7 @@ def _obter_modelo_ia_padrao(caminho_md: Path = OUTPUT_MARKDOWN) -> str:
     if caminho_md and caminho_md.exists():
         try:
             texto = caminho_md.read_text(encoding="utf-8")
-            m = re.search(r"Google Gemini\s*[—\-]\s*([a-zA-Z0-9\.\-]+)", texto)
+            m = re.search(r"Google Gemini\s*[ - \-]\s*([a-zA-Z0-9\.\-]+)", texto)
             if m:
                 return formatar_nome_modelo_ia(m.group(1).strip())
         except Exception:
@@ -877,7 +877,7 @@ def main():
     if GENAI_DISPONIVEL and api_key and api_key != "sua_chave_aqui":
         try:
             relatorio_gerado, modelo_ok = gerar_relatorio_com_gemini(metricas, tabelas, api_key)
-            motor_utilizado = f"Google Gemini — {modelo_ok}"
+            motor_utilizado = f"Google Gemini - {modelo_ok}"
             motor_card_curto = modelo_ok
         except Exception as e:
             logging.warning(f"Falha ao chamar a API do Gemini ({e}). Utilizando gerador local...")

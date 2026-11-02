@@ -1,4 +1,4 @@
-# Pipeline de Dados e Analytics — Programa de Gestão de Desempenho (PGD) INSS
+# Pipeline de Dados e Analytics - Programa de Gestão de Desempenho (PGD) INSS
 
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Docker](https://img.shields.io/badge/Docker-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
@@ -9,7 +9,9 @@
 [![Pytest](https://img.shields.io/badge/QA-Pytest-0A9EDC?logo=pytest&logoColor=white)](https://pytest.org/)
 [![LGPD](<https://img.shields.io/badge/Compliance-LGPD%20Anonymized-008080>)](#privacidade-e-conformidade-com-a-lgpd)
 
-**[Acessar o Dashboard Online no Power BI (Link Público)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
+> [!IMPORTANT]
+> ## **[CLIQUE AQUI PARA ACESSAR O DASHBOARD ONLINE NO POWER BI (LINK PÚBLICO)](https://app.powerbi.com/view?r=eyJrIjoiMjNlNzBmOWQtMzVlNC00MjBhLTk0MDEtYTBhZThiZWYyNTAwIiwidCI6IjhjODgwZTJhLTM2MDAtNDVmZi1hZDM5LWJhMDRlZGM4MWYyNSJ9&pageName=bcd18bc650e27d173dae)**
+> *Painel interativo com 9 páginas de análises operacionais, distribuição geográfica e conformidade LGPD.*
 
 Pipeline de Engenharia de Dados e Analytics ponta a ponta que automatiza a ingestão contínua de dados abertos do governo federal via API pública, executa limpeza, enriquecimento e padronização com Python/Pandas, carrega a base consolidada em um banco relacional em nuvem (**PostgreSQL no Neon Tech**) e mantém um dashboard interativo no **Power BI** atualizado de forma autônoma via **GitHub Actions** e **Power Automate**.
 
@@ -21,7 +23,7 @@ Neste projeto, eu analiso o histórico do **Programa de Gestão e Desempenho (PG
 
 ### Da Preparação para a Dataprev ao Desafio Público
 
-Desenvolvi este projeto como peça central de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev** (Empresa de Tecnologia e Informações da Previdência). Ao estudar a atuação da empresa pública — que, segundo a própria Dataprev, mantém e paga cerca de **39 milhões de benefícios previdenciários e assistenciais por mês** ([Dataprev, posição de agosto/2023](https://semanadeinovacao.enap.gov.br/images/patrocinadores/dataprev/dataprev.pdf)) —, passei a pesquisar o ecossistema da previdência social e me deparei com um de seus temas mais críticos: o **represamento de requerimentos e as filas de espera do INSS**.
+Desenvolvi este projeto como peça central de portfólio em Engenharia e Análise de Dados, inspirado pelo processo seletivo de estágio da **Dataprev** (Empresa de Tecnologia e Informações da Previdência). Ao estudar a atuação da empresa pública (que, segundo a própria Dataprev, mantém e paga cerca de **39 milhões de benefícios previdenciários e assistenciais por mês** ([Dataprev, posição de agosto/2023](https://semanadeinovacao.enap.gov.br/images/patrocinadores/dataprev/dataprev.pdf))), passei a pesquisar o ecossistema da previdência social e me deparei com um de seus temas mais críticos: o **represamento de requerimentos e as filas de espera do INSS**.
 
 ### O Cenário Real: As Filas do INSS
 
@@ -45,7 +47,7 @@ O estoque de requerimentos em análise varia bastante ao longo do tempo e afeta 
 4. **O PGD como resposta institucional**:
 
 - O Programa de Gestão e Desempenho é disciplinado pelo Decreto nº 11.072/2022 e, hoje, pela Instrução Normativa Conjunta SEGES-SGPRT/MGI nº 24/2023. Antes dela, vigorava a IN SGP/SEDGG/ME nº 65/2020.
-- No INSS, as regras gerais foram definidas pela Portaria PRES/INSS nº 1.363/2021 (alterada, entre outras, pelas Portarias nº 1.497/2022 e nº 1.593/2023) e, desde a Portaria PRES/INSS nº 1.800/2024 (alterada pela nº 1.923/2026), seguem o regime atual. Como a série analisada cobre 2023–2026, ela atravessa mais de um arcabouço normativo.
+- No INSS, as regras gerais foram definidas pela Portaria PRES/INSS nº 1.363/2021 (alterada, entre outras, pelas Portarias nº 1.497/2022 e nº 1.593/2023) e, desde a Portaria PRES/INSS nº 1.800/2024 (alterada pela nº 1.923/2026), seguem o regime atual. Como a série analisada cobre 2023-2026, ela atravessa mais de um arcabouço normativo.
 - O PGD substitui o controle de ponto por uma gestão orientada a metas, entregas e resultados. Nesse contexto, a alocação de servidores nas **Centrais de Análise de Benefícios (CEABs)** aparece entre as linhas de trabalho presentes na base analisada neste repositório.
 
 ### O Desafio Técnico na Engenharia de Dados
@@ -70,7 +72,7 @@ Projetei esta solução para conectar a complexidade real da gestão pública à
 
 ```mermaid
 flowchart TD
-    subgraph WF1 ["Workflow 1: Pipeline Principal (database_sync.yml — Semanalmente, toda segunda às 06:00 BRT)"]
+    subgraph WF1 ["Workflow 1: Pipeline Principal (database_sync.yml - Semanalmente, toda segunda às 06:00 BRT)"]
         API["Portal de Dados Abertos INSS<br/>(API CKAN Pública)"]
         PREFECT_P1["pipeline_flow.py<br/>(Orquestrador Prefect 3)"]
         SCRIPT_IN["download_sgp.py<br/>(Ingestão Incremental)"]
@@ -91,7 +93,7 @@ flowchart TD
         NEON --> HOOK --> POWER_AUTO -->|"Refresh Dataset"| PBI
     end
 
-    subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml — Semanalmente, toda segunda às 07:30 BRT)"]
+    subgraph WF2 ["Workflow 2: Prints do Dashboard & Documentação (atualizar_documentacao_prints.yml - Semanalmente, toda segunda às 07:30 BRT)"]
         PREFECT_P2["prints_flow.py<br/>(Orquestrador Prefect 3)"]
         PRINTS["capturar_prints.py<br/>(Playwright Headless: 9 Telas)"]
         TESTS_DOCS["test_documentacao_insights.py<br/>(20 Testes de QA & Visual)"]
@@ -109,12 +111,12 @@ flowchart TD
 
 A solução é orquestrada por dois workflows desacoplados e complementares no GitHub Actions, garantindo que o ciclo principal de engenharia de dados seja blindado contra eventuais instabilidades de renderização visual ou de interfaces web:
 
-#### Workflow 1: Pipeline Principal (`database_sync.yml` — Semanalmente, toda segunda-feira às 06:00 BRT)
+#### Workflow 1: Pipeline Principal (`database_sync.yml` - Semanalmente, toda segunda-feira às 06:00 BRT)
 
 1. **Fonte de Dados (API de Dados Abertos do INSS)**:
 
    - Consome a API pública CKAN do portal oficial (`dadosabertos.inss.gov.br`).
-   - Cobertura da série histórica de designações do PGD (2023–2026), identificando e baixando de forma incremental apenas arquivos mensais inéditos (`pgd_inss_AAAAMM.csv`).
+   - Cobertura da série histórica de designações do PGD (2023-2026), identificando e baixando de forma incremental apenas arquivos mensais inéditos (`pgd_inss_AAAAMM.csv`).
 2. **Ingestão Automatizada (`download_sgp.py`)**:
 
    - Rotina em Python com requisições resilientes (timeout, retries e validação de cabeçalhos HTTP).
@@ -156,7 +158,7 @@ A solução é orquestrada por dois workflows desacoplados e complementares no G
 
 ---
 
-#### Workflow 2: Prints do Dashboard & Documentação (`atualizar_documentacao_prints.yml` — Semanalmente, toda segunda-feira às 07:30 BRT)
+#### Workflow 2: Prints do Dashboard & Documentação (`atualizar_documentacao_prints.yml` - Semanalmente, toda segunda-feira às 07:30 BRT)
 
 1. **Captura Automatizada das Telas do Dashboard (`capturar_prints.py`)**:
 
@@ -367,7 +369,7 @@ Abaixo está o dicionário de dados detalhado, refletindo fielmente a ordem fís
 
 Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelidade da documentação visual, estruturei três suítes de testes automatizados com **`pytest`**, totalizando **75 testes unitários e de integração (100% de aprovação)** e atingindo **88,1% de cobertura de código** nos módulos do pipeline:
 
-1. **Testes de Engenharia, Ingestão, ETL e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) — 45 testes):**
+1. **Testes de Engenharia, Ingestão, ETL e Integridade de Dados ([`tests/test_pipeline.py`](tests/test_pipeline.py) - 45 testes):**
 
    - Atuam como guardião do banco de dados no padrão *Write-Audit-Publish (WAP)*: a carga no PostgreSQL só ocorre se 100% dos testes forem aprovados.
    - **Ingestão e Contrato da API CKAN:** Valida extração de competência, idempotência de arquivos locais, resiliência HTTP com mocks e contrato ao vivo da API de Dados Abertos do INSS.
@@ -378,7 +380,7 @@ Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelida
    - **Checagem de Domínios Restritos:** Assegura que colunas categóricas (`status`, `modalidade`, `flag_pgd`) contenham apenas os domínios normatizados.
    - **Unicidade e Deduplicação:** Analisa chaves compostas (`id_usuario` + `competencia` + `id_designacao`) para barrar duplicações de registros transacionais.
    - **Auditoria de Máscara LGPD & Carga Transacional:** Confere via *Regex* se todos os usuários da base foram devidamente pseudonimizados no padrão `USR-XXXXXXXX` e testa o mapeamento de tipos SQL e a execução transacional do `load_neon.py`.
-2. **Testes de QA de Documentação, IA e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) — 21 testes):**
+2. **Testes de QA de Documentação, IA e Artefatos ([`tests/test_documentacao_insights.py`](tests/test_documentacao_insights.py) - 21 testes):**
 
    - **Integridade Binária dos Prints:** Valida cabeçalho mágico PNG (`\x89PNG\r\n\x1a\n`), tamanho mínimo e resolução das 9 telas capturadas.
    - **Unicidade Visual por Hash SHA-256:** Assegura que cada tela capturada possui hash criptográfico único, prevenindo falhas de navegação e prints duplicados.
@@ -386,7 +388,7 @@ Para garantir a confiabilidade, a integridade das cargas contínuas e a fidelida
    - **Motor de Insights e Arquivamento:** Testa o cálculo matemático Month-over-Month (MoM), a integração mockada com a Google Gemini API e o acionamento de fallback para o motor analítico local em Python.
    - **Navegação do Playwright & Timestamps:** Valida a máquina de estados de navegação entre páginas do Power BI e a atualização dinâmica de timestamps no `dashboard_README.md`.
 
-3. **Testes de Orquestração e Resiliência do Prefect ([`tests/test_prefect_flow.py`](tests/test_prefect_flow.py) — 9 testes):**
+3. **Testes de Orquestração e Resiliência do Prefect ([`tests/test_prefect_flow.py`](tests/test_prefect_flow.py) - 9 testes):**
 
    - **Contrato e Definição de Tasks:** Valida que todas as tarefas decoradas no `pipeline_flow.py` e `prints_flow.py` mantêm chamabilidade direta (`.fn`).
    - **Branching e Isolamento:** Garante o pulo de carga seguro quando `DATABASE_URL` não está configurada e o correto funcionamento da flag `--sem-banco`.
@@ -523,7 +525,7 @@ A automação da solução é estruturada em dois workflows independentes e agen
 
 ### Workflow 1: Pipeline Principal de Dados ([`.github/workflows/database_sync.yml`](.github/workflows/database_sync.yml))
 
-- **Agendamento:** Semanalmente, toda segunda-feira às 06:00 BRT (`0 9 * * 1`) — capturando automaticamente novas competências assim que publicadas pelo INSS — ou sob demanda (**workflow_dispatch**).
+- **Agendamento:** Semanalmente, toda segunda-feira às 06:00 BRT (`0 9 * * 1`), capturando automaticamente novas competências assim que publicadas pelo INSS, ou sob demanda (**workflow_dispatch**).
 - **Segredos no Repositório (Settings > Secrets and variables > Actions):**
   - `NEON_DATABASE_URL`: String de conexão ao PostgreSQL Serverless do Neon Tech.
   - `POWER_AUTOMATE_WEBHOOK_URL`: URL do gatilho HTTP do fluxo no Power Automate.
@@ -542,7 +544,7 @@ A automação da solução é estruturada em dois workflows independentes e agen
 
 ### Workflow 2: Prints do Dashboard & Documentação ([`.github/workflows/atualizar_documentacao_prints.yml`](.github/workflows/atualizar_documentacao_prints.yml))
 
-- **Agendamento:** Semanalmente, toda segunda-feira às 07:30 BRT (`30 10 * * 1` — intervalo de +1h30 para conclusão do refresh no Power BI Service) ou sob demanda.
+- **Agendamento:** Semanalmente, toda segunda-feira às 07:30 BRT (`30 10 * * 1`, com intervalo de +1h30 para conclusão do refresh no Power BI Service) ou sob demanda.
 - **Ciclo de Execução:**
   1. Setup do ambiente Python 3.12 e instalação do Chromium headless via Playwright;
   2. Execução de `dashboard/capturar_prints.py` (captura automatizada das 9 telas do relatório online);

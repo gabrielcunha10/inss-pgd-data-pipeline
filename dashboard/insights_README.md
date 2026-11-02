@@ -1,6 +1,6 @@
-# Insights Executivos do Dashboard — Acompanhamento PGD / INSS
+# Insights Executivos do Dashboard - Acompanhamento PGD / INSS
 
-> **Relatório Analítico Gerado Automaticamente por Inteligência Artificial (Google Gemini — gemini-3.8-flash)**  
+> **Relatório Analítico Gerado Automaticamente por Inteligência Artificial (Google Gemini - gemini-3.8-flash)**  
 > **Última Atualização:** 02/11/2026 às 00:03  
 > *Diagnóstico executivo sintetizado de forma autônoma a partir dos microdados oficiais tratados do PGD/INSS.*
 
@@ -15,7 +15,7 @@
 
 Ao longo de 35 competências consecutivas, o Programa de Gestão e Desempenho (PGD) do INSS demonstrou consolidação técnica e institucional, monitorando um efetivo acumulado de **22.200 servidores**. O volume consolidado alcançou **652.788 atos de designação**, resultando em uma média mensal de **18.651 designações** ativas e pactuadas.
 
-A governança do programa conta atualmente com **26 programas de gestão ativos**, desenhados para acomodar diferentes perfis institucionais — desde atividades de alta complexidade regulatória e suporte estratégico até demandas finalísticas e de produção em massa. A densidade de designações registra média de **2,06 vínculos por servidor**, com teto observado de 12 vínculos individuais, evidenciando dinâmica contínua de repactuação, adaptação a novos planos de trabalho ou alocações cumulativas transitórias devidamente monitoradas.
+A governança do programa conta atualmente com **26 programas de gestão ativos**, desenhados para acomodar diferentes perfis institucionais, desde atividades de alta complexidade regulatória e suporte estratégico até demandas finalísticas e de produção em massa. A densidade de designações registra média de **2,06 vínculos por servidor**, com teto observado de 12 vínculos individuais, evidenciando dinâmica contínua de repactuação, adaptação a novos planos de trabalho ou alocações cumulativas transitórias devidamente monitoradas.
 
 ---
 
