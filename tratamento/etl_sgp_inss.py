@@ -321,6 +321,103 @@ def preencher_por_ponte(
     return df
 
 
+
+MAPA_PREFIXO_UF = {
+    "02": "AL", "03": "AM", "04": "BA", "05": "CE", "06": "MS", "07": "ES",
+    "08": "GO", "09": "MA", "10": "MT", "11": "MG", "12": "PA", "13": "PB",
+    "14": "PR", "15": "PE", "16": "PI", "17": "RJ", "18": "RN", "19": "RS",
+    "20": "SC", "21": "SP", "22": "SE", "23": "DF", "24": "AC", "25": "AP",
+    "26": "RO", "27": "RR", "28": "TO"
+}
+
+MAPA_NOMES_UF = {
+    r"\bACRE\b|\bRIO BRANCO\b|\bCRUZEIRO DO SUL\b": "AC",
+    r"\bALAGOAS\b|\bMACEIO\b|\bARAPIRACA\b|\bPALMEIRA DOS INDIOS\b": "AL",
+    r"\bAMAZONAS\b|\bMANAUS\b|\bPARINTINS\b|\bITACOATIARA\b|\bTEFE\b|\bTABATINGA\b|\bBARREIRINHA\b": "AM",
+    r"\bAMAPA\b|\bMACAPA\b|\bSANTANA\b|\bOIAPOQUE\b": "AP",
+    r"\bBAHIA\b|\bSALVADOR\b|\bFEIRA DE SANTANA\b|\bVITORIA DA CONQUISTA\b|\bITABUNA\b|\bILHEUS\b|\bJUAZEIRO\b|\bBARREIRAS\b|\bSANTO ANTONIO DE JESUS\b|\bJEQUIE\b|\bALAGOINHAS\b|\bPORTO SEGURO\b|\bEUNAPOLIS\b|\bCANAVIEIRAS\b|\bSERRA DO RAMALHO\b|\bFORMOSA DO RIO PRETO\b|\bVALENCA\b|\bGUANAMBI\b|\bJACOBINA\b|\bBRUMADO\b|\bIRECE\b|\bSENHOR DO BONFIM\b|\bPAULO AFONSO\b": "BA",
+    r"\bCEARA\b|\bFORTALEZA\b|\bSOBRAL\b|\bJUAZEIRO DO NORTE\b|\bCRATO\b|\bMARACANAU\b|\bCAUCAIA\b|\bQUIXADA\b|\bIGUATU\b|\bITAPIPOCA\b|\bCANINDE\b|\bTIANGUA\b|\bFORQUILHA\b|\bRUSSAS\b|\bLIMOEIRO DO NORTE\b|\bCRATEUS\b": "CE",
+    r"\bDISTRITO FEDERAL\b|\bBRASILIA\b|\bTAGUATINGA\b|\bCEILANDIA\b|\bPLANALTINA\b|\bSOBRADINHO\b|\bGAMA\b|\bADMINISTRACAO CENTRAL\b|\bSUBPROCURADORIA\b|\bCOORDENACAO\b|\bAUDITORIA\b|\bDIRETORIA\b|\bPRESIDENCIA\b|\bCONSELHO DE RECURSOS\b|\bCORREGEDORIA\b|\bPROCURADORIA FEDERAL\b": "DF",
+    r"\bESPIRITO SANTO\b|\bVITORIA\b|\bVILA VELHA\b|\bSERRA\b|\bCARIACICA\b|\bCACHOEIRO DE ITAPEMIRIM\b|\bLINHARES\b|\bCOLATINA\b|\bSAO MATEUS\b|\bGUARAPARI\b": "ES",
+    r"\bGOIAS\b|\bGOIANIA\b|\bANAPOLIS\b|\bAPARECIDA DE GOIANIA\b|\bRIO VERDE\b|\bITUMBIARA\b|\bCATALAO\b|\bJATAI\b|\bLUZIANIA\b|\bFORMOSA\b|\bCALDAS NOVAS\b|\bITAPURANGA\b|\bCERES\b|\bURUTAI\b|\bPORANGATU\b|\bURUACO\b|\bMINEIROS\b": "GO",
+    r"\bMARANHAO\b|\bSAO LUIS\b|\bIMPERATRIZ\b|\bCAXIAS\b|\bTIMON\b|\bBACABAL\b|\bBALSAS\b|\bSANTA INES\b|\bCOD[OÓ]\b|\bACAILANDIA\b|\bPINHEIRO\b": "MA",
+    r"\bMINAS GERAIS\b|\bBELO HORIZONTE\b|\bUBERLANDIA\b|\bCONTAGEM\b|\bJUIZ DE FORA\b|\bBETIM\b|\bMONTES CLAROS\b|\bRIBEIRAO DAS NEVES\b|\bUBERABA\b|\bGOVERNADOR VALADARES\b|\bIPATINGA\b|\bSETE LAGOAS\b|\bDIVINOPOLIS\b|\bSANTA LUZIA\b|\bIBIRITE\b|\bPOCOS DE CALDAS\b|\bPATOS DE MINAS\b|\bPOUSO ALEGRE\b|\bTEOFILO OTONI\b|\bBARBACENA\b|\bSABARA\b|\bVARGINHA\b|\bVESPASIANO\b|\bCONSELHEIRO LAFAIETE\b|\bITABIRA\b|\bARAGUARI\b|\bPASSOS\b|\bCORONEL FABRICIANO\b|\bMURIAE\b|\bITUIUTABA\b|\bLAVRAS\b|\bITAPERUNA\b|\bNOVA LIMA\b|\bITAUNA\b|\bPARACATU\b|\bPARAGUACU\b|\bCARATINGA\b|\bSAO JOAO DEL REI\b|\bPATROCINIO\b|\bTIMOTEO\b|\bMANHUACU\b|\bUNAI\b|\bCURVELO\b|\bALFENAS\b|\bJOAO MONLEVADE\b|\bTRES CORACOES\b|\bVICOSA\b|\bCATAGUASES\b|\bCAMBUI\b|\bDIAMANTINA\b|\bOURO PRETO\b": "MG",
+    r"\bMATO GROSSO DO SUL\b|\bCAMPO GRANDE\b|\bDOURADOS\b|\bTRES LAGOAS\b|\bCORUMBA\b|\bPONTAPORA\b|\bNAVIRAI\b|\bNOVA ANDRADINA\b|\bAQUIDAUANA\b|\bMARACAJU\b|\bPARANAIBA\b": "MS",
+    r"\bMATO GROSSO\b|\bCUIABA\b|\bVARZEA GRANDE\b|\bRONDONOPOLIS\b|\bSINOP\b|\bTANGARA DA SERRA\b|\bSORRISO\b|\bBARRA DO GARCAS\b|\bCACERES\b|\bPRIMAVERA DO LESTE\b|\bLUCAS DO RIO VERDE\b|\bALTA FLORESTA\b": "MT",
+    r"\bPARA\b|\bBELEM\b|\bANANINDEUA\b|\bSANTAREM\b|\bMARABA\b|\bPARAUAPEBAS\b|\bCASTANHAL\b|\bABAETETUBA\b|\bCAMETA\b|\bMARITUBA\b|\bSAO FELIX DO XINGU\b|\bBARCARENA\b|\bALTAMIRA\b|\bTUCURUI\b|\bPARAGOMINAS\b|\bITAITUBA\b|\bREDENCAO\b|\bBREVES\b": "PA",
+    r"\bPARAIBA\b|\bJOAO PESSOA\b|\bCAMPINA GRANDE\b|\bSANTA RITA\b|\bPATOS\b|\bBAYEUX\b|\bSOUSA\b|\bCAJAZEIRAS\b|\bCABEDELO\b|\bGUARABIRA\b|\bAREIA\b|\bESPERANCA\b": "PB",
+    r"\bPERNAMBUCO\b|\bRECIFE\b|\bJABOATAO DOS GUARARAPES\b|\bOLINDA\b|\bCARUARU\b|\bPETROLINA\b|\bPAULISTA\b|\bCABO DE SANTO AGOSTINHO\b|\bCAMARAGIBE\b|\bGARANHUNS\b|\bVITORIA DE SANTO ANTAO\b|\bIGARASSU\b|\bSAO LOURENCO DA MATA\b|\bABREU E LIMA\b|\bSANTA CRUZ DO CAPIBARIBE\b|\bSERRA TALHADA\b|\bARARIPINA\b|\bSALGUEIRO\b|\bSURUBIM\b|\bPESQUEIRA\b": "PE",
+    r"\bPIAUI\b|\bTERESINA\b|\bPARNAIBA\b|\bPICOS\b|\bPIRIPIRI\b|\bFLORIANO\b|\bBARRAS\b|\bCAMPO MAIOR\b|\bUNIAO\b|\bALTOS\b|\bESPERANTINA\b|\bPEDRO II\b|\bOEIRAS\b|\bSAO RAIMUNDO NONATO\b": "PI",
+    r"\bPARANA\b|\bCURITIBA\b|\bLONDRINA\b|\bMARINGA\b|\bPONT GROSSA\b|\bPONTGROSSA\b|\bPONTA GROSSA\b|\bCASCAVEL\b|\bSAO JOSE DOS PINHAIS\b|\bFOZ DO IGUACU\b|\bCOLOMBO\b|\bGUARAPUAVA\b|\bPARANAGUA\b|\bARACAUCARIA\b|\bTOLEDO\b|\bAPUCARANA\b|\bPINHAIS\b|\bCAMPO LARGO\b|\bARAPONGAS\b|\bALMIRANTE TAMANDARE\b|\bUMUARAMA\b|\bPARANAVAI\b|\bPATO BRANCO\b|\bCAMBE\b|\bFRANCISCO BELTRAO\b|\bFAZENDA RIO GRANDE\b|\bSARANDI\b|\bCAMPO MOURAO\b|\bCORNELIO PROCOPIO\b|\bIRATI\b|\bCASTRO\b|\bROLANDIA\b|\bMEDIANEIRA\b|\bMARECHAL CANDIDO RONDON\b|\bTELMACO BORBA\b|\bJAGUARIAIVA\b|\bUNIAO DA VITORIA\b": "PR",
+    r"\bRIO DE JANEIRO\b|\bNITEROI\b|\bSAO GONCALO\b|\bDUQUE DE CAXIAS\b|\bNOVA IGUACU\b|\bCAMPOS DOS GOYTACAZES\b|\bBELFORD ROXO\b|\bSAO JOAO DE MERITI\b|\bPETROPOLIS\b|\bVOLTA REDONDA\b|\bMACAE\b|\bMAG[EÉ]\b|\bITABORA[IÍ]\b|\bCABO FRIO\b|\bANGRA DOS REIS\b|\bNOVA FRIBURGO\b|\bBARRA MANSA\b|\bTERESOPOLIS\b|\bMESQUITA\b|\bNILOPOLIS\b|\bMARICA\b|\bRIO DAS OSTRAS\b|\bRESENDE\b|\bITAGUAI\b|\bARARUAMA\b|\bITAPERUNA\b|\bBARRA DA TIJUCA\b|\bBOM JESUS DO ITABAPOANA\b": "RJ",
+    r"\bRIO GRANDE DO NORTE\b|\bNATAL\b|\bMOSSORO\b|\bPARNAMIRIM\b|\bSAO GONCALO DO AMARANTE\b|\bCEARA-MIRIM\b|\bCAICO\b|\bACU\b|\bCURRAIS NOVOS\b|\bSANTA CRUZ\b|\bNOVA CRUZ\b": "RN",
+    r"\bRONDONIA\b|\bPORTO VELHO\b|\bJI-PARANA\b|\bARIQUEMES\b|\bVILHENA\b|\bCACOAL\b|\bROCHA GRANDE\b|\bGUAJARA-MIRIM\b|\bJARU\b|\bROLIM DE MOURA\b": "RO",
+    r"\bRORAIMA\b|\bBOA VISTA\b|\bRORAINOPOLIS\b": "RR",
+    r"\bRIO GRANDE DO SUL\b|\bPORTO ALEGRE\b|\bCAXIAS DO SUL\b|\bPELOTAS\b|\bCANOAS\b|\bSANTA MARIA\b|\bGRAVATAI\b|\bVIAMAO\b|\bNOVO HAMBURGO\b|\bSAO LEOPOLDO\b|\bRIO GRANDE\b|\bALVORADA\b|\bPASSO FUNDO\b|\bSAPUCAIA DO SUL\b|\bURUGUAIANA\b|\bSANTA CRUZ DO SUL\b|\bCACHOEIRINHA\b|\bBAGE\b|\bBENTO GONCALVES\b|\bERECHIM\b|\bGUAIBA\b|\bIJUI\b|\bSANTANA DO LIVRAMENTO\b|\bESTEIO\b|\bSAPIRANGA\b|\bLAJEADO\b|\bSANTO ANGELO\b|\bALEGRETE\b|\bSANTA ROSA\b|\bVENANCIO AIRES\b|\bFARROUPILHA\b|\bCAMAQUA\b|\bVACARIA\b|\bCRUZ ALTA\b|\bSAO BORJA\b|\bCARAZINHO\b|\bSAO GABRIEL\b|\bMONTENEGRO\b|\bCAMPO BOM\b|\bTORRES\b|\bCANELA\b|\bGRAMADO\b|\bFLORES DA CUNHA\b|\bESPUMOSO\b": "RS",
+    r"\bSANTA CATARINA\b|\bJOINVILLE\b|\bFLORIANOPOLIS\b|\bBLUMENAU\b|\bSAO JOSE\b|\bCRICIUMA\b|\bCHAPECO\b|\bITAJAI\b|\bLAGES\b|\bJARAGUA DO SUL\b|\bPALHOCA\b|\bBALNEARIO CAMBORIU\b|\bTUBARAO\b|\bBRUSQUE\b|\bSAO BENTO DO SUL\b|\bCACADOR\b|\bCONCORDIA\b|\bCAMBORIU\b|\bNAVEGANTES\b|\bRIO DO SUL\b|\bARARANGUA\b|\bGASPAR\b|\bBIGUACU\b|\bINDAIAL\b|\bMAFRA\b|\bCANOINHAS\b|\bVIDEIRA\b|\bXANXERE\b|\bIMBITUBA\b": "SC",
+    r"\bSERGIPE\b|\bARACAJU\b|\bNOSSA SENHORA DO SOCORRO\b|\bLAGARTO\b|\bITABAIANA\b|\bESTANCIA\b|\bTOBIAS BARRETO\b|\bSIMAO DIAS\b|\bPROPRIA\b": "SE",
+    r"\bSAO PAULO\b|\bGUARULHOS\b|\bCAMPINAS\b|\bSAO BERNARDO DO CAMPO\b|\bSANTO ANDRE\b|\bSAO JOSE DOS CAMPOS\b|\bOSASCO\b|\bRIBEIRAO PRETO\b|\bSOROCABA\b|\bMAUA\b|\bSAO JOSE DO RIO PRETO\b|\bSANTOS\b|\bMOGI DAS CRUZES\b|\bDIADEMA\b|\bJUNDIAI\b|\bPIRACICABA\b|\bCARAPICUIBA\b|\bBAURU\b|\bITAQUAQUECETUBA\b|\bSAO VICENTE\b|\bFRANCA\b|\bPRAIA GRANDE\b|\bGUARUJA\b|\bTAUBATE\b|\bLIMEIRA\b|\bSUZANO\b|\bTABOAO DA SERRA\b|\bSUMARE\b|\bBARUERI\b|\bEMBU DAS ARTES\b|\bSAO CARLOS\b|\bINDAIATUBA\b|\bCOTIA\b|\bMARILIA\b|\bAMERICANA\b|\bITAPECERICA DA SERRA\b|\bARARAQUARA\b|\bJACAREI\b|\bHORTOLANDIA\b|\bPRESIDENTE PRUDENTE\b|\bRIO CLARO\b|\bARACATUBA\b|\bSANTA BARBARA D'OESTE\b|\bFERRAZ DE VASCONCELOS\b|\bFRANCISCO MORATO\b|\bITAPETININGA\b|\bITAITIBA\b|\bSAO CAETANO DO SUL\b|\bBRAGANCA PAULISTA\b|\bVALINHOS\b|\bBARRETOS\b|\bPOPA\b|\bCATANDUVA\b|\bBOTUCATU\b|\bATIBAIA\b|\bARARAS\b|\bJA[UÚ]\b|\bGUARATINGUETA\b|\bOURINHOS\b|\bPOUSO ALEGRE\b|\bSERTAOZINHO\b|\bVALE DO PARAIBA\b|\bSAO JOAO DA BOA VISTA\b|\bABCD\b": "SP",
+    r"\bTOCANTINS\b|\bPALMAS\b|\bARAGUAINA\b|\bGURUPI\b|\bPORTO NACIONAL\b|\bPARAISO DO TOCANTINS\b": "TO",
+}
+
+
+def classificar_uf_unidade(id_lot, lot) -> str:
+    """Classifica uma unidade/lotação do INSS em sua respectiva Unidade Federativa (UF)."""
+    lot_u = str(lot).upper().strip() if pd.notna(lot) else ""
+    id_s = str(id_lot).strip() if pd.notna(id_lot) else ""
+
+    if any(k in lot_u for k in [
+        "ADMINISTRACAO CENTRAL", "SUBPROCURADORIA", "COORDENACAO",
+        "GABINETE DO PRESIDENTE", "AUDITORIA", "DIRETORIA",
+        "PRESIDENCIA", "CONSELHO DE RECURSOS", "PROCURADORIA FEDERAL",
+        "CORREGEDORIA", "ASSESSORIA", "OUVIDORIA", "GABINETE DA PRESIDENCIA"
+    ]):
+        return "DF"
+
+    for padrao, uf in MAPA_NOMES_UF.items():
+        if re.search(padrao, lot_u):
+            return uf
+
+    digits = re.sub(r"\D", "", id_s)
+    if len(digits) >= 2:
+        if digits.startswith("01") and len(digits) in [6, 8] and digits[1:3] in MAPA_PREFIXO_UF:
+            return MAPA_PREFIXO_UF[digits[1:3]]
+        prefix = digits[:2]
+        if prefix in MAPA_PREFIXO_UF:
+            return MAPA_PREFIXO_UF[prefix]
+        if len(digits) >= 3 and digits[1:3] in MAPA_PREFIXO_UF:
+            return MAPA_PREFIXO_UF[digits[1:3]]
+
+    if "DISTRITO FEDERAL" in lot_u or "BRASILIA" in lot_u:
+        return "DF"
+
+    return "DF"
+
+
+def derivar_coluna_uf(df: pd.DataFrame) -> pd.DataFrame:
+    """Deriva a coluna de Unidade Federativa ('uf') vetorizada a partir de (id_lotacao, lotacao)."""
+    if "lotacao" not in df.columns:
+        df["uf"] = None
+        return df
+
+    cols = ["id_lotacao", "lotacao"] if "id_lotacao" in df.columns else ["lotacao"]
+    unidades = df[cols].drop_duplicates()
+    mapa_uf = {}
+    for _, row in unidades.iterrows():
+        id_val = row["id_lotacao"] if "id_lotacao" in row else None
+        lot_val = row["lotacao"]
+        chave = (str(id_val), str(lot_val))
+        mapa_uf[chave] = classificar_uf_unidade(id_val, lot_val)
+
+    if "id_lotacao" in df.columns:
+        chaves_df = list(zip(df["id_lotacao"].astype(str), df["lotacao"].astype(str)))
+    else:
+        chaves_df = list(zip([None] * len(df), df["lotacao"].astype(str)))
+
+    df["uf"] = [mapa_uf.get(k, "DF") for k in chaves_df]
+    return df
+
+
 def enriquecer_cadastros_e_pontes(df: pd.DataFrame) -> pd.DataFrame:
     logging.info(
         "Executando ponte temporal e enriquecimento de programas/linhas..."
@@ -461,6 +558,7 @@ def enriquecer_cadastros_e_pontes(df: pd.DataFrame) -> pd.DataFrame:
         None,
     )
 
+    df = derivar_coluna_uf(df)
     return df
 
 

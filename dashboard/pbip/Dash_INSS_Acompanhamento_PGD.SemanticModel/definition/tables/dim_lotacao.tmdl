@@ -27,6 +27,14 @@ table dim_lotacao
 
 		annotation SummarizationSetBy = Automatic
 
+	column uf
+		dataType: string
+		lineageTag: 33c46a30-a3e6-4f7a-b423-e30000000005
+		summarizeBy: none
+		sourceColumn: uf
+
+		annotation SummarizationSetBy = Automatic
+
 	partition dim_lotacao = m
 		mode: import
 		source =
@@ -39,4 +47,3 @@ table dim_lotacao
 	annotation PBI_NavigationStepName = Navegação
 
 	annotation PBI_ResultType = Table
-

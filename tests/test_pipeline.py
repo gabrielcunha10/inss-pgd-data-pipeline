@@ -704,6 +704,17 @@ def test_star_schema_decomposicao_e_integridade_referencial():
     for col_redundante in ["programa", "linha_trabalho", "lotacao", "filtro_programa", "filtro_linha_trabalho"]:
         assert col_redundante not in fato.columns
 
+    # Validação da coluna UF na dim_lotacao
+    assert "uf" in star["dim_lotacao"].columns, "dim_lotacao deve conter a coluna 'uf'."
+
+
+def test_enriquecimento_coluna_uf(df_inss):
+    """Garante que a coluna 'uf' foi derivada no ETL e cobre os 27 estados da federação."""
+    assert "uf" in df_inss.columns, "Coluna 'uf' deve existir no DataFrame tratado."
+    ufs_presentes = set(df_inss["uf"].dropna().unique())
+    assert len(ufs_presentes) == 27, f"Esperadas 27 UFs, encontradas: {len(ufs_presentes)}"
+    assert {"SP", "RJ", "MG", "DF", "BA", "RS"}.issubset(ufs_presentes)
+
 
 def test_sincronizar_insights_neon_sqlite(tmp_path):
     from sqlalchemy import create_engine, inspect

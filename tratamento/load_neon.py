@@ -118,7 +118,7 @@ def construir_star_schema(df_total: pd.DataFrame) -> dict[str, pd.DataFrame]:
     df_linha.insert(0, "sk_linha_trabalho", range(1, len(df_linha) + 1))
 
     # 3. dim_lotacao
-    cols_lot = ["id_lotacao", "lotacao"]
+    cols_lot = ["id_lotacao", "lotacao", "uf"]
     cols_lot_exist = [c for c in cols_lot if c in df.columns]
     if "id_lotacao" in df.columns:
         df_lot = (
@@ -130,7 +130,7 @@ def construir_star_schema(df_total: pd.DataFrame) -> dict[str, pd.DataFrame]:
         )
     elif "lotacao" in df.columns:
         df_lot = (
-            df[["lotacao"]]
+            df[cols_lot_exist]
             .dropna(subset=["lotacao"])
             .drop_duplicates(subset=["lotacao"])
             .sort_values("lotacao")
@@ -142,7 +142,7 @@ def construir_star_schema(df_total: pd.DataFrame) -> dict[str, pd.DataFrame]:
     for c in cols_lot:
         if c not in df_lot.columns:
             df_lot[c] = None
-    df_lot = df_lot[["id_lotacao", "lotacao"]]
+    df_lot = df_lot[["id_lotacao", "lotacao", "uf"]]
     df_lot.insert(0, "sk_lotacao", range(1, len(df_lot) + 1))
 
     # 4. dim_servidor
@@ -259,6 +259,7 @@ def sincronizar_star_schema_neon(
             "sk_lotacao": Integer(),
             "id_lotacao": Text(),
             "lotacao": Text(),
+            "uf": Text(),
         },
         "dim_servidor": {
             "id_usuario": Text(),
