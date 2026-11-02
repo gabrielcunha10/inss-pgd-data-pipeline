@@ -1,48 +1,55 @@
 # Insights Executivos do Dashboard - Acompanhamento PGD / INSS
 
-> **Relatório Analítico Gerado Automaticamente por Inteligência Artificial (Google Gemini - gemini-3.8-flash)**  
-> **Última Atualização:** 02/11/2026 às 00:03  
+> **Relatório Analítico Gerado Automaticamente por Inteligência Artificial (Google Gemini - gemini-3.6-flash)**  
+> **Última Atualização:** 02/11/2026 às 19:16  
 > *Diagnóstico executivo sintetizado de forma autônoma a partir dos microdados oficiais tratados do PGD/INSS.*
 
 ---
 
-> **Nota Metodológica & Governança**  
-> Este relatório executivo consolida dados extraídos da base transacional oficial em formato colunar Parquet, abrangendo a série histórica de outubro de 2023 a agosto de 2026 (35 competências mensais). Em observância estrita à Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD), todas as identificações individuais de servidores foram submetidas ao protocolo de anonimização irreversível via função criptográfica de dispersão HMAC-SHA256, assegurando a rastreabilidade estatística e a total preservação da privacidade funcional.
+> **Nota Metodológica & Governança**: Este relatório executivo sintetiza a evolução do Programa de Gestão e Desempenho (PGD) no âmbito do Instituto Nacional do Seguro Social (INSS), consolidando a série temporal de outubro de 2023 a agosto de 2026 (35 competências). A extração dos dados foi realizada diretamente a partir do repositório analítico institucional em formato Apache Parquet, garantindo elevada eficiência computacional e integridade relacional. A proteção da privacidade dos servidores observa integralmente os ditames da Lei Geral de Proteção de Dados Pessoais (Lei nº 13.709/2018 - LGPD), com a anonimização dos identificadores de pessoal realizada por meio do algoritmo de hash criptográfico HMAC-SHA256.
 
 ---
 
 ## Resumo Rápido da Série Histórica
 
-Ao longo de 35 competências consecutivas, o Programa de Gestão e Desempenho (PGD) do INSS demonstrou consolidação técnica e institucional, monitorando um efetivo acumulado de **22.200 servidores**. O volume consolidado alcançou **652.788 atos de designação**, resultando em uma média mensal de **18.651 designações** ativas e pactuadas.
+Ao longo das 35 competências analisadas (10/2023 a 08/2026), o PGD consolidou-se como a principal ferramenta de gestão da força de trabalho e mensuração de entregas no INSS:
 
-A governança do programa conta atualmente com **26 programas de gestão ativos**, desenhados para acomodar diferentes perfis institucionais, desde atividades de alta complexidade regulatória e suporte estratégico até demandas finalísticas e de produção em massa. A densidade de designações registra média de **2,06 vínculos por servidor**, com teto observado de 12 vínculos individuais, evidenciando dinâmica contínua de repactuação, adaptação a novos planos de trabalho ou alocações cumulativas transitórias devidamente monitoradas.
+*   **Universo Acompanhado**: 22.200 servidores com pelo menos um registro de pactuação no período histórico.
+*   **Volume de Atos de Designação**: 652.788 atos acumulados na série temporal.
+*   **Média Mensal de Designações**: 18.651 atos/mês, refletindo a dinâmica contínua de repactuação e renovação dos planos de trabalho.
+*   **Programas Ativos**: 26 programas de gestão cadastrados e em operação no ecossistema institucional.
+*   **Densidade de Vínculos**: Média de 2,06 vínculos por servidor ao longo da série, observando um teto máximo de 12 designações acumuladas no histórico por um único servidor.
 
 ---
 
 ## Destaques da Última Competência (08/2026 vs. 07/2026)
 
-A transição da competência de julho de 2026 para agosto de 2026 reflete estabilidade operacional e avanço gradual da cobertura dos planos de trabalho:
+A comparação entre a competência corrente (08/2026) e a imediatamente anterior (07/2026) indica estabilidade operacional com leve expansão na adesão ao programa:
 
-- **Efetivo com Plano Ativo (Designados):** Registrou acréscimo de 0,23% no mês (MoM), passando de 17.545 para **17.585 servidores**. A taxa de adesão ao PGD mantém-se superior a 79% do efetivo histórico total monitorado.
-- **Servidores Não Designados:** Passaram de 4.592 para **4.615 servidores** (+0,50% MoM), demandando atenção gerencial sobre eventuais represamentos operacionais, transições de equipe ou descontinuidade de pactuações.
-- **Movimentação de Desligamentos:** Verificou-se **zero desligamento** registrado na competência 08/2026, contra 42 desligamentos observados em 07/2026 (-100,00% MoM), indicando estabilização nos quadros funcionais pactuados no fechamento do ciclo.
-- **Equilíbrio de Modalidades:** O teletrabalho total (somatório do trabalho integralmente remoto e semipresencial) atingiu **9.311 servidores** (52,9% do efetivo pactuado), com expansão de +0,62% MoM. Por sua vez, a modalidade presencial congregou **8.274 servidores** (47,1%), assegurando a manutenção ininterrupta da força de trabalho nas dependências físicas de atendimento e suporte.
+*   **Efetivo Designado (Plano Ativo)**: Crescimento de **+0,23%**, evoluindo de 17.545 para **17.585 servidores**.
+*   **Servidores Não Designados**: Incremento de **+0,50%**, passando de 4.592 para **4.615 servidores**.
+*   **Desligamentos no Mês**: Redução de **-100,00%** (de 42 desligamentos em 07/2026 para 0 em 08/2026), sinalizando a manutenção integral do quadro pactuado sem descredenciamentos no período.
+*   **Distribuição das Modalidades**:
+    *   **Teletrabalho (Remoto + Semipresencial)**: Alcançou **9.311 servidores**, representando **52,9%** do efetivo pactuado no mês, com variação de **+0,62% MoM**.
+    *   **Presencial**: **8.274 servidores**, correspondendo a **47,1%** do contingente pactuado.
 
 ---
 
 ## Análise Detalhada dos 6 Eixos do Painel
 
-### Eixo 1: Visão Geral e Indicadores de Cobertura
+### Eixo 1: Visão Geral e Distribuição da Força de Trabalho
 
 ![Visão Geral](imagens/visao_geral_dashboard.png)
 
-O panorama global de cobertura revela maturidade do PGD como o instrumento basilar da gestão da força de trabalho da autarquia. A manutenção de um volume médio superior a 18 mil atos mensais confirma a sustentabilidade do fluxo de monitoramento e pactuação. O crescimento contínuo de designados (+0,23% MoM) coincide com a queda a zero de desligamentos, sugerindo um momento de consolidação dos quadros antes do planejamento do próximo ciclo semestral.
+A análise consolidada da força de trabalho revela um elevado nível de maturidade do PGD, cobrindo a quase totalidade do quadro funcional do INSS. O volume de 17.585 servidores com planos ativos em 08/2026 demonstra a institucionalização do modelo focado em resultados. A estabilidade no volume mensal de designações (média de 18.651) corrobora a previsibilidade operacional dos ciclos de pactuação.
 
-### Eixo 2: Distribuição por Modalidades de Execução
+---
+
+### Eixo 2: Modalidades de Trabalho (Teletrabalho vs. Presencial)
 
 ![Modalidades de Trabalho](imagens/modalidades_dashboard.png)
 
-A distribuição das modalidades de trabalho em agosto de 2026 atesta uma divisão estratégica entre o atendimento presencial contínuo e a produtividade baseada em entregas remotas. A composição das designações do mês consolidou-se da seguinte forma:
+A distribuição por modalidade de execução evidencia o predomínio do trabalho descentralizado e mediado por tecnologia. Somadas, as modalidades não presenciais (Remoto e Semipresencial) sustentam 52,9% do efetivo em PGD.
 
 | Modalidade | Designações no Mês | Proporção no Mês |
 | :--- | :---: | :---: |
@@ -50,28 +57,28 @@ A distribuição das modalidades de trabalho em agosto de 2026 atesta uma divis�
 | **Remoto** | 8.067 | 45,8% |
 | **Semipresencial** | 1.245 | 7,1% |
 
-O contingente em regime remoto (45,8%) e semipresencial (7,1%) totaliza 52,9% da força ativa pactuada. Essa estrutura sustenta a capacidade analítica da autarquia em processos eletrônicos e fluxos digitais, enquanto o contingente presencial (47,1%) salvaguarda o suporte às agências da previdência social e às rotinas administrativas locais.
+*Análise de Impacto*: O modelo 100% Remoto representa 45,8% do total, alocado precipuamente em rotinas de análise intensiva de processos. Já o modelo Semipresencial (7,1%) atua como camada intermediária de transição para unidades de atendimento físico e gestão local.
 
-### Eixo 3: Duração Média e Ciclos Temporais por Programa
+---
+
+### Eixos 3 e 4: Programas de Gestão e Duração dos Planos
 
 ![Programas de Gestão](imagens/programas_dashboard.png)
 
-A análise da duração média dos atos de designação categoriza nitidamente os programas de gestão entre aqueles com perfil de controle contínuo/estratégico (ciclos dilatados) e aqueles focados na operação padronizada de curto e médio prazo (ciclos periódicos):
+A arquitetura de programas do INSS divide-se nitidamente entre iniciativas focado em análise operacional de alto volume e programas voltados à governança, tecnologia e suporte estratégico.
+
+#### Duração Média por Programa e Perfil Executivo
 
 | Sigla do Programa | Duração Média (Dias) | Perfil de Gestão |
 | :--- | :---: | :--- |
-| **PG-ACS** | **1101 dias** | Governança / Controle / Estratégico |
+| **PG-ACS** | **1.101 dias** | Governança / Controle / Estratégico |
 | **PG-DTI** | **911 dias** | Governança / Controle / Estratégico |
 | **CES1** | **887 dias** | Governança / Controle / Estratégico |
 | **ATEND_ACGREVE** | **870 dias** | Governança / Controle / Estratégico |
 | **DIR_CENTRAL1** | **729 dias** | Operacional / Ciclos Periódicos |
 | **CEAB1** | **706 dias** | Operacional / Ciclos Periódicos |
 
-Programas como PG-ACS (1.101 dias) e PG-DTI (911 dias) demandam prazos estendidos de planejamento decorrentes da natureza de projetos de infraestrutura tecnológica e governança setorial. Em contrapartida, CEAB1 (706 dias) e DIR_CENTRAL1 (729 dias) refletem ciclos estruturados para monitoramento periódico e repactuações baseadas em metas quantitativas de entrega de processos.
-
-### Eixo 4: Concentração Operacional de Servidores por Programa
-
-O detalhamento da alocação de servidores confirma a centralidade das Centrais de Análise de Benefícios e das estruturas regionais na alocação da capacidade produtiva institucional:
+#### Top Programas por Volume de Servidores
 
 | Programa | Volume |
 | :--- | :---: |
@@ -81,13 +88,15 @@ O detalhamento da alocação de servidores confirma a centralidade das Centrais 
 | **PROG. PRESENCIAL 6H + PONTUAÇÃO** | 1.976 servidores |
 | **PROGRAMA DAS ÁREAS DA DIREÇÃO CENTRAL** | 995 servidores |
 
-O Programa da CEAB I responde isoladamente pela maior concentração de servidores (6.777), operando como a linha de frente analítica do INSS na redução de estoques de processos de concessão. Somadas, a CEAB I e as Superintendências congregam mais de 11.350 servidores, evidenciando foco direto nas atribuições operacionais descentralizadas.
+*Análise de Impacto*: Há uma correlação inversa entre o volume de servidores e a duração média do plano. Programas estratégicos e de governança (como PG-ACS com 1.101 dias e PG-DTI com 911 dias) demandam ciclos mais longos de maturação de entregas. Por outro lado, programas operacionais como a **CEAB I** (6.777 servidores) operam com ciclos médios mais curtos (706 dias), otimizados para acompanhamento contínuo da produção individual.
 
-### Eixo 5: Demanda de Força de Trabalho por Lotação
+---
+
+### Eixo 5: Distribuição por Lotações e Unidades Organizacionais
 
 ![Lotações](imagens/lotacoes_dashboard.png)
 
-As áreas com maior densidade de servidores demonstram que as unidades corporativas e as seções finalísticas de reconhecimento de direitos representam os polos de maior necessidade de alocação de pessoal:
+A alocação da força de trabalho por unidades administrativas demonstra forte concentração do PGD em coordenações de suporte sistêmico e em seções operacionais finalísticas.
 
 | Lotação | Volume |
 | :--- | :---: |
@@ -97,13 +106,15 @@ As áreas com maior densidade de servidores demonstram que as unidades corporati
 | **SECAO DE ATENDIMENTO DE DEMANDAS JUDICIAIS** | 607 servidores |
 | **SERVICO DE GERENCIAMENTO DE BENEFICIOS** | 552 servidores |
 
-A coordenação orçamentária e a de gestão de pessoas figuram no topo das lotações (749 e 747 servidores, respectivamente), sublinhando a intensidade de trabalho técnico demandada na governança interna do órgão. No âmbito finalístico, destacam-se a Análise de Reconhecimento de Direitos (656 servidores) e o Atendimento de Demandas Judiciais (607 servidores), áreas críticas para a mitigação de passivos e cumprimento de prazos judiciais.
+*Análise de Impacto*: As Coordenações de Gestão Financeira/Logística (749) e de Pessoas (747) lideram a ocupação em termos absolutos de unidades administrativas centrais, sustentando a infraestrutura institucional. No nível tático-operacional, destacam-se a Análise de Reconhecimento de Direitos (656) e Demanda Judiciais (607), áreas críticas para a redução do passivo de processos.
 
-### Eixo 6: Alocação Estratégica em Linhas de Trabalho
+---
+
+### Eixo 6: Linhas de Trabalho e Foco Operacional
 
 ![Linhas de Trabalho](imagens/linhas_trabalho_dashboard.png)
 
-O mapeamento por linhas de trabalho revela a distribuição espacial do esforço operacional, com expressiva predominância das Superintendências Regionais Nordeste (SRNE) e Sudeste I (SRSE1):
+As linhas de trabalho retratam a descentralização regional do atendimento e da análise de benefícios, com protagonismo evidente das Superintendências Regionais Nordeste (SRNE) e Sudeste 1 (SRSE1).
 
 | Linha de Trabalho | Volume |
 | :--- | :---: |
@@ -113,7 +124,7 @@ O mapeamento por linhas de trabalho revela a distribuição espacial do esforço
 | **Linha de Trabalho - Unidades de Atendimento SRSE1** | 1.390 servidores |
 | **Central de Análise de Benefícios de Reconhecimento de Direitos SRSE1** | 1.173 servidores |
 
-A Região Nordeste lidera a alocação de capacidade de produção, agregando mais de 5.200 servidores entre unidades de atendimento, reconhecimento de direitos e gestão regional. A SRSE1 configura-se como o segundo maior núcleo de produção analítica, demonstrando a priorização do enfrentamento de demandas represadas nos principais eixos demográficos do país.
+*Análise de Impacto*: A SRNE absorve as maiores fatias operacionais tanto na rede física (1.873 servidores nas Unidades de Atendimento) quanto na central centralizada de reconhecimento de direitos (1.695 servidores). Essa concentração reflete a demanda histórica da região e a priorização institucional no alinhamento da força de trabalho para redução do tempo médio de concessão (TMC).
 
 ---
 
@@ -121,7 +132,7 @@ A Região Nordeste lidera a alocação de capacidade de produção, agregando ma
 
 ![Auditoria LGPD](imagens/lgpd_dashboard.png)
 
-A auditoria contínua de integridade do PGD identifica servidores com volumes atípicos de designações ao longo do histórico observado. A tabela a seguir relaciona os servidores que atingiram ou se aproximaram do teto máximo de vínculos (12 designações):
+Com base nas diretrizes de governança de dados da Lei nº 13.709/2018 (LGPD), a monitoração de conformidade utiliza identificadores hash (HMAC-SHA256). A análise histórica aponta uma média institucional de 2,06 vínculos por servidor, porém identifica um grupo reduzido de servidores com elevado volume de atos acumulados ao longo dos 35 meses de observação.
 
 | Servidor (Código LGPD) | Total Designações | Designações / Mês | Meses Observados |
 | :---: | :---: | :---: | :---: |
@@ -134,19 +145,17 @@ A auditoria contínua de integridade do PGD identifica servidores com volumes at
 | `USR-A81A7AAA` | **9** | 0,28 | 32 |
 | `USR-2F46A017` | **8** | 0,26 | 31 |
 
-Embora a média geral da autarquia seja de 2,06 vínculos, os casos destacados representam agentes atuantes em múltiplos grupos de trabalho, forças-tarefa consecutivas ou readequações sucessivas de planos de entrega. A métrica de designações por mês varia entre 0,26 e 0,36, o que comprova que as renovações ocorreram ao longo de janelas temporais de 31 a 35 meses, descartando sobreposição anômala concentrada em único intervalo restrito.
+*Parecer de Conformidade*: Embora a taxa de renovação (Designações/Mês entre 0,26 e 0,36) indique substituição periódica de planos e não sobreposição simultânea irregular, o acúmulo de até 12 designações por servidor exige verificação contínua nos sistemas de controle para mitigar eventuais fragilidades administrativas e garantir a devida prestação de contas.
 
 ---
 
 ## Recomendações Executivas para o Próximo Ciclo
 
-Com esteio nas constatações técnicas e nas tendências observadas no encerramento da competência 08/2026, propõem-se as seguintes ações para a Diretoria e as chefias imediatas:
+1.  **Implantar Trilha Automatizada de Auditoria sobre Múltiplos Vínculos Históricos**:
+    Estabelecer alerta no sistema para servidores que atingirem limite superior a 8 atos de designação acumulados na série, com verificação automatizada de sobreposição temporal de vigências, assegurando plena conformidade com as regras institucionais e a jurisprudência dos órgãos de controle.
 
-1. **Plano de Regularização dos Servidores Não Designados:**  
-   Instaurar monitoramento focalizado sobre o contingente de 4.615 servidores não designados (que apresentou expansão de +0,50% MoM). Recomenda-se que as unidades regionais elaborem plano de regularização funcional em até 30 dias para enquadramento destes servidores em planos de entrega formalizados ou justificativa de incompatibilidade funcional.
+2.  **Repactuação Semestral do Mix Remoto/Presencial nas Centrais de Análise (SRNE e SRSE1)**:
+    Considerando a alta concentração de força de trabalho nas Centrais de Análise de Benefícios da SRNE (1.695) e SRSE1 (1.173), recomenda-se avaliar a expansão calibrada da modalidade semipresencial (atualmente em apenas 7,1% no geral), promovendo ganhos de integração de equipe sem prejuízo da produtividade individual.
 
-2. **Revisão e Homologação de Múltiplos Vínculos:**  
-   Notificar preventivamente as chefias dos servidores que acumularam 10 ou mais designações no período histórico (casos exemplificados por `USR-FFB5C436`, `USR-AAD51E3A` e `USR-79379680`), a fim de averiguar se os múltiplos registros refletem substituições regulares de planos operacionais ou duplicidade ativa de metas, preservando a coerência da carga horária legal de trabalho.
-
-3. **Adequação Temporal dos Ciclos de Planos Operacionais:**  
-   Promover revisão nos prazos de vigência dos programas operacionais, a exemplo de DIR_CENTRAL1 (729 dias) e CEAB1 (706 dias). Recomenda-se alinhar a periodicidade dessas designações a ciclos avaliativos mais curtos (preferencialmente anuais ou semestrais), mantendo prazos estendidos (superiores a 800 dias) prioritariamente para áreas finalísticas de projetos de governança e tecnologia da informação (PG-ACS e PG-DTI).
+3.  **Padronização dos Ciclos de Vigência por Perfil de Programa (Estratégico vs. Operacional)**:
+    Institucionalizar diretrizes de vigência que diferenciem formalmente os programas operacionais de alto volume (ex: CEAB I, alinhando ciclos em 360 a 700 dias) dos programas estratégicos/governança (ex: PG-ACS e PG-DTI, mantendo ciclos estendidos entre 900 e 1.100 dias), reduzindo o custo administrativo de repactuações frequentes.
