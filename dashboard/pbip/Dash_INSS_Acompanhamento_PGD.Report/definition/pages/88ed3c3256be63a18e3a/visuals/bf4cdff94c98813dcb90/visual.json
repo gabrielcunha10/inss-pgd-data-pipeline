@@ -23,17 +23,68 @@
                       "Entity": "dim_lotacao"
                     }
                   },
+                  "Property": "uf"
+                }
+              },
+              "queryRef": "dim_lotacao.uf",
+              "nativeQueryRef": "uf",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_lotacao"
+                    }
+                  },
                   "Property": "lotacao"
                 }
               },
               "queryRef": "dim_lotacao.lotacao",
               "nativeQueryRef": "lotacao",
-              "active": true
+              "active": false
             }
           ]
         }
       }
     },
+    "expansionStates": [
+      {
+        "roles": [
+          "Values"
+        ],
+        "levels": [
+          {
+            "queryRefs": [
+              "dim_lotacao.uf"
+            ],
+            "isCollapsed": true,
+            "identityKeys": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_lotacao"
+                    }
+                  },
+                  "Property": "uf"
+                }
+              }
+            ],
+            "isPinned": true
+          },
+          {
+            "queryRefs": [
+              "dim_lotacao.lotacao"
+            ],
+            "isCollapsed": true,
+            "isPinned": true
+          }
+        ],
+        "root": {}
+      }
+    ],
     "objects": {
       "general": [
         {
@@ -241,5 +292,37 @@
       "filterChanges": true
     },
     "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "21af061a58b6d3366d93",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_lotacao"
+              }
+            },
+            "Property": "lotacao"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "773e29780c50d48b05e0",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "dim_lotacao"
+              }
+            },
+            "Property": "uf"
+          }
+        },
+        "type": "Categorical"
+      }
+    ]
   }
 }

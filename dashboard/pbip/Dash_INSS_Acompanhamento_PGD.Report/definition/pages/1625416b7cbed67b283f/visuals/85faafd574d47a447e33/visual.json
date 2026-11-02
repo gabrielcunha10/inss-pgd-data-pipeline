@@ -23,12 +23,27 @@
                       "Entity": "dim_lotacao"
                     }
                   },
+                  "Property": "uf"
+                }
+              },
+              "queryRef": "dim_lotacao.uf",
+              "nativeQueryRef": "uf",
+              "active": true
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "dim_lotacao"
+                    }
+                  },
                   "Property": "lotacao"
                 }
               },
               "queryRef": "dim_lotacao.lotacao",
               "nativeQueryRef": "lotacao",
-              "active": true
+              "active": false
             }
           ]
         }

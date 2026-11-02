@@ -47,3 +47,4 @@ table dim_lotacao
 	annotation PBI_NavigationStepName = Navegação
 
 	annotation PBI_ResultType = Table
+
