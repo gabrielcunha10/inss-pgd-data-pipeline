@@ -370,7 +370,7 @@
             "text": {
               "expr": {
                 "Literal": {
-                  "Value": "'Situação Funcional dos Servidores'"
+                  "Value": "'Distribuição de Servidores por Situação (Histórico Acumulado)'"
                 }
               }
             },
